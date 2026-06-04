@@ -15,6 +15,8 @@
 //    scrub on the .docx TDS source files.
 // ============================================================
 
+import { TDS_DATA } from "./tds-data";
+
 export type Chem = "epoxy" | "polyaspartic" | "polyurea" | "urethane";
 export type ProductStatus = "active-off" | "rnd-hold" | "mto";
 
@@ -643,6 +645,29 @@ export const COLORS: Color[] = [
   { n: "Dove", s: "1339 Color Pack", c: "#c9cdd2" },
   { n: "Charcoal", s: "1339 Color Pack", c: "#2f3438" },
 ];
+
+// Attach the real, §9-scrubbed TDS + at-a-glance data (generated into
+// lib/tds-data.ts from the LPC TDS docx set) to every product. This
+// OVERRIDES any inline placeholder tds/glance above with the authoritative
+// sheet data, so all 20 product pages render full TDS depth.
+for (const product of PRODUCTS) {
+  const data = TDS_DATA[product.sku];
+  if (data) {
+    product.glance = data.glance;
+    product.tds = data.tds;
+  }
+}
+
+// Build-time guardrail (§9): fail the build if any upstream Polymer Nation
+// reference slips into product copy — impossible to catch later in prod.
+const BANNED_TOKENS = /polymer\s*nation|polymernation|polmymerna|\bPN\b/i;
+for (const product of PRODUCTS) {
+  if (product.tds && BANNED_TOKENS.test(JSON.stringify(product.tds))) {
+    throw new Error(
+      `[catalog] TDS for ${product.sku} contains a banned upstream (Polymer Nation) reference — re-run the §9 scrub.`,
+    );
+  }
+}
 
 // ---- selectors ----------------------------------------------------
 
