@@ -50,31 +50,32 @@ export const viewport: Viewport = {
   themeColor: "#0a3a6b",
 };
 
-const jsonLd = [
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: SITE.name,
-    url: SITE.url,
-    telephone: SITE.phone,
-    email: SITE.email,
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "405 Oakwood Ave",
-      addressLocality: "Waukegan",
-      addressRegion: "IL",
-      postalCode: "60085",
-      addressCountry: "US",
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      name: SITE.name,
+      url: SITE.url,
+      telephone: SITE.phone,
+      email: SITE.email,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "405 Oakwood Ave",
+        addressLocality: "Waukegan",
+        addressRegion: "IL",
+        postalCode: "60085",
+        addressCountry: "US",
+      },
+      parentOrganization: { "@type": "Organization", name: SITE.parent },
     },
-    parentOrganization: { "@type": "Organization", name: SITE.parent },
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: SITE.name,
-    url: SITE.url,
-  },
-];
+    {
+      "@type": "WebSite",
+      name: SITE.name,
+      url: SITE.url,
+    },
+  ],
+};
 
 export default function RootLayout({
   children,

@@ -37,10 +37,13 @@ export async function generateMetadata({
   const { sku } = await params;
   const p = getProduct(sku);
   if (!p) return {};
+  const path = `/products/${p.sku.toLowerCase()}`;
   return {
     title: p.name,
     description: p.desc,
-    alternates: { canonical: `/products/${p.sku.toLowerCase()}` },
+    alternates: { canonical: path },
+    openGraph: { type: "website", title: `${p.name} · Liberty Pro Coatings`, description: p.desc, url: path },
+    twitter: { title: `${p.name} · Liberty Pro Coatings`, description: p.desc },
   };
 }
 

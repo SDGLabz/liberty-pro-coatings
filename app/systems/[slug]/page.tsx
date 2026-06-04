@@ -17,10 +17,13 @@ export async function generateMetadata({
   const { slug } = await params;
   const s = getSystem(slug);
   if (!s) return {};
+  const path = `/systems/${s.slug}`;
   return {
     title: s.name,
     description: s.blurb,
-    alternates: { canonical: `/systems/${s.slug}` },
+    alternates: { canonical: path },
+    openGraph: { type: "website", title: `${s.name} · Liberty Pro Coatings`, description: s.blurb, url: path },
+    twitter: { title: `${s.name} · Liberty Pro Coatings`, description: s.blurb },
   };
 }
 
