@@ -7,13 +7,21 @@ import { useSite } from "./SiteProvider";
 import { NAV } from "./nav";
 
 // Pages whose hero is a dark, full-bleed band the header should sit
-// transparently over until the user scrolls past it. Add a route here
-// when you build another page with a dark hero up top.
-const DARK_HERO_ROUTES = new Set<string>(["/"]);
+// transparently over until the user scrolls past it. "/" plus the systems
+// index and every /systems/<slug> detail use the .ihero band. Add an exact
+// route or a prefix here when a new dark-hero page lands.
+const DARK_HERO_EXACT = new Set<string>(["/"]);
+const DARK_HERO_PREFIXES = ["/systems"];
+function isDarkHero(pathname: string): boolean {
+  return (
+    DARK_HERO_EXACT.has(pathname) ||
+    DARK_HERO_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"))
+  );
+}
 
 export function Header() {
   const pathname = usePathname();
-  const darkHero = DARK_HERO_ROUTES.has(pathname);
+  const darkHero = isDarkHero(pathname);
   const { cartCount, openCart, openSheet, openSurvey } = useSite();
 
   const [scrolled, setScrolled] = useState(false);

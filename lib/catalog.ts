@@ -687,3 +687,28 @@ export function relatedProducts(sku: string, chem: Chem, limit = 4): Product[] {
     ...PRODUCTS.filter((p) => p.chem === chem && p.sku !== sku && !p.featured),
   ].slice(0, limit);
 }
+
+/** Look up a system by slug. */
+export function getSystem(slug: string): System | undefined {
+  return SYSTEMS.find((s) => s.slug === slug);
+}
+
+/**
+ * The real catalog products referenced by a system's build-up, deduped and
+ * in first-appearance order. Layer cells name SKUs alongside non-SKU media
+ * ("Flake Blend 1375"); we keep only tokens that resolve to a real product.
+ */
+export function productsInSystem(system: System): Product[] {
+  const seen = new Set<string>();
+  const out: Product[] = [];
+  for (const [, products] of system.layers) {
+    for (const token of products.split(/[\s/+]+/)) {
+      const product = getProduct(token);
+      if (product && !seen.has(product.sku)) {
+        seen.add(product.sku);
+        out.push(product);
+      }
+    }
+  }
+  return out;
+}

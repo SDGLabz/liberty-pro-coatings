@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { homeSystems, bestSellers } from "@/lib/catalog";
 import { ProductCard } from "@/components/site/ProductCard";
+import { SystemCard } from "@/components/site/SystemCard";
 import { SurveyButton } from "@/components/site/SurveyButton";
 
 const CHEMISTRY = [
@@ -9,9 +10,6 @@ const CHEMISTRY = [
   { chem: "polyurea", ct: "Poly-Bond", label: "Polyurea", img: "/images/cat-pig.jpg" },
   { chem: "urethane", ct: "Ure-Guard", label: "Urethane", img: "/images/cat-metal.jpg" },
 ] as const;
-
-const cleanSystemName = (name: string) =>
-  name.replace(" System", "").replace(" Floor", "");
 
 export default function Home() {
   const systems = homeSystems(6);
@@ -113,14 +111,7 @@ export default function Home() {
           </div>
           <div className="cats">
             {systems.map((s) => (
-              <Link key={s.slug} className="cat reveal" href={`/systems/${s.slug}`}>
-                <div
-                  className="bg"
-                  style={{ background: `url('${s.img}') center/cover no-repeat` }}
-                />
-                <span className="ct">{s.tag}</span>
-                <h3>{cleanSystemName(s.name)}</h3>
-              </Link>
+              <SystemCard key={s.slug} s={s} cleanName />
             ))}
           </div>
         </div>
