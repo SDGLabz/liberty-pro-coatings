@@ -1,65 +1,274 @@
-import Image from "next/image";
+import Link from "next/link";
+import {
+  homeSystems,
+  bestSellers,
+  CHEM_LABELS,
+  STATUS_LABELS,
+} from "@/lib/catalog";
+import { SurveyButton } from "@/components/site/SurveyButton";
+
+const CHEMISTRY = [
+  { chem: "epoxy", ct: "Epo-Guard", label: "Epoxy", img: "/images/prod-flake.jpg" },
+  { chem: "polyaspartic", ct: "Poly-Guard", label: "Polyaspartic", img: "/images/prod-1day.jpg" },
+  { chem: "polyurea", ct: "Poly-Bond", label: "Polyurea", img: "/images/cat-pig.jpg" },
+  { chem: "urethane", ct: "Ure-Guard", label: "Urethane", img: "/images/cat-metal.jpg" },
+] as const;
+
+const cleanSystemName = (name: string) =>
+  name.replace(" System", "").replace(" Floor", "");
 
 export default function Home() {
+  const systems = homeSystems(6);
+  const products = bestSellers(4);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      {/* HERO */}
+      <section className="hero">
+        <div className="grid">
+          <div className="left">
+            <span className="eyebrow">Made in the USA · contractor-grade</span>
+            <h1>
+              Garage floors
+              <br />
+              built to <span className="red">last.</span>
+            </h1>
+            <p className="sub">
+              Manufacturer-direct epoxy, polyaspartic and urethane systems for the contractors who
+              install them. Full technical data, public pricing, and freight-inclusive checkout for
+              approved pros.
+            </p>
+            <div className="cta-row">
+              <Link className="btn btn-primary" href="/products">
+                Shop the Catalog →
+              </Link>
+              <Link className="btn btn-out" href="/systems">
+                Explore Systems
+              </Link>
+            </div>
+            <div className="micro">
+              <span>Residential garage</span>
+              <span>Commercial &amp; industrial</span>
+              <span>Live LTL freight</span>
+              <span>TDS &amp; SDS</span>
+            </div>
+          </div>
+          <div className="right">
+            <div className="photo" style={{ backgroundImage: "url('/images/hero.jpg')" }} />
+            <div className="floatcard">
+              <div className="fk">Flagship system</div>
+              <div className="fv">
+                Flake Broadcast <b>· EG</b>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* VALUE BAR */}
+      <div className="valbar">
+        <div className="wrap">
+          <div className="val">
+            <div className="vi">🏠</div>
+            <div>
+              <h4>Garage-First</h4>
+              <p>Hot-tire, abrasion &amp; moisture-ready systems</p>
+            </div>
+          </div>
+          <div className="val">
+            <div className="vi">⤓</div>
+            <div>
+              <h4>Live Freight</h4>
+              <p>Hazmat LTL priced before you pay</p>
+            </div>
+          </div>
+          <div className="val">
+            <div className="vi">▤</div>
+            <div>
+              <h4>Full Data</h4>
+              <p>Complete TDS &amp; SDS on every product</p>
+            </div>
+          </div>
+          <div className="val">
+            <div className="vi">⚙</div>
+            <div>
+              <h4>Build-a-Kit</h4>
+              <p>Configure a system to a real SKU</p>
+            </div>
+          </div>
         </div>
-      </main>
-    </div>
+      </div>
+
+      {/* SHOP BY SYSTEM */}
+      <section id="systems">
+        <div className="wrap">
+          <div className="sec-head reveal">
+            <div className="l">
+              <span className="eyebrow">Shop by system</span>
+              <h2>Nine systems. One source.</h2>
+              <p className="lede">
+                From a one-day flake garage floor to a metallic showpiece — each system is a
+                complete, spec&apos;d build-up linking to the Liberty Pro products it uses.
+              </p>
+            </div>
+            <Link className="seeall" href="/systems">
+              All 9 systems →
+            </Link>
+          </div>
+          <div className="cats">
+            {systems.map((s) => (
+              <Link key={s.slug} className="cat reveal" href={`/systems/${s.slug}`}>
+                <div
+                  className="bg"
+                  style={{ background: `url('${s.img}') center/cover no-repeat` }}
+                />
+                <span className="ct">{s.tag}</span>
+                <h3>{cleanSystemName(s.name)}</h3>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* BY CHEMISTRY */}
+      <section
+        style={{
+          background: "var(--bg-2)",
+          borderTop: "1px solid var(--line)",
+          borderBottom: "1px solid var(--line)",
+        }}
+      >
+        <div className="wrap">
+          <div className="sec-head reveal">
+            <div className="l">
+              <span className="eyebrow">Shop by chemistry</span>
+              <h2>Find the right resin.</h2>
+            </div>
+            <Link className="seeall" href="/products">
+              All products →
+            </Link>
+          </div>
+          <div className="cats cols-4">
+            {CHEMISTRY.map((c) => (
+              <Link key={c.chem} className="cat reveal" href={`/products?chem=${c.chem}`}>
+                <div
+                  className="bg"
+                  style={{ background: `url('${c.img}') center/cover no-repeat` }}
+                />
+                <span className="ct">{c.ct}</span>
+                <h3>{c.label}</h3>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* BEST SELLERS */}
+      <section id="shop">
+        <div className="wrap">
+          <div className="sec-head reveal">
+            <div className="l">
+              <span className="eyebrow">Top of the catalog</span>
+              <h2>Best sellers.</h2>
+              <p className="lede">
+                Browse free with full specs and public pricing. Build a cart anytime — checkout
+                unlocks once you&apos;re an approved contractor.
+              </p>
+            </div>
+            <Link className="seeall" href="/products">
+              Shop all →
+            </Link>
+          </div>
+          <div className="pgrid">
+            {products.map((p) => {
+              const [statusLabel, statusClass] = STATUS_LABELS[p.status];
+              return (
+                <Link key={p.sku} className="card reveal" href={`/products/${p.sku.toLowerCase()}`}>
+                  <div className="media">
+                    <div
+                      className="bg"
+                      style={{ background: `url('${p.img}') center/cover no-repeat` }}
+                    />
+                    <div className="badges">
+                      {p.featured && <span className="badge badge-pop">Featured</span>}
+                      <span className={`status ${statusClass}`}>{statusLabel}</span>
+                    </div>
+                  </div>
+                  <div className="body">
+                    <div className="sku">
+                      {p.sku} · {CHEM_LABELS[p.chem]}
+                    </div>
+                    <h3>{p.name}</h3>
+                    <p className="desc">{p.desc}</p>
+                    <div className="priceline">
+                      <span className="price">
+                        ${p.price}
+                        <small> / {p.pkg[0]}</small>
+                      </span>
+                      <span
+                        className="gated"
+                        style={{ fontFamily: "var(--mono)", fontSize: 12, color: "var(--navy)" }}
+                      >
+                        View →
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* INDUSTRY: RESIDENTIAL GARAGE FLAGSHIP */}
+      <section style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <div className="twocol reveal">
+            <div className="visual" style={{ backgroundImage: "url('/images/cat-1day.jpg')" }} />
+            <div>
+              <span className="eyebrow">Flagship use · Residential garage</span>
+              <h2 style={{ fontSize: "clamp(28px,3.8vw,46px)", margin: "12px 0 14px" }}>
+                The garage floor, solved.
+              </h2>
+              <p className="lede" style={{ marginBottom: 18 }}>
+                Hot-tire pickup, abrasion, moisture and looks — our flake broadcast, 1-day flake and
+                polyaspartic systems handle all of it, and install in a day when you need them to.
+              </p>
+              <Link className="btn btn-primary" href="/industries">
+                Residential Garage Systems →
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA pill */}
+      <section className="cta" id="apply">
+        <div className="wrap">
+          <div className="cta-panel reveal">
+            <div className="bg" />
+            <div className="grid-tex" />
+            <div className="inner">
+              <span className="eyebrow">For professional installers</span>
+              <h2>Become an approved contractor.</h2>
+              <p>
+                Apply once to unlock freight-inclusive checkout, fast reorders, and account pricing
+                across the full catalog.
+              </p>
+              <div className="cta-row">
+                <SurveyButton className="btn btn-primary">Become a Contractor →</SurveyButton>
+                <Link className="btn btn-out" href="/contact">
+                  Talk to Our Team
+                </Link>
+              </div>
+              <p className="micro">
+                Already approved?{" "}
+                <SurveyButton className="signin-link">Sign in to check out →</SurveyButton>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
