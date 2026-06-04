@@ -680,6 +680,29 @@ export function systemsUsing(sku: string): System[] {
   );
 }
 
+/**
+ * Products from a system's NON-topcoat layers (base / primer / broadcast),
+ * deduped in first-appearance order. Skips the topcoat LAYER by label rather
+ * than filtering by product role — so a system whose base layer and topcoat
+ * layer share one SKU (e.g. 1-Day Flake, where PG-81 is both the fast base
+ * and the topcoat) still resolves its base material instead of dropping it.
+ */
+export function baseLayerProducts(system: System): Product[] {
+  const seen = new Set<string>();
+  const out: Product[] = [];
+  for (const [layer, products] of system.layers) {
+    if (/topcoat/i.test(layer)) continue;
+    for (const token of products.split(/[\s/+]+/)) {
+      const product = getProduct(token);
+      if (product && !seen.has(product.sku)) {
+        seen.add(product.sku);
+        out.push(product);
+      }
+    }
+  }
+  return out;
+}
+
 /** Other products of the same chemistry (featured first), excluding self. */
 export function relatedProducts(sku: string, chem: Chem, limit = 4): Product[] {
   return [
