@@ -530,3 +530,8 @@ header.over-hero:not(.scrolled) .burger span{background:#fff}
 /* outline button on a dark section (e.g. the system "spec this" CTA) */
 .btn-on-dark{color:#fff;border-color:rgba(255,255,255,.3)}
 .btn-on-dark:hover{border-color:#fff}
+/* clean light info card (About "why us") — not the photo-overlay .cat */
+.featurecard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px 22px;display:flex;flex-direction:column;gap:6px;transition:transform .26s var(--ease),box-shadow .26s,border-color .26s}
+.featurecard:hover{transform:translateY(-4px);border-color:var(--navy-bright);box-shadow:0 20px 44px -28px rgba(8,12,18,.35)}
+.featurecard .ct{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--red-ink)}
+.featurecard h3{color:var(--ink);font-size:20px;margin:0}

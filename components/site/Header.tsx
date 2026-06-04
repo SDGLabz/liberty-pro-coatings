@@ -10,7 +10,7 @@ import { NAV } from "./nav";
 // transparently over until the user scrolls past it. "/" plus the systems
 // index and every /systems/<slug> detail use the .ihero band. Add an exact
 // route or a prefix here when a new dark-hero page lands.
-const DARK_HERO_EXACT = new Set<string>(["/", "/industries"]);
+const DARK_HERO_EXACT = new Set<string>(["/", "/industries", "/about"]);
 const DARK_HERO_PREFIXES = ["/systems"];
 function isDarkHero(pathname: string): boolean {
   return (
