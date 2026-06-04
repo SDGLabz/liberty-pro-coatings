@@ -101,7 +101,7 @@ export default async function SystemPage({
           </div>
           <div className="stack">
             {s.layers.map(([layer, products, note], i) => (
-              <div key={layer + i} className="layer reveal">
+              <div key={`${layer}-${products}`} className="layer reveal">
                 <span className="ln">{i + 1}</span>
                 <div>
                   <div className="lk">{layer}</div>

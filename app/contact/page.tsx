@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SurveyButton } from "@/components/site/SurveyButton";
+import { SurveyLauncher } from "@/components/site/SurveyLauncher";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -36,48 +37,11 @@ export default function ContactPage() {
             <div>
               <div className="sec-head reveal">
                 <div className="l">
-                  <span className="eyebrow">Send a message</span>
+                  <span className="eyebrow">Start a request</span>
                   <h2>Tell us what you need.</h2>
                 </div>
               </div>
-              <div className="form reveal">
-                <div className="frow two">
-                  <div className="frow">
-                    <label htmlFor="c-name">Name</label>
-                    <input id="c-name" name="name" placeholder="Jordan Smith" />
-                  </div>
-                  <div className="frow">
-                    <label htmlFor="c-company">Company</label>
-                    <input id="c-company" name="company" placeholder="Acme Coatings" />
-                  </div>
-                </div>
-                <div className="frow two">
-                  <div className="frow">
-                    <label htmlFor="c-email">Email</label>
-                    <input id="c-email" name="email" type="email" placeholder="you@company.com" />
-                  </div>
-                  <div className="frow">
-                    <label htmlFor="c-phone">Phone</label>
-                    <input id="c-phone" name="phone" placeholder="(555) 123-4567" />
-                  </div>
-                </div>
-                <div className="frow">
-                  <label htmlFor="c-help">How can we help?</label>
-                  <select id="c-help" name="help" defaultValue="Product or spec question">
-                    <option>Product or spec question</option>
-                    <option>Contractor account</option>
-                    <option>Order or freight</option>
-                    <option>Something else</option>
-                  </select>
-                </div>
-                <div className="frow">
-                  <label htmlFor="c-message">Message</label>
-                  <textarea id="c-message" name="message" placeholder="What can we help with?" />
-                </div>
-                <button type="button" className="btn btn-primary" style={{ width: "fit-content" }}>
-                  Send Message
-                </button>
-              </div>
+              <SurveyLauncher />
             </div>
             <aside className="aside">
               <div className="pd-buy">

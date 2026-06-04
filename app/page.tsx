@@ -110,7 +110,7 @@ export default function Home() {
               All 9 systems →
             </Link>
           </div>
-          <div className="cats">
+          <div className="cats bento">
             {systems.map((s) => (
               <SystemCard key={s.slug} s={s} cleanName />
             ))}

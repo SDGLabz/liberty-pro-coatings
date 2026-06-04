@@ -124,6 +124,14 @@
   .cat h3{color:#fff;font-size:17px;margin-top:5px;line-height:1.05}
   @media(max-width:1080px){.cats{grid-template-columns:repeat(3,1fr)}}
   @media(max-width:560px){.cats{grid-template-columns:repeat(2,1fr)}}
+  /* Homepage featured-hero bento: the first system tile dominates (2x2) */
+  .cats.bento{grid-template-columns:repeat(3,1fr);grid-auto-rows:minmax(230px,auto)}
+  .cats.bento .cat{aspect-ratio:auto}
+  .cats.bento>:first-child{grid-column:span 2;grid-row:span 2}
+  .cats.bento>:first-child h3{font-size:clamp(24px,3vw,34px);margin-top:7px}
+  .cats.bento>:first-child .ct{font-size:12px}
+  @media(max-width:880px){.cats.bento{grid-template-columns:repeat(2,1fr);grid-auto-rows:minmax(190px,auto)}.cats.bento>:first-child{grid-column:span 2;grid-row:span 1}}
+  @media(max-width:560px){.cats.bento{grid-template-columns:1fr}.cats.bento>:first-child{grid-column:span 1}}
 
   /* ===== PRODUCT GRID ===== */
   .filterbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:26px}
@@ -493,6 +501,15 @@
 .path-card p{font-size:13px;color:var(--txt-2);margin:0}
 .mnav{display:flex;gap:12px;margin-top:22px}
 .mnav .btn-primary{flex:2}.mnav .btn-out{flex:1}
+/* Mobile: survey goes full-screen Typeform-style with a sticky bottom nav */
+@media(max-width:640px){
+  .modal-bg{padding:0}
+  .modal{width:100%;max-width:none;height:100dvh;max-height:none;border-radius:0;display:flex;flex-direction:column}
+  .modal .mb{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column}
+  .modal .step-q.on{flex:1;display:flex;flex-direction:column}
+  .modal .mnav{margin:auto -28px 0;position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);padding:14px 28px calc(14px + env(safe-area-inset-bottom))}
+  .modal .mnav .btn{min-height:52px}
+}
 .modal .foot-note{margin-top:18px;font-size:12.5px;color:var(--txt-3);text-align:center}
 .modal .foot-note a{color:var(--red-ink)}
 
