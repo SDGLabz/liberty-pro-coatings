@@ -1,10 +1,6 @@
 import Link from "next/link";
-import {
-  homeSystems,
-  bestSellers,
-  CHEM_LABELS,
-  STATUS_LABELS,
-} from "@/lib/catalog";
+import { homeSystems, bestSellers } from "@/lib/catalog";
+import { ProductCard } from "@/components/site/ProductCard";
 import { SurveyButton } from "@/components/site/SurveyButton";
 
 const CHEMISTRY = [
@@ -180,42 +176,9 @@ export default function Home() {
             </Link>
           </div>
           <div className="pgrid">
-            {products.map((p) => {
-              const [statusLabel, statusClass] = STATUS_LABELS[p.status];
-              return (
-                <Link key={p.sku} className="card reveal" href={`/products/${p.sku.toLowerCase()}`}>
-                  <div className="media">
-                    <div
-                      className="bg"
-                      style={{ background: `url('${p.img}') center/cover no-repeat` }}
-                    />
-                    <div className="badges">
-                      {p.featured && <span className="badge badge-pop">Featured</span>}
-                      <span className={`status ${statusClass}`}>{statusLabel}</span>
-                    </div>
-                  </div>
-                  <div className="body">
-                    <div className="sku">
-                      {p.sku} · {CHEM_LABELS[p.chem]}
-                    </div>
-                    <h3>{p.name}</h3>
-                    <p className="desc">{p.desc}</p>
-                    <div className="priceline">
-                      <span className="price">
-                        ${p.price}
-                        <small> / {p.pkg[0]}</small>
-                      </span>
-                      <span
-                        className="gated"
-                        style={{ fontFamily: "var(--mono)", fontSize: 12, color: "var(--navy)" }}
-                      >
-                        View →
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
+            {products.map((p) => (
+              <ProductCard key={p.sku} p={p} />
+            ))}
           </div>
         </div>
       </section>

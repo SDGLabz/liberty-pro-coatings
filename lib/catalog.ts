@@ -660,3 +660,30 @@ export function bestSellers(limit = 4): Product[] {
     ...PRODUCTS.filter((p) => !p.featured),
   ].slice(0, limit);
 }
+
+/** Look up a product by SKU (case-insensitive; matches the lowercased route param). */
+export function getProduct(sku: string): Product | undefined {
+  const key = sku.toLowerCase();
+  return PRODUCTS.find((p) => p.sku.toLowerCase() === key);
+}
+
+/**
+ * Systems whose build-up references this exact SKU. Tokenizes each layer's
+ * product cell on spaces / slashes / plus so "EG-MPE01" does NOT match the
+ * distinct SKU "EG-MPE01-F".
+ */
+export function systemsUsing(sku: string): System[] {
+  return SYSTEMS.filter((s) =>
+    s.layers.some(([, products]) =>
+      products.split(/[\s/+]+/).some((token) => token === sku),
+    ),
+  );
+}
+
+/** Other products of the same chemistry (featured first), excluding self. */
+export function relatedProducts(sku: string, chem: Chem, limit = 4): Product[] {
+  return [
+    ...PRODUCTS.filter((p) => p.chem === chem && p.sku !== sku && p.featured),
+    ...PRODUCTS.filter((p) => p.chem === chem && p.sku !== sku && !p.featured),
+  ].slice(0, limit);
+}
