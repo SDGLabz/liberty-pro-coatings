@@ -61,32 +61,33 @@ export default function Home() {
 
       {/* VALUE BAR */}
       <div className="valbar">
+        <h2 className="sr-only">Why contractors choose Liberty Pro Coatings</h2>
         <div className="wrap">
           <div className="val">
             <div className="vi">🏠</div>
             <div>
-              <h4>Garage-First</h4>
+              <h3>Garage-First</h3>
               <p>Hot-tire, abrasion &amp; moisture-ready systems</p>
             </div>
           </div>
           <div className="val">
             <div className="vi">⤓</div>
             <div>
-              <h4>Live Freight</h4>
+              <h3>Live Freight</h3>
               <p>Hazmat LTL priced before you pay</p>
             </div>
           </div>
           <div className="val">
             <div className="vi">▤</div>
             <div>
-              <h4>Full Data</h4>
+              <h3>Full Data</h3>
               <p>Complete TDS &amp; SDS on every product</p>
             </div>
           </div>
           <div className="val">
             <div className="vi">⚙</div>
             <div>
-              <h4>Build-a-Kit</h4>
+              <h3>Build-a-Kit</h3>
               <p>Configure a system to a real SKU</p>
             </div>
           </div>

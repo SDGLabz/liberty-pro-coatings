@@ -1,6 +1,8 @@
 "use client";
 
+import { useRef } from "react";
 import { useSite } from "./SiteProvider";
+import { useDialogA11y } from "./useDialogA11y";
 
 // Contractor-application survey launcher. One conversion path: every
 // "apply / become a contractor / checkout" CTA across the site opens
@@ -11,6 +13,8 @@ import { useSite } from "./SiteProvider";
 // flagged pre-launch blocker (build-plan §11.6). Inputs are placeholders.
 export function SurveyModal() {
   const { surveyOpen, surveyStep, surveyStepCount, closeSurvey, surveyNext, surveyBack } = useSite();
+  const panelRef = useRef<HTMLDivElement>(null);
+  useDialogA11y(surveyOpen, panelRef);
   const progress = ((surveyStep + 1) / surveyStepCount) * 100;
   const stepClass = (n: number) => `step-q${surveyStep === n ? " on" : ""}`;
 
@@ -21,7 +25,14 @@ export function SurveyModal() {
         if (e.target === e.currentTarget) closeSurvey();
       }}
     >
-      <div className="modal" role="dialog" aria-label="Contractor application" aria-modal="true">
+      <div
+        ref={panelRef}
+        className="modal"
+        role="dialog"
+        aria-label="Contractor application"
+        aria-modal="true"
+        inert={!surveyOpen}
+      >
         <div className="mh">
           <strong style={{ fontFamily: "var(--head)", textTransform: "uppercase", fontSize: 15 }}>
             Become an Approved Contractor

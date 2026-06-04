@@ -43,27 +43,27 @@ export default function ContactPage() {
               <div className="form reveal">
                 <div className="frow two">
                   <div className="frow">
-                    <label>Name</label>
-                    <input placeholder="Jordan Smith" />
+                    <label htmlFor="c-name">Name</label>
+                    <input id="c-name" name="name" placeholder="Jordan Smith" />
                   </div>
                   <div className="frow">
-                    <label>Company</label>
-                    <input placeholder="Acme Coatings" />
+                    <label htmlFor="c-company">Company</label>
+                    <input id="c-company" name="company" placeholder="Acme Coatings" />
                   </div>
                 </div>
                 <div className="frow two">
                   <div className="frow">
-                    <label>Email</label>
-                    <input type="email" placeholder="you@company.com" />
+                    <label htmlFor="c-email">Email</label>
+                    <input id="c-email" name="email" type="email" placeholder="you@company.com" />
                   </div>
                   <div className="frow">
-                    <label>Phone</label>
-                    <input placeholder="(555) 123-4567" />
+                    <label htmlFor="c-phone">Phone</label>
+                    <input id="c-phone" name="phone" placeholder="(555) 123-4567" />
                   </div>
                 </div>
                 <div className="frow">
-                  <label>How can we help?</label>
-                  <select defaultValue="Product or spec question">
+                  <label htmlFor="c-help">How can we help?</label>
+                  <select id="c-help" name="help" defaultValue="Product or spec question">
                     <option>Product or spec question</option>
                     <option>Contractor account</option>
                     <option>Order or freight</option>
@@ -71,8 +71,8 @@ export default function ContactPage() {
                   </select>
                 </div>
                 <div className="frow">
-                  <label>Message</label>
-                  <textarea placeholder="What can we help with?" />
+                  <label htmlFor="c-message">Message</label>
+                  <textarea id="c-message" name="message" placeholder="What can we help with?" />
                 </div>
                 <button type="button" className="btn btn-primary" style={{ width: "fit-content" }}>
                   Send Message

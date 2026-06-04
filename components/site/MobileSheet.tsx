@@ -1,13 +1,25 @@
 "use client";
 
+import { useRef } from "react";
 import Link from "next/link";
 import { useSite } from "./SiteProvider";
+import { useDialogA11y } from "./useDialogA11y";
 import { NAV } from "./nav";
 
 export function MobileSheet() {
   const { sheetOpen, closeSheet, openSurvey } = useSite();
+  const panelRef = useRef<HTMLDivElement>(null);
+  useDialogA11y(sheetOpen, panelRef);
   return (
-    <div className={`sheet${sheetOpen ? " open" : ""}`} id="sheet">
+    <div
+      ref={panelRef}
+      className={`sheet${sheetOpen ? " open" : ""}`}
+      id="sheet"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Menu"
+      inert={!sheetOpen}
+    >
       <div className="top">
         <div className="logo">
           <span className="mark">L</span>LPC
