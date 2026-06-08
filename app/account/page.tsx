@@ -1,0 +1,121 @@
+import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+import { createClient } from "@/lib/supabase/server";
+
+export const metadata: Metadata = { title: "My Account", robots: { index: false } };
+
+const STATUS_UI: Record<string, { label: string; note: string; color: string; bg: string }> = {
+  approved: {
+    label: "Approved",
+    note: "Your account is approved — you can check out with freight-inclusive pricing.",
+    color: "#1a7a48",
+    bg: "#e8f5ee",
+  },
+  pending: {
+    label: "Under review",
+    note: "Thanks for applying. Our team reviews every applicant — we'll email you the moment you're approved.",
+    color: "#9a6e00",
+    bg: "#fdf4e0",
+  },
+  rejected: {
+    label: "Not approved",
+    note: "We weren't able to approve this account. Please contact us at (224) 733-1919.",
+    color: "#d6212e",
+    bg: "#fde9eb",
+  },
+};
+
+export default async function AccountPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("email, full_name, company, phone, status, role")
+    .eq("id", user.id)
+    .single();
+
+  const status = profile?.status ?? "pending";
+  const ui = STATUS_UI[status] ?? STATUS_UI.pending;
+  const isAdmin = profile?.role === "admin";
+
+  async function signOut() {
+    "use server";
+    const s = await createClient();
+    await s.auth.signOut();
+    redirect("/");
+  }
+
+  return (
+    <>
+      <section className="pagehead">
+        <div className="wrap">
+          <span className="eyebrow">Contractor portal</span>
+          <h1>My account.</h1>
+          <p className="lede">{profile?.company || profile?.email || user.email}</p>
+        </div>
+      </section>
+
+      <section>
+        <div className="wrap" style={{ maxWidth: 640 }}>
+          <div className="featurecard" style={{ marginBottom: 18 }}>
+            <span
+              style={{
+                display: "inline-block",
+                padding: "5px 12px",
+                borderRadius: 999,
+                fontSize: 12,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: ".05em",
+                color: ui.color,
+                background: ui.bg,
+              }}
+            >
+              {ui.label}
+            </span>
+            <p style={{ marginTop: 12, color: "var(--txt-2)", lineHeight: 1.6 }}>{ui.note}</p>
+          </div>
+
+          <div className="featurecard" style={{ marginBottom: 18 }}>
+            <h3 style={{ fontSize: 16, marginBottom: 12 }}>Account details</h3>
+            <dl style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "8px 18px", fontSize: 14 }}>
+              <dt style={{ color: "var(--txt-3)" }}>Email</dt>
+              <dd>{profile?.email || user.email}</dd>
+              {profile?.full_name && (
+                <>
+                  <dt style={{ color: "var(--txt-3)" }}>Name</dt>
+                  <dd>{profile.full_name}</dd>
+                </>
+              )}
+              {profile?.company && (
+                <>
+                  <dt style={{ color: "var(--txt-3)" }}>Company</dt>
+                  <dd>{profile.company}</dd>
+                </>
+              )}
+            </dl>
+          </div>
+
+          {isAdmin && (
+            <div className="featurecard" style={{ marginBottom: 18 }}>
+              <h3 style={{ fontSize: 16, marginBottom: 8 }}>Admin</h3>
+              <p style={{ color: "var(--txt-2)", fontSize: 14 }}>
+                You&apos;re an admin. The application approval queue lands in the next batch.
+              </p>
+            </div>
+          )}
+
+          <form action={signOut}>
+            <button type="submit" className="btn btn-out">
+              Sign out
+            </button>
+          </form>
+        </div>
+      </section>
+    </>
+  );
+}

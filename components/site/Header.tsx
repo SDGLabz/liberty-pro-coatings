@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useSite } from "./SiteProvider";
 import { NAV } from "./nav";
+import { createClient } from "@/lib/supabase/client";
 
 // Solid sticky header — white frosted bar with dark text. (A previous
 // "transparent over the dark hero" treatment was removed: the header sits
@@ -23,6 +24,23 @@ export function Header() {
     const t = setTimeout(() => setBump(false), 260);
     return () => clearTimeout(t);
   }, [cartCount]);
+
+  // Track auth so the account icon points to /account when signed in, /login otherwise.
+  const [loggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    const supabase = createClient();
+    let active = true;
+    supabase.auth.getUser().then(({ data }) => {
+      if (active) setLoggedIn(!!data.user);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setLoggedIn(!!session?.user);
+    });
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
 
   return (
     <>
@@ -52,12 +70,17 @@ export function Header() {
             <input placeholder="Search products, SKUs, specs…" aria-label="Search" />
           </div>
           <div className="nav-right">
-            <button className="iconbtn" title="Account" aria-label="Account">
+            <Link
+              className="iconbtn"
+              href={loggedIn ? "/account" : "/login"}
+              title={loggedIn ? "My account" : "Sign in"}
+              aria-label={loggedIn ? "My account" : "Sign in"}
+            >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="8" r="4" />
                 <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
               </svg>
-            </button>
+            </Link>
             <button className="iconbtn" id="cartBtn" title="Cart" aria-label="Cart" onClick={openCart}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M6 6h15l-1.5 9h-12z" />
