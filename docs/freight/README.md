@@ -59,9 +59,13 @@ product, since waterborne and 100%-solids products are frequently *not* regulate
    quote.
 3. We wire the live freight call (Banyan LIVE Connect, or direct carrier APIs).
 
-## Two more things we still need from LPC for live freight
+## Origin warehouse (confirmed)
 
-- **Origin warehouse ZIP code(s)** — where orders ship from (one location or
-  several).
+Orders ship from the same address as Polymer Nation — **405 Oakwood Ave,
+Waukegan, IL 60085** → **origin ZIP `60085`**. This is the rate-quote origin for
+live freight (single location).
+
+## Still needed from LPC for live freight
+
 - **Banyan LIVE Connect** demo + API credentials (or confirmation that LPC ships
   with ≤2 carriers, in which case we use those carriers' free direct APIs).
