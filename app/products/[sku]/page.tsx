@@ -237,13 +237,13 @@ export default async function ProductPage({
               </div>
               <span className="dl">Download →</span>
             </a>
-            <a className="docrow" href="#">
+            <a className="docrow" href="/contact">
               <span className="ic">SDS</span>
               <div className="meta">
                 <h4>{p.sku} Safety Data Sheet</h4>
-                <p>PDF · Safety &amp; handling</p>
+                <p>Available on request</p>
               </div>
-              <span className="dl">Download →</span>
+              <span className="dl">Request →</span>
             </a>
           </div>
         </div>
