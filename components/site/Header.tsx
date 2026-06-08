@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useSite } from "./SiteProvider";
 import { NAV } from "./nav";
@@ -12,6 +13,15 @@ import { createClient } from "@/lib/supabase/client";
 // left white nav text over the white page background — invisible.)
 export function Header() {
   const { cartCount, openCart, openSheet, openSurvey } = useSite();
+  const router = useRouter();
+  const [search, setSearch] = useState("");
+
+  // Submit search → the products listing filters on ?q= (Fuse.js).
+  const onSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const term = search.trim();
+    router.push(term ? `/products?q=${encodeURIComponent(term)}` : "/products");
+  };
 
   // cart-count bump
   const [bump, setBump] = useState(false);
@@ -62,13 +72,20 @@ export function Header() {
               </Link>
             ))}
           </nav>
-          <div className="searchbar">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="7" />
-              <path d="m21 21-4.3-4.3" />
-            </svg>
-            <input placeholder="Search products, SKUs, specs…" aria-label="Search" />
-          </div>
+          <form className="searchbar" onSubmit={onSearch} role="search">
+            <button type="submit" className="search-go" aria-label="Search">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+            </button>
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search products, SKUs, specs…"
+              aria-label="Search products"
+            />
+          </form>
           <div className="nav-right">
             <Link
               className="iconbtn"

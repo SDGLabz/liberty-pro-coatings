@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { SYSTEMS, getSystem, productsInSystem } from "@/lib/catalog";
 import { ProductCard } from "@/components/site/ProductCard";
 import { SurveyButton } from "@/components/site/SurveyButton";
+import { AddSystemToCart } from "@/components/site/AddSystemToCart";
+import { SITE } from "@/lib/site";
 
 export function generateStaticParams() {
   return SYSTEMS.map((s) => ({ slug: s.slug }));
@@ -37,9 +39,29 @@ export default async function SystemPage({
   if (!s) notFound();
 
   const components = productsInSystem(s);
+  const componentItems = components.map((p) => ({
+    sku: p.sku,
+    name: p.name,
+    price: p.price,
+    img: p.img,
+    pkg: p.pkg[0] ?? "",
+  }));
+  const breadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE.url },
+      { "@type": "ListItem", position: 2, name: "Systems", item: `${SITE.url}/systems` },
+      { "@type": "ListItem", position: 3, name: s.name, item: `${SITE.url}/systems/${s.slug}` },
+    ],
+  };
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+      />
       <section className="ihero">
         <div className="photo" style={{ backgroundImage: `url('${s.img}')` }} />
         <div className="wrap">
@@ -123,9 +145,12 @@ export default async function SystemPage({
                 <span className="eyebrow">Base components</span>
                 <h2>Products in this system.</h2>
               </div>
-              <Link className="seeall" href="/products">
-                All products →
-              </Link>
+              <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+                <AddSystemToCart items={componentItems} />
+                <Link className="seeall" href="/products">
+                  All products →
+                </Link>
+              </div>
             </div>
             <div className="pgrid">
               {components.map((p) => (

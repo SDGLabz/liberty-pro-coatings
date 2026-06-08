@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Fuse from "fuse.js";
 import { ProductCard, type ProductCardData } from "./ProductCard";
 import { CHEM_LABELS, type Chem, type ProductStatus } from "@/lib/catalog";
 
@@ -29,9 +30,11 @@ function toggle<T>(set: Set<T>, value: T): Set<T> {
 export function ProductCatalog({
   products,
   initialChem,
+  initialQuery,
 }: {
   products: CatalogItem[];
   initialChem?: Chem;
+  initialQuery?: string;
 }) {
   const [chems, setChems] = useState<Set<Chem>>(
     () => new Set(initialChem ? [initialChem] : []),
@@ -39,6 +42,20 @@ export function ProductCatalog({
   const [roles, setRoles] = useState<Set<string>>(new Set());
   const [families, setFamilies] = useState<Set<string>>(new Set());
   const [statuses, setStatuses] = useState<Set<ProductStatus>>(new Set());
+  const [query, setQuery] = useState(initialQuery ?? "");
+
+  // Fuzzy search over the catalog (name, SKU, description, role, family,
+  // chemistry). Rebuilt only when the product list changes.
+  const fuse = useMemo(
+    () =>
+      new Fuse(products, {
+        keys: ["name", "sku", "desc", "role", "family", "chem"],
+        threshold: 0.38,
+        ignoreLocation: true,
+        minMatchCharLength: 2,
+      }),
+    [products],
+  );
 
   // Facet option lists + counts, derived from the data so they stay correct.
   const roleFacets = useMemo(
@@ -53,15 +70,18 @@ export function ProductCatalog({
     products.filter((p) => p[key] === value).length;
 
   const filtered = useMemo(() => {
+    const q = query.trim();
+    // Search first (keeps Fuse relevance order); otherwise the full list.
+    const base = q ? fuse.search(q).map((r) => r.item) : products;
     const pass = (p: CatalogItem) =>
       (chems.size === 0 || chems.has(p.chem)) &&
       (roles.size === 0 || roles.has(p.role)) &&
       (families.size === 0 || families.has(p.family)) &&
       (statuses.size === 0 || statuses.has(p.status));
-    return products
-      .filter(pass)
-      .sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
-  }, [products, chems, roles, families, statuses]);
+    const out = base.filter(pass);
+    // No query → featured-first. With a query → preserve relevance ranking.
+    return q ? out : out.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+  }, [products, fuse, query, chems, roles, families, statuses]);
 
   const setChemChip = (chem: Chem | null) =>
     setChems(chem ? new Set([chem]) : new Set());
@@ -125,9 +145,28 @@ export function ProductCatalog({
         </div>
       </aside>
       <div>
+        <div className="catalog-search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search products, SKUs, specs…"
+            aria-label="Search products"
+          />
+          {query && (
+            <button type="button" className="cs-clear" onClick={() => setQuery("")} aria-label="Clear search">
+              ✕
+            </button>
+          )}
+        </div>
         <div className="catalog-top">
           <span className="count">
             {filtered.length} {filtered.length === 1 ? "product" : "products"}
+            {query.trim() && <> for “{query.trim()}”</>}
           </span>
           <div className="filterbar" style={{ margin: 0 }}>
             <button
@@ -147,7 +186,7 @@ export function ProductCatalog({
                 {CHEM_LABELS[c]}
               </button>
             ))}
-            <span className="sort">Sort: Featured ▾</span>
+            <span className="sort">Sort: {query.trim() ? "Relevance" : "Featured"} ▾</span>
           </div>
         </div>
         {filtered.length > 0 ? (
@@ -158,7 +197,9 @@ export function ProductCatalog({
           </div>
         ) : (
           <p className="lede" style={{ padding: "32px 0" }}>
-            No products match those filters.
+            {query.trim()
+              ? `No products match “${query.trim()}”. Try a SKU, chemistry, or role.`
+              : "No products match those filters."}
           </p>
         )}
       </div>

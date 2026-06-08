@@ -10,7 +10,7 @@ import { useAuth } from "./useAuth";
 // an estimated subtotal, and a checkout CTA gated by the visitor's sign-in +
 // approval status. When empty it falls back to the friendly gate prompt.
 export function CartDrawer() {
-  const { drawerOpen, closeCart, openSurvey, items, cartSubtotal, setItemQty, removeItem } =
+  const { drawerOpen, closeCart, openSurvey, items, cartSubtotal, setItemQty, removeItem, clearCart } =
     useSite();
   const { loggedIn, status } = useAuth();
   const panelRef = useRef<HTMLElement>(null);
@@ -98,6 +98,9 @@ export function CartDrawer() {
                 <span>Estimated subtotal</span>
                 <strong>${cartSubtotal.toLocaleString()}</strong>
               </div>
+              <button type="button" className="cart-clear" onClick={clearCart}>
+                Clear cart
+              </button>
               <p className="cart-note">
                 Estimate only — freight &amp; final contractor pricing are confirmed at checkout.
               </p>

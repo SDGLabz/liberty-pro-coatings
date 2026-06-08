@@ -18,7 +18,16 @@ const COVERAGE: CoverageProduct[] = PRODUCTS.flatMap((p) => {
   if (!p.glance || !/sq\.?\s?ft\.?\s?\/\s?gal/i.test(p.glance.coverage)) return [];
   const m = p.glance.coverage.match(/\d+/);
   if (!m) return [];
-  return [{ sku: p.sku, name: p.name, rate: parseInt(m[0], 10) }];
+  return [
+    {
+      sku: p.sku,
+      name: p.name,
+      rate: parseInt(m[0], 10),
+      price: p.price,
+      img: p.img,
+      pkg: p.pkg,
+    },
+  ];
 });
 
 // Group products by family for the document library.

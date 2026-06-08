@@ -31,10 +31,11 @@ const ITEMS: CatalogItem[] = PRODUCTS.map((p) => ({
 export default async function ProductsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ chem?: string }>;
+  searchParams: Promise<{ chem?: string; q?: string }>;
 }) {
-  const { chem } = await searchParams;
+  const { chem, q } = await searchParams;
   const initialChem = VALID_CHEMS.includes(chem as Chem) ? (chem as Chem) : undefined;
+  const initialQuery = typeof q === "string" ? q : undefined;
 
   return (
     <>
@@ -56,7 +57,7 @@ export default async function ProductsPage({
       </section>
       <section>
         <div className="wrap">
-          <ProductCatalog products={ITEMS} initialChem={initialChem} />
+          <ProductCatalog products={ITEMS} initialChem={initialChem} initialQuery={initialQuery} />
         </div>
       </section>
     </>

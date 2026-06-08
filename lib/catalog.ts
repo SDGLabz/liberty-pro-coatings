@@ -42,6 +42,22 @@ export interface Glance {
   cure: string;
 }
 
+/**
+ * LTL freight attributes (build-plan §8). Required before a product can be
+ * flipped purchasable — a wrong freight class is the #1 quoted-vs-billed
+ * failure, so the build guardrail below refuses to ship a purchasable product
+ * without complete freight data. Real values come from LPC for Phase 5.
+ */
+export interface FreightAttrs {
+  freightClass: string;
+  nmfc?: string;
+  isHazmat: boolean;
+  unNumber?: string;
+  packingGroup?: string;
+  palletWeight?: number;
+  palletDims?: string;
+}
+
 export interface Product {
   sku: string;
   name: string;
@@ -57,6 +73,10 @@ export interface Product {
   featured?: boolean;
   glance?: Glance;
   tds?: Tds;
+  /** Commerce activation flag — ALL false/undefined at launch (non-purchasable). */
+  purchasable?: boolean;
+  /** LTL freight data — required once `purchasable` is true (see guardrail). */
+  freight?: FreightAttrs;
 }
 
 /** [layer, products, note] */
@@ -665,6 +685,25 @@ for (const product of PRODUCTS) {
   if (product.tds && BANNED_TOKENS.test(JSON.stringify(product.tds))) {
     throw new Error(
       `[catalog] TDS for ${product.sku} contains a banned upstream (Polymer Nation) reference — re-run the §9 scrub.`,
+    );
+  }
+}
+
+// Freight guardrail (§8): a purchasable product MUST carry complete freight
+// data or the build fails — wrong freight class is the #1 quoted-vs-billed
+// failure mode. No product is purchasable at launch, so this is inert
+// groundwork today; it activates the instant a product is switched on.
+for (const product of PRODUCTS) {
+  if (!product.purchasable) continue;
+  const f = product.freight;
+  const incomplete =
+    !f ||
+    !f.freightClass ||
+    typeof f.isHazmat !== "boolean" ||
+    (f.isHazmat && (!f.unNumber || !f.packingGroup));
+  if (incomplete) {
+    throw new Error(
+      `[catalog] ${product.sku} is purchasable but missing required freight attributes (freightClass, isHazmat, + UN number & packing group when hazmat).`,
     );
   }
 }

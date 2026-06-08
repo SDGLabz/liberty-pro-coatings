@@ -10,6 +10,7 @@ import {
 } from "@/lib/catalog";
 import { ProductCard } from "@/components/site/ProductCard";
 import { BuyBox } from "@/components/site/BuyBox";
+import { SITE } from "@/lib/site";
 
 const TABLE_HEAD_STYLE = {
   fontSize: 20,
@@ -51,9 +52,22 @@ export default async function ProductPage({
   const thumbs = [p.img, "/images/cat-flake.jpg", "/images/featured-fin.jpg"];
   const usedIn = systemsUsing(p.sku);
   const related = relatedProducts(p.sku, p.chem);
+  const breadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE.url },
+      { "@type": "ListItem", position: 2, name: "Products", item: `${SITE.url}/products` },
+      { "@type": "ListItem", position: 3, name: p.sku, item: `${SITE.url}/products/${p.sku.toLowerCase()}` },
+    ],
+  };
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+      />
       <div className="wrap crumbs">
         <Link href="/">Home</Link>
         <span className="sep">/</span>
@@ -210,7 +224,12 @@ export default async function ProductPage({
             </div>
           </div>
           <div style={{ maxWidth: 560 }}>
-            <a className="docrow" href="#">
+            <a
+              className="docrow"
+              href={`/tds/${p.sku.toLowerCase()}`}
+              target="_blank"
+              rel="noopener"
+            >
               <span className="ic">TDS</span>
               <div className="meta">
                 <h4>{p.sku} Technical Data Sheet</h4>

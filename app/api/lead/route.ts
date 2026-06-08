@@ -18,6 +18,26 @@ import { createAdminClient, createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
+// Basic in-memory rate limit (per server instance). Serverless instances
+// aren't shared, so this is a soft defense — combined with the honeypot +
+// zod validation it blunts casual abuse without needing an external store.
+const RATE_LIMIT = 8;
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+const hits = new Map<string, { count: number; resetAt: number }>();
+
+function rateLimited(request: Request): boolean {
+  const fwd = request.headers.get("x-forwarded-for") ?? "";
+  const ip = fwd.split(",")[0].trim() || "unknown";
+  const now = Date.now();
+  const entry = hits.get(ip);
+  if (!entry || now > entry.resetAt) {
+    hits.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return false;
+  }
+  entry.count += 1;
+  return entry.count > RATE_LIMIT;
+}
+
 type Outcome = "ok" | "unconfigured" | "error";
 
 /** Marks a destination as not-yet-configured (vs a genuine delivery failure). */
@@ -111,6 +131,13 @@ function classify(r: PromiseSettledResult<void>): Outcome {
 }
 
 export async function POST(request: Request) {
+  if (rateLimited(request)) {
+    return Response.json(
+      { ok: false, error: "Too many requests. Please wait a few minutes and try again." },
+      { status: 429 },
+    );
+  }
+
   let json: unknown;
   try {
     json = await request.json();
