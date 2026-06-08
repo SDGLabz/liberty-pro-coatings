@@ -7,6 +7,7 @@ import {
   leadSchema,
   type LeadPayload,
 } from "@/lib/leads";
+import { createAdminClient, createClient } from "@/lib/supabase/server";
 
 // Contractor-survey submissions land here. We fan out to two destinations:
 //   1. Resend  — emails the lead to the LPC inbox (LEAD_TO_EMAIL)
@@ -82,6 +83,28 @@ async function pushToHubspot(payload: LeadPayload): Promise<void> {
   }
 }
 
+async function saveToDatabase(payload: LeadPayload, userId: string | null): Promise<void> {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    throw new UnconfiguredError("database");
+  }
+  const admin = createAdminClient();
+  const { error } = await admin.from("contractor_applications").insert({
+    user_id: userId,
+    intent: payload.intent,
+    company: payload.company,
+    contact_name: payload.contactName,
+    email: payload.email,
+    phone: payload.phone ?? null,
+    state: payload.state ?? null,
+    years_installing: payload.yearsInstalling ?? null,
+    resale_cert: payload.resaleCert ?? null,
+    primary_systems: payload.primarySystems ?? null,
+    monthly_volume: payload.monthlyVolume ?? null,
+    notes: payload.notes ?? null,
+  });
+  if (error) throw new Error(`Supabase: ${error.message}`);
+}
+
 function classify(r: PromiseSettledResult<void>): Outcome {
   if (r.status === "fulfilled") return "ok";
   return r.reason instanceof UnconfiguredError ? "unconfigured" : "error";
@@ -111,18 +134,35 @@ export async function POST(request: Request) {
     return Response.json({ ok: true });
   }
 
-  const results = await Promise.allSettled([sendEmail(payload), pushToHubspot(payload)]);
-  const [email, hubspot] = results.map(classify);
+  // Link the application to the submitter's account if they're signed in.
+  let userId: string | null = null;
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    userId = user?.id ?? null;
+  } catch {
+    userId = null;
+  }
+
+  const labels = ["database", "resend", "hubspot"] as const;
+  const results = await Promise.allSettled([
+    saveToDatabase(payload, userId),
+    sendEmail(payload),
+    pushToHubspot(payload),
+  ]);
+  const outcomes = results.map(classify);
 
   // Log any genuine failures with detail for debugging (never the lead data).
   results.forEach((r, i) => {
     if (r.status === "rejected" && !(r.reason instanceof UnconfiguredError)) {
-      console.error(`[lead] ${i === 0 ? "resend" : "hubspot"} delivery failed:`, r.reason);
+      console.error(`[lead] ${labels[i]} delivery failed:`, r.reason);
     }
   });
 
-  const configured = [email, hubspot].filter((o) => o !== "unconfigured");
-  const delivered = [email, hubspot].filter((o) => o === "ok");
+  const configured = outcomes.filter((o) => o !== "unconfigured");
+  const delivered = outcomes.filter((o) => o === "ok");
 
   if (configured.length === 0) {
     console.error("[lead] no delivery destination configured — lead dropped");

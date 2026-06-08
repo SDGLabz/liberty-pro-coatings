@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 
@@ -103,9 +104,12 @@ export default async function AccountPage() {
           {isAdmin && (
             <div className="featurecard" style={{ marginBottom: 18 }}>
               <h3 style={{ fontSize: 16, marginBottom: 8 }}>Admin</h3>
-              <p style={{ color: "var(--txt-2)", fontSize: 14 }}>
-                You&apos;re an admin. The application approval queue lands in the next batch.
+              <p style={{ color: "var(--txt-2)", fontSize: 14, marginBottom: 12 }}>
+                Review contractor applications and approve who can check out.
               </p>
+              <Link className="btn btn-out" href="/admin">
+                Open approval queue →
+              </Link>
             </div>
           )}
 
