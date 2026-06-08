@@ -518,17 +518,6 @@
 @media(max-width:820px){.twocol{grid-template-columns:1fr;gap:28px}}
 .twocol .visual{border-radius:20px;overflow:hidden;aspect-ratio:4/3;background-size:cover;background-position:center;border:1px solid var(--line)}
 
-/* over-hero transparent nav (pages with .has-dark-hero) */
-header.over-hero:not(.scrolled){background:transparent;border-bottom-color:transparent}
-header.over-hero:not(.scrolled) .logo{color:#fff}
-header.over-hero:not(.scrolled) .nav-links a{color:rgba(255,255,255,.9)}
-header.over-hero:not(.scrolled) .nav-links a:hover{color:#fff;background:rgba(255,255,255,.1)}
-header.over-hero:not(.scrolled) .iconbtn{color:#fff}
-header.over-hero:not(.scrolled) .iconbtn:hover{background:rgba(255,255,255,.12)}
-header.over-hero:not(.scrolled) .searchbar{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25);color:rgba(255,255,255,.8)}
-header.over-hero:not(.scrolled) .searchbar input{color:#fff}
-header.over-hero:not(.scrolled) .searchbar input::placeholder{color:rgba(255,255,255,.6)}
-header.over-hero:not(.scrolled) .burger span{background:#fff}
 .logo{cursor:pointer}
 
 /* chemistry rail: exactly 4 columns on desktop, condense to 2 on tablet/mobile

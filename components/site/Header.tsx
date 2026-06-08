@@ -1,57 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useSite } from "./SiteProvider";
 import { NAV } from "./nav";
 
-// Pages whose hero is a dark, full-bleed band the header should sit
-// transparently over until the user scrolls past it. "/" plus the systems
-// index and every /systems/<slug> detail use the .ihero band. Add an exact
-// route or a prefix here when a new dark-hero page lands.
-const DARK_HERO_EXACT = new Set<string>(["/", "/industries", "/about"]);
-const DARK_HERO_PREFIXES = ["/systems"];
-function isDarkHero(pathname: string): boolean {
-  return (
-    DARK_HERO_EXACT.has(pathname) ||
-    DARK_HERO_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"))
-  );
-}
-
+// Solid sticky header — white frosted bar with dark text. (A previous
+// "transparent over the dark hero" treatment was removed: the header sits
+// ABOVE each hero in normal flow, never behind it, so the transparent state
+// left white nav text over the white page background — invisible.)
 export function Header() {
-  const pathname = usePathname();
-  const darkHero = isDarkHero(pathname);
   const { cartCount, openCart, openSheet, openSurvey } = useSite();
-
-  // The header sits transparent (white text) over a dark hero, then turns
-  // solid white once the hero scrolls away. Drive that off the ACTUAL hero
-  // element — not a `window.innerHeight * 0.6` guess, which on tall viewports
-  // left the transparent white-text header floating over the light section
-  // below the hero, making every white nav link invisible.
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    if (!darkHero) {
-      setScrolled(false);
-      return;
-    }
-    const hero = document.querySelector<HTMLElement>(".hero, .ihero");
-    if (!hero) {
-      // Defensive: a dark-hero route with no hero element → keep the header
-      // solid so its text always stays legible.
-      setScrolled(true);
-      return;
-    }
-    const headerH = document.querySelector<HTMLElement>("header")?.offsetHeight ?? 78;
-    // Transparent only while the hero still intersects the viewport below the
-    // header band; the moment its bottom passes the header, flip to solid.
-    const io = new IntersectionObserver(([entry]) => setScrolled(!entry.isIntersecting), {
-      rootMargin: `-${headerH + 8}px 0px 0px 0px`,
-      threshold: 0,
-    });
-    io.observe(hero);
-    return () => io.disconnect();
-  }, [darkHero, pathname]);
 
   // cart-count bump
   const [bump, setBump] = useState(false);
@@ -65,8 +24,6 @@ export function Header() {
     return () => clearTimeout(t);
   }, [cartCount]);
 
-  const headerClass = darkHero ? `over-hero${scrolled ? " scrolled" : ""}` : "scrolled";
-
   return (
     <>
       <div className="announce">
@@ -75,7 +32,7 @@ export function Header() {
           become an approved contractor →
         </button>
       </div>
-      <header className={headerClass}>
+      <header>
         <div className="wrap nav">
           <Link className="logo" href="/">
             <span className="mark">L</span>Liberty&nbsp;Pro
