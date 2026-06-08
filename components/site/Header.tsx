@@ -24,14 +24,34 @@ export function Header() {
   const darkHero = isDarkHero(pathname);
   const { cartCount, openCart, openSheet, openSurvey } = useSite();
 
+  // The header sits transparent (white text) over a dark hero, then turns
+  // solid white once the hero scrolls away. Drive that off the ACTUAL hero
+  // element — not a `window.innerHeight * 0.6` guess, which on tall viewports
+  // left the transparent white-text header floating over the light section
+  // below the hero, making every white nav link invisible.
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    if (!darkHero) return;
-    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.6);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [darkHero]);
+    if (!darkHero) {
+      setScrolled(false);
+      return;
+    }
+    const hero = document.querySelector<HTMLElement>(".hero, .ihero");
+    if (!hero) {
+      // Defensive: a dark-hero route with no hero element → keep the header
+      // solid so its text always stays legible.
+      setScrolled(true);
+      return;
+    }
+    const headerH = document.querySelector<HTMLElement>("header")?.offsetHeight ?? 78;
+    // Transparent only while the hero still intersects the viewport below the
+    // header band; the moment its bottom passes the header, flip to solid.
+    const io = new IntersectionObserver(([entry]) => setScrolled(!entry.isIntersecting), {
+      rootMargin: `-${headerH + 8}px 0px 0px 0px`,
+      threshold: 0,
+    });
+    io.observe(hero);
+    return () => io.disconnect();
+  }, [darkHero, pathname]);
 
   // cart-count bump
   const [bump, setBump] = useState(false);
