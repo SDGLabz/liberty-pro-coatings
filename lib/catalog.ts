@@ -666,6 +666,43 @@ export const COLORS: Color[] = [
   { n: "Charcoal", s: "1339 Color Pack", c: "#2f3438" },
 ];
 
+/**
+ * Misc / supporting catalog SKUs (build-plan §2): decorative color media,
+ * quartz & aggregate, anti-slip additives, fillers and cleaners. Sequenced
+ * after the core resin line — modeled + surfaced (on /colors) but not
+ * individually purchasable yet. Notes are generic role descriptions; prices
+ * and full specs are TBD with LPC.
+ */
+export interface SupportingSku {
+  sku: string;
+  name: string;
+  category: string;
+  note: string;
+}
+
+export const SUPPORTING_SKUS: SupportingSku[] = [
+  // Decorative color media
+  { sku: "1375", name: "Decorative Flake Blends", category: "Color media", note: "Vinyl flake broadcast media for flake-broadcast systems." },
+  { sku: "1338", name: "Metallic Pigment", category: "Color media", note: "Metallic-effect pigment for metallic epoxy floors." },
+  { sku: "1339", name: "Universal Color Packs", category: "Color media", note: "Pigment packs to tint epoxy, polyaspartic and polyurea." },
+  { sku: "1342", name: "Waterbased Colorants", category: "Color media", note: "Colorants for waterborne coatings." },
+  // Quartz & decorative aggregate
+  { sku: "1321 M", name: "Colored Quartz — Broadcast", category: "Quartz & aggregate", note: "Broadcast-grade colored quartz for quartz floor systems." },
+  { sku: "1321 L", name: "Colored Quartz — Trowel", category: "Quartz & aggregate", note: "Trowel-grade colored quartz for slurry/trowel systems." },
+  { sku: "1440", name: "Scapes Aggregate", category: "Quartz & aggregate", note: "Decorative aggregate for the EpoxyScapes system." },
+  { sku: "1441", name: "Poly-T Aggregate", category: "Quartz & aggregate", note: "Decorative aggregate for the PolyScapes system." },
+  { sku: "1324", name: "Trowel Aggregate", category: "Quartz & aggregate", note: "Graded aggregate for epoxy mortar / trowel mixes." },
+  { sku: "1329", name: "Slurry Sand", category: "Quartz & aggregate", note: "Graded sand for epoxy slurry systems." },
+  // Anti-slip additives
+  { sku: "1333 / 1334 / 1335", name: "Aluminum Oxide Grit", category: "Anti-slip additives", note: "Three grades of aluminum-oxide grit for slip resistance." },
+  { sku: "1337", name: "Polycarbonate Grit", category: "Anti-slip additives", note: "Softer-profile anti-slip additive for finish coats." },
+  // Fillers & modifiers
+  { sku: "1328", name: "Fumed Silica (Cabosil)", category: "Fillers & modifiers", note: "Thixotrope/thickener for vertical and patch mixes." },
+  // Cleaners & solvents
+  { sku: "C-23", name: "Degreaser", category: "Cleaners & solvents", note: "Concentrated degreaser for surface preparation." },
+  { sku: "C-99", name: "No-Odor Solvent", category: "Cleaners & solvents", note: "Low-odor solvent for tool cleanup and thinning." },
+];
+
 // Attach the real, §9-scrubbed TDS + at-a-glance data (generated into
 // lib/tds-data.ts from the LPC TDS docx set) to every product. This
 // OVERRIDES any inline placeholder tds/glance above with the authoritative

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { COLORS, type Color } from "@/lib/catalog";
+import { COLORS, SUPPORTING_SKUS, type Color, type SupportingSku } from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "Colors",
@@ -18,6 +18,17 @@ for (const c of COLORS) {
     GROUPS.push(g);
   }
   g.colors.push(c);
+}
+
+// Group the supporting SKUs (aggregates, media, supplies) by category.
+const SUPPLY_GROUPS: { category: string; items: SupportingSku[] }[] = [];
+for (const x of SUPPORTING_SKUS) {
+  let g = SUPPLY_GROUPS.find((y) => y.category === x.category);
+  if (!g) {
+    g = { category: x.category, items: [] };
+    SUPPLY_GROUPS.push(g);
+  }
+  g.items.push(x);
 }
 
 export default function ColorsPage() {
@@ -66,6 +77,62 @@ export default function ColorsPage() {
             Swatch colors shown are representative placeholders — final blend names and values come
             from the LPC color/aggregate SKU list.
           </p>
+        </div>
+      </section>
+
+      <section style={{ background: "var(--bg-2)", borderTop: "1px solid var(--line)" }}>
+        <div className="wrap">
+          <div className="sec-head reveal">
+            <div className="l">
+              <span className="eyebrow">Aggregates · media · supplies</span>
+              <h2 style={{ fontSize: "clamp(24px,3vw,38px)" }}>Aggregates &amp; supplies.</h2>
+              <p className="lede">
+                The decorative media, aggregates, anti-slip additives, fillers and cleaners that
+                round out a Liberty Pro system. Made to order — contact us to spec a job.
+              </p>
+            </div>
+          </div>
+          {SUPPLY_GROUPS.map((g) => (
+            <div key={g.category} style={{ marginTop: 26 }}>
+              <h3
+                style={{
+                  fontSize: 14,
+                  textTransform: "uppercase",
+                  letterSpacing: ".04em",
+                  color: "var(--txt-2)",
+                  margin: "0 0 12px",
+                }}
+              >
+                {g.category}
+              </h3>
+              <div style={{ display: "grid", gap: 10 }}>
+                {g.items.map((x) => (
+                  <div
+                    key={x.sku}
+                    className="featurecard"
+                    style={{ display: "flex", gap: 14, alignItems: "baseline" }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: "var(--mono)",
+                        fontSize: 12,
+                        color: "var(--navy)",
+                        minWidth: 96,
+                      }}
+                    >
+                      {x.sku}
+                    </span>
+                    <div>
+                      <strong style={{ fontSize: 15 }}>{x.name}</strong>
+                      <p style={{ fontSize: 13.5, color: "var(--txt-2)", margin: "2px 0 0" }}>
+                        {x.note}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     </>

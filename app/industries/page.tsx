@@ -119,6 +119,11 @@ export default function IndustriesPage() {
                 {flagship.blurb}
               </p>
               <SystemPills slugs={flagship.systems} />
+              <div style={{ marginTop: 18 }}>
+                <Link className="btn btn-primary" href="/industries/residential-garage">
+                  Explore residential garage →
+                </Link>
+              </div>
             </div>
             <div className="visual" style={{ backgroundImage: `url('${flagship.img}')` }} />
           </div>
