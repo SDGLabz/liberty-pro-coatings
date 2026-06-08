@@ -6,6 +6,13 @@
 // survey modal. Ported from the prototype's chrome.js so that the
 // build-plan principle holds — one conversion path: every "apply /
 // become a contractor / checkout wall" CTA opens THE SAME survey.
+//
+// The cart is a real, line-item cart persisted to localStorage.
+// Anyone can build a cart freely (per the funnel); completing
+// checkout is gated to approved contractors (server-enforced at
+// /checkout). Prices are the public placeholder prices until real
+// pricing lands — the cart simply sums what the catalog already
+// shows, framed as an estimate (freight + final pricing at checkout).
 // ============================================================
 
 import {
@@ -14,16 +21,45 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
 
 const SURVEY_STEPS = 4; // 0 intro · 1 business · 2 install · 3 received
+const CART_KEY = "lpc.cart.v1";
+
+export interface CartItem {
+  sku: string;
+  name: string;
+  /** unit price (public placeholder pricing for now) */
+  price: number;
+  /** selected packaging label, or "" when not applicable (e.g. configurator kit) */
+  pkg: string;
+  /** selected finish/color label, or "" */
+  finish: string;
+  /** optional thumbnail */
+  img?: string;
+  qty: number;
+}
+
+/** What a caller passes to addToCart — qty defaults to 1. */
+export type AddCartInput = Omit<CartItem, "qty"> & { qty?: number };
+
+/** Stable identity for a line: same SKU + packaging + finish merges. */
+function cartKey(i: { sku: string; pkg: string; finish: string }): string {
+  return `${i.sku}|${i.pkg}|${i.finish}`;
+}
 
 interface SiteState {
   // cart
+  items: CartItem[];
   cartCount: number;
-  addToCart: () => void;
+  cartSubtotal: number;
+  addToCart: (item: AddCartInput) => void;
+  setItemQty: (item: CartItem, qty: number) => void;
+  removeItem: (item: CartItem) => void;
+  clearCart: () => void;
   // cart drawer
   drawerOpen: boolean;
   openCart: () => void;
@@ -51,21 +87,77 @@ export function useSite(): SiteState {
 }
 
 export function SiteProvider({ children }: { children: ReactNode }) {
-  const [cartCount, setCartCount] = useState(0);
+  const [items, setItems] = useState<CartItem[]>([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [surveyOpen, setSurveyOpen] = useState(false);
   const [surveyStep, setSurveyStep] = useState(0);
+
+  // Hydrate the cart from localStorage once on mount. (Initial state is []
+  // on both server + client, so there's no hydration mismatch; this just
+  // fills it in after mount.)
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(CART_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) setItems(parsed);
+      }
+    } catch {
+      /* ignore corrupt/blocked storage */
+    }
+  }, []);
+
+  // Persist on every change — but skip the very first run so the empty
+  // initial state can't clobber a stored cart before hydration lands.
+  const firstPersist = useRef(true);
+  useEffect(() => {
+    if (firstPersist.current) {
+      firstPersist.current = false;
+      return;
+    }
+    try {
+      localStorage.setItem(CART_KEY, JSON.stringify(items));
+    } catch {
+      /* ignore */
+    }
+  }, [items]);
 
   const openCart = useCallback(() => setDrawerOpen(true), []);
   const closeCart = useCallback(() => setDrawerOpen(false), []);
   const openSheet = useCallback(() => setSheetOpen(true), []);
   const closeSheet = useCallback(() => setSheetOpen(false), []);
 
-  const addToCart = useCallback(() => {
-    setCartCount((n) => n + 1);
+  const addToCart = useCallback((item: AddCartInput) => {
+    const addQty = Math.max(1, item.qty ?? 1);
+    setItems((prev) => {
+      const key = cartKey(item);
+      const idx = prev.findIndex((p) => cartKey(p) === key);
+      if (idx >= 0) {
+        const next = [...prev];
+        next[idx] = { ...next[idx], qty: next[idx].qty + addQty };
+        return next;
+      }
+      return [...prev, { ...item, qty: addQty }];
+    });
     setDrawerOpen(true);
   }, []);
+
+  const setItemQty = useCallback((item: CartItem, qty: number) => {
+    const key = cartKey(item);
+    const clamped = Math.max(1, Number.isFinite(qty) ? Math.floor(qty) : 1);
+    setItems((prev) => prev.map((p) => (cartKey(p) === key ? { ...p, qty: clamped } : p)));
+  }, []);
+
+  const removeItem = useCallback((item: CartItem) => {
+    const key = cartKey(item);
+    setItems((prev) => prev.filter((p) => cartKey(p) !== key));
+  }, []);
+
+  const clearCart = useCallback(() => setItems([]), []);
+
+  const cartCount = useMemo(() => items.reduce((n, i) => n + i.qty, 0), [items]);
+  const cartSubtotal = useMemo(() => items.reduce((s, i) => s + i.price * i.qty, 0), [items]);
 
   const openSurvey = useCallback(() => {
     setSheetOpen(false);
@@ -106,8 +198,13 @@ export function SiteProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<SiteState>(
     () => ({
+      items,
       cartCount,
+      cartSubtotal,
       addToCart,
+      setItemQty,
+      removeItem,
+      clearCart,
       drawerOpen,
       openCart,
       closeCart,
@@ -123,8 +220,13 @@ export function SiteProvider({ children }: { children: ReactNode }) {
       surveyBack,
     }),
     [
+      items,
       cartCount,
+      cartSubtotal,
       addToCart,
+      setItemQty,
+      removeItem,
+      clearCart,
       drawerOpen,
       openCart,
       closeCart,

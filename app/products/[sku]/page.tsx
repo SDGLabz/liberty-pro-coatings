@@ -7,17 +7,9 @@ import {
   systemsUsing,
   relatedProducts,
   CHEM_LABELS,
-  type ProductStatus,
 } from "@/lib/catalog";
 import { ProductCard } from "@/components/site/ProductCard";
-import { SurveyButton } from "@/components/site/SurveyButton";
-
-// Disabled-CTA copy per launch status (all products ship non-purchasable).
-const CTA_LABEL: Record<ProductStatus, string> = {
-  "active-off": "Coming Soon — not yet available",
-  "rnd-hold": "In Development — not yet available",
-  mto: "Made to Order — contact us",
-};
+import { BuyBox } from "@/components/site/BuyBox";
 
 const TABLE_HEAD_STYLE = {
   fontSize: 20,
@@ -115,63 +107,15 @@ export default async function ProductPage({
                 </div>
               )}
 
-              <div className="pd-buy">
-                <div className="priceline">
-                  <span className="price">${p.price}</span>
-                  <span style={{ fontFamily: "var(--mono)", fontSize: 12, color: "var(--txt-3)" }}>
-                    starting · per {p.pkg[0]}
-                  </span>
-                </div>
-                <div className="opt-row">
-                  <div className="lbl">Packaging / Size</div>
-                  <div className="opt-pills">
-                    {p.pkg.map((pk, i) => (
-                      <button key={pk} type="button" className={`opt-pill${i === 0 ? " active" : ""}`}>
-                        {pk}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="opt-row">
-                  <div className="lbl">Finish / Color</div>
-                  <div className="opt-pills">
-                    {p.finish.map((f, i) => (
-                      <button key={f} type="button" className={`opt-pill${i === 0 ? " active" : ""}`}>
-                        {f}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="opt-row">
-                  <div className="lbl">Quantity</div>
-                  <div className="qty">
-                    <button type="button" aria-label="Decrease quantity">
-                      −
-                    </button>
-                    <input defaultValue="1" aria-label="Quantity" />
-                    <button type="button" aria-label="Increase quantity">
-                      +
-                    </button>
-                  </div>
-                </div>
-                <button
-                  className="btn btn-cart btn-block"
-                  disabled
-                  style={{ opacity: 0.55, cursor: "not-allowed" }}
-                >
-                  {CTA_LABEL[p.status]}
-                </button>
-                <div className="buy-meta">
-                  <span>Live LTL freight</span>
-                  <span>Full TDS &amp; SDS</span>
-                  <span>US shipping</span>
-                </div>
-                <p className="gate-note">
-                  <b>Open browsing, gated checkout.</b> Anyone can build a cart. Completing checkout
-                  requires an approved contractor account —{" "}
-                  <SurveyButton className="gate-link">become a contractor</SurveyButton>.
-                </p>
-              </div>
+              <BuyBox
+                sku={p.sku}
+                name={p.name}
+                price={p.price}
+                pkg={p.pkg}
+                finish={p.finish}
+                img={p.img}
+                status={p.status}
+              />
             </div>
           </div>
         </div>

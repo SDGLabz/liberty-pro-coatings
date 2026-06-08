@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { SurveyButton } from "./SurveyButton";
+import { useSite } from "./SiteProvider";
 
 export interface KitLine {
   sku: string;
@@ -42,10 +43,12 @@ export function Configurator({
   finishes: FinishOption[];
   colors: SwatchOption[];
 }) {
+  const { addToCart } = useSite();
   const [baseIdx, setBaseIdx] = useState(0);
   const [colorIdx, setColorIdx] = useState(0);
   const [finishIdx, setFinishIdx] = useState(0);
   const [sqft, setSqft] = useState(500);
+  const [added, setAdded] = useState(false);
 
   const base = bases[baseIdx];
   const finish = finishes[finishIdx];
@@ -54,6 +57,25 @@ export function Configurator({
   const subtotal = base.baseItems.reduce((sum, i) => sum + i.price, 0) + finish.price;
 
   const setSqftSafe = (n: number) => setSqft(Number.isFinite(n) ? Math.max(SQFT_MIN, n) : SQFT_MIN);
+
+  // Add the resolved kit to the cart: each base SKU plus the topcoat, with the
+  // chosen color captured on the topcoat line. (The selected square footage is
+  // shown for the estimate; per-kit coverage math lands with real packaging data.)
+  const handleAddKit = () => {
+    for (const i of base.baseItems) {
+      addToCart({ sku: i.sku, name: i.name, price: i.price, pkg: "", finish: "", qty: 1 });
+    }
+    addToCart({
+      sku: finish.sku,
+      name: finish.name,
+      price: finish.price,
+      pkg: "",
+      finish: `${color.s} — ${color.n}`,
+      qty: 1,
+    });
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1600);
+  };
 
   return (
     <div className="layout">
@@ -166,16 +188,12 @@ export function Configurator({
               </span>
             </div>
           </div>
-          <button
-            className="btn btn-cart btn-block"
-            disabled
-            style={{ opacity: 0.55, cursor: "not-allowed" }}
-          >
-            Coming soon — not yet available
+          <button type="button" className="btn btn-cart btn-block" onClick={handleAddKit}>
+            {added ? "Kit added to cart ✓" : "Add kit to cart →"}
           </button>
           <p className="gate-note">
-            Configurator resolves to real SKUs with freight attributes.{" "}
-            <SurveyButton className="gate-link">Become a contractor</SurveyButton> to check out.
+            Adds the resolved SKUs to your cart. Anyone can build a cart;{" "}
+            <SurveyButton className="gate-link">become a contractor</SurveyButton> to check out.
           </p>
         </div>
       </aside>
