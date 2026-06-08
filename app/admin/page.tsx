@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import type { Metadata } from "next";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
+import { sendStatusEmail } from "@/lib/emails";
 
 export const metadata: Metadata = { title: "Admin — Approvals", robots: { index: false } };
 export const dynamic = "force-dynamic";
@@ -76,9 +77,28 @@ async function updateStatus(id: string, status: "approved" | "rejected" | "pendi
   if (me?.role !== "admin") return;
 
   const admin = createAdminClient();
+  // Grab the applicant's contact details before flipping status, so we can
+  // notify them of an approve/reject decision.
+  const { data: applicant } = await admin
+    .from("profiles")
+    .select("email, full_name, company")
+    .eq("id", id)
+    .single();
+
   await admin.from("profiles").update({ status }).eq("id", id);
   const appStatus = status === "approved" ? "approved" : status === "rejected" ? "rejected" : "reviewing";
   await admin.from("contractor_applications").update({ status: appStatus }).eq("user_id", id);
+
+  // Notify the applicant on a final decision. sendStatusEmail never throws and
+  // no-ops if Resend isn't configured, so it can't break the approval action.
+  if ((status === "approved" || status === "rejected") && applicant?.email) {
+    await sendStatusEmail({
+      to: applicant.email,
+      name: applicant.full_name,
+      company: applicant.company,
+      status,
+    });
+  }
   revalidatePath("/admin");
 }
 
