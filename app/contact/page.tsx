@@ -10,9 +10,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/contact" },
 };
 
-// NOTE: the message form is a front-end placeholder. Wiring it to a real
-// destination (Resend / Supabase / GoHighLevel) is the same flagged
-// pre-launch task as the survey (build-plan §11.6).
+// The contact page launches the shared contractor survey (SurveyLauncher →
+// SurveyModal), which submits to /api/lead (Resend email + HubSpot). No inline
+// form here, by house rule (one conversion path).
 export default function ContactPage() {
   return (
     <>
