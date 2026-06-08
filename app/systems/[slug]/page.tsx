@@ -72,9 +72,14 @@ export default async function SystemPage({
             <a className="btn btn-primary" href="#components">
               View Components →
             </a>
-            <Link className="btn btn-out" href="/resources">
-              System Guide PDF
-            </Link>
+            <a
+              className="btn btn-out"
+              href={`/system-guides/${s.slug}.pdf`}
+              target="_blank"
+              rel="noopener"
+            >
+              System Guide PDF ↓
+            </a>
           </div>
         </div>
       </section>

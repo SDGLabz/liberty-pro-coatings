@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PRODUCTS } from "@/lib/catalog";
+import { PRODUCTS, SYSTEMS } from "@/lib/catalog";
 import {
   CoverageCalculator,
   type CoverageProduct,
@@ -127,6 +127,39 @@ export default function ResourcesPage() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section style={{ borderTop: "1px solid var(--line)" }}>
+        <div className="wrap">
+          <div className="sec-head reveal">
+            <div className="l">
+              <span className="eyebrow">System guides</span>
+              <h2>Full system guides.</h2>
+              <p className="lede">
+                Downloadable build-up guides for all nine Liberty Pro flooring systems — layers,
+                products, coverage and installation.
+              </p>
+            </div>
+          </div>
+          <div style={{ display: "grid", gap: 8 }}>
+            {SYSTEMS.map((s) => (
+              <a
+                key={s.slug}
+                className="docrow"
+                href={`/system-guides/${s.slug}.pdf`}
+                target="_blank"
+                rel="noopener"
+              >
+                <span className="ic">PDF</span>
+                <div className="meta">
+                  <h4>{s.name}</h4>
+                  <p>{s.tag} · System guide</p>
+                </div>
+                <span className="dl">Download →</span>
+              </a>
+            ))}
+          </div>
         </div>
       </section>
     </>
