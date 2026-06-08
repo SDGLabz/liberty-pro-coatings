@@ -25,6 +25,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 const SURVEY_STEPS = 4; // 0 intro · 1 business · 2 install · 3 received
 const CART_KEY = "lpc.cart.v1";
@@ -49,6 +50,21 @@ export type AddCartInput = Omit<CartItem, "qty"> & { qty?: number };
 /** Stable identity for a line: same SKU + packaging + finish merges. */
 function cartKey(i: { sku: string; pkg: string; finish: string }): string {
   return `${i.sku}|${i.pkg}|${i.finish}`;
+}
+
+/**
+ * Merge two carts by line identity, taking the larger quantity on a clash so
+ * re-syncing the same cart (e.g. on refresh) can never double quantities.
+ */
+function mergeCarts(a: CartItem[], b: CartItem[]): CartItem[] {
+  const map = new Map<string, CartItem>();
+  for (const it of [...a, ...b]) {
+    const k = cartKey(it);
+    const existing = map.get(k);
+    if (existing) existing.qty = Math.max(existing.qty, it.qty);
+    else map.set(k, { ...it });
+  }
+  return [...map.values()];
 }
 
 interface SiteState {
@@ -93,6 +109,15 @@ export function SiteProvider({ children }: { children: ReactNode }) {
   const [surveyOpen, setSurveyOpen] = useState(false);
   const [surveyStep, setSurveyStep] = useState(0);
 
+  // Cart sync: signed-in users mirror their cart to the Supabase `carts` table
+  // (RLS-scoped to them) so it follows them across devices and survives the
+  // apply→approval gap. itemsRef always holds the latest items for the async
+  // sign-in merge (avoids a stale closure).
+  const supabaseRef = useRef<ReturnType<typeof createClient> | null>(null);
+  const userIdRef = useRef<string | null>(null);
+  const itemsRef = useRef<CartItem[]>([]);
+  itemsRef.current = items;
+
   // Hydrate the cart from localStorage once on mount. (Initial state is []
   // on both server + client, so there's no hydration mismatch; this just
   // fills it in after mount.)
@@ -121,7 +146,51 @@ export function SiteProvider({ children }: { children: ReactNode }) {
     } catch {
       /* ignore */
     }
+    // Mirror to the signed-in user's server cart (RLS scopes it to them).
+    const uid = userIdRef.current;
+    const supabase = supabaseRef.current;
+    if (uid && supabase) {
+      supabase
+        .from("carts")
+        .upsert({ user_id: uid, items, updated_at: new Date().toISOString() })
+        .then(({ error }) => {
+          if (error) console.error("[cart] server sync failed:", error.message);
+        });
+    }
   }, [items]);
+
+  // On sign-in, merge the local cart with the user's saved server cart and keep
+  // syncing; on sign-out, stop syncing but keep the local cart.
+  useEffect(() => {
+    const supabase = createClient();
+    supabaseRef.current = supabase;
+    let active = true;
+
+    async function syncForUser(uid: string) {
+      userIdRef.current = uid;
+      const { data, error } = await supabase
+        .from("carts")
+        .select("items")
+        .eq("user_id", uid)
+        .maybeSingle();
+      if (!active || error) return;
+      const raw = data?.items;
+      const serverItems: CartItem[] = Array.isArray(raw) ? (raw as CartItem[]) : [];
+      setItems(mergeCarts(itemsRef.current, serverItems));
+    }
+
+    supabase.auth.getUser().then(({ data }) => {
+      if (active && data.user) syncForUser(data.user.id);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session?.user) syncForUser(session.user.id);
+      else if (event === "SIGNED_OUT") userIdRef.current = null;
+    });
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
 
   const openCart = useCallback(() => setDrawerOpen(true), []);
   const closeCart = useCallback(() => setDrawerOpen(false), []);
