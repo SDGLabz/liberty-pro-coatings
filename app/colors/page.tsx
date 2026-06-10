@@ -63,7 +63,17 @@ export default function ColorsPage() {
               <div className="swgrid">
                 {g.colors.map((c) => (
                   <div key={c.n} className="swcard reveal">
-                    <div className="chip" style={{ background: c.c }} />
+                    <div
+                      className="chip"
+                      style={{
+                        backgroundColor: c.c,
+                        backgroundImage: `url('${c.img}')`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
+                      role="img"
+                      aria-label={`${c.n} swatch`}
+                    />
                     <div className="nm">
                       <b>{c.n}</b>
                       <span>{c.s}</span>
@@ -74,8 +84,8 @@ export default function ColorsPage() {
             </div>
           ))}
           <p style={{ marginTop: 30, fontFamily: "var(--mono)", fontSize: 12, color: "var(--txt-3)" }}>
-            Swatch colors shown are representative placeholders — final blend names and values come
-            from the LPC color/aggregate SKU list.
+            Swatches are reference images — on-screen color varies by display, so order physical
+            chips before committing a job.
           </p>
         </div>
       </section>

@@ -102,8 +102,10 @@ export interface Color {
   n: string;
   /** source/series */
   s: string;
-  /** hex swatch */
+  /** representative hex, sampled from the swatch image (fallback + mini-swatches) */
   c: string;
+  /** swatch image path under /public */
+  img: string;
 }
 
 export const CHEM_LABELS: Record<Chem, string> = {
@@ -651,23 +653,74 @@ export const SYSTEMS: System[] = [
   },
 ];
 
+// Real decorative swatches imported from the Polymer Nation Webflow CMS
+// "Colors" collection (sister brand under American Polymer Group), filtered to
+// the categories the LPC line actually uses — Flake (1375), Metallic (1338),
+// Quartz (1321) and solid Color Packs (1339), matched via each swatch's PN
+// product references and the PN↔LPC SKU crosswalk. Swatch images live in
+// /public/images/colors; `c` is a representative hex sampled from each image.
 export const COLORS: Color[] = [
-  { n: "Slate", s: "1375 Flake", c: "#3a4756" },
-  { n: "Terra", s: "1375 Flake", c: "#7a3b2e" },
-  { n: "Sahara", s: "1375 Flake", c: "#cdb98a" },
-  { n: "Pewter", s: "1375 Flake", c: "#9aa7ad" },
-  { n: "Storm", s: "1375 Flake", c: "#374a5c" },
-  { n: "Pine", s: "1375 Flake", c: "#2c5545" },
-  { n: "Copper", s: "1338 Metallic", c: "#b5852c" },
-  { n: "Graphite", s: "1338 Metallic", c: "#33383d" },
-  { n: "Silver", s: "1338 Metallic", c: "#9aa3a8" },
-  { n: "Quartz Tan", s: "1321 Quartz", c: "#d9d4c8" },
-  { n: "Quartz Grey", s: "1321 Quartz", c: "#b7bcbe" },
-  { n: "Liberty Red", s: "1339 Color Pack", c: "#c8102e" },
-  { n: "Safety Yellow", s: "1339 Color Pack", c: "#d7a017" },
-  { n: "Tile Red", s: "1339 Color Pack", c: "#8a3324" },
-  { n: "Dove", s: "1339 Color Pack", c: "#c9cdd2" },
-  { n: "Charcoal", s: "1339 Color Pack", c: "#2f3438" },
+  { n: "Basalt", s: "1375 Flake", c: "#8f9298", img: "/images/colors/basalt.jpg" },
+  { n: "Cabin Fever", s: "1375 Flake", c: "#b7b3ac", img: "/images/colors/cabin-fever.jpg" },
+  { n: "Coyote", s: "1375 Flake", c: "#b9b3af", img: "/images/colors/coyote.jpg" },
+  { n: "Creekbed", s: "1375 Flake", c: "#a69d93", img: "/images/colors/creekbed.jpg" },
+  { n: "Dolerite", s: "1375 Flake", c: "#847f7e", img: "/images/colors/dolerite.jpg" },
+  { n: "Domino", s: "1375 Flake", c: "#9a9997", img: "/images/colors/domino.jpg" },
+  { n: "Gravel", s: "1375 Flake", c: "#b3b4b3", img: "/images/colors/gravel.jpg" },
+  { n: "Madras", s: "1375 Flake", c: "#9d958e", img: "/images/colors/madras.jpg" },
+  { n: "Nightfall", s: "1375 Flake", c: "#696868", img: "/images/colors/nightfall.jpg" },
+  { n: "Obsidian", s: "1375 Flake", c: "#8b7e72", img: "/images/colors/obsidian.jpg" },
+  { n: "Orbit", s: "1375 Flake", c: "#818b99", img: "/images/colors/orbit.jpg" },
+  { n: "Outback", s: "1375 Flake", c: "#a18c76", img: "/images/colors/outback.jpg" },
+  { n: "Shoreline", s: "1375 Flake", c: "#b9aea0", img: "/images/colors/shoreline.jpg" },
+  { n: "Tidal Wave", s: "1375 Flake", c: "#b3b5b6", img: "/images/colors/tidal-wave.jpg" },
+  { n: "Wombat", s: "1375 Flake", c: "#818181", img: "/images/colors/wombat.jpg" },
+  { n: "Amber", s: "1338 Metallic", c: "#bb7c34", img: "/images/colors/amber.jpg" },
+  { n: "Aqua", s: "1338 Metallic", c: "#27a0ba", img: "/images/colors/aqua.jpg" },
+  { n: "Burnt Sienna", s: "1338 Metallic", c: "#b65435", img: "/images/colors/burnt-sienna.jpg" },
+  { n: "Caramel", s: "1338 Metallic", c: "#905934", img: "/images/colors/caramel.jpg" },
+  { n: "Chestnut", s: "1338 Metallic", c: "#7b502d", img: "/images/colors/chestnut.jpg" },
+  { n: "Cobalt", s: "1338 Metallic", c: "#3871b5", img: "/images/colors/cobalt.jpg" },
+  { n: "Emerald", s: "1338 Metallic", c: "#84b186", img: "/images/colors/emerald.jpg" },
+  { n: "Frost", s: "1338 Metallic", c: "#b0ada5", img: "/images/colors/frost.jpg" },
+  { n: "Glacier", s: "1338 Metallic", c: "#57a3ca", img: "/images/colors/glacier.jpg" },
+  { n: "Latte", s: "1338 Metallic", c: "#a27d53", img: "/images/colors/latte.jpg" },
+  { n: "Lemon", s: "1338 Metallic", c: "#bf8d37", img: "/images/colors/lemon.jpg" },
+  { n: "Lime", s: "1338 Metallic", c: "#71b150", img: "/images/colors/lime.jpg" },
+  { n: "Merlot", s: "1338 Metallic", c: "#c74e4b", img: "/images/colors/merlot.jpg" },
+  { n: "Midnight Blue", s: "1338 Metallic", c: "#7995a6", img: "/images/colors/midnight-blue.jpg" },
+  { n: "Mocha", s: "1338 Metallic", c: "#7e603c", img: "/images/colors/mocha.jpg" },
+  { n: "Nickel", s: "1338 Metallic", c: "#999999", img: "/images/colors/nickel.jpg" },
+  { n: "Onyx", s: "1338 Metallic", c: "#403e3b", img: "/images/colors/onyx.jpg" },
+  { n: "Porcelain", s: "1338 Metallic", c: "#c6c7bf", img: "/images/colors/porcelain.jpg" },
+  { n: "Ruby", s: "1338 Metallic", c: "#d13f48", img: "/images/colors/ruby.jpg" },
+  { n: "Shadow", s: "1338 Metallic", c: "#4a4a46", img: "/images/colors/shadow.jpg" },
+  { n: "Silver", s: "1338 Metallic", c: "#86878a", img: "/images/colors/silver.jpg" },
+  { n: "Violet", s: "1338 Metallic", c: "#8065aa", img: "/images/colors/violet.jpg" },
+  { n: "Artic Storm", s: "1321 Quartz", c: "#8f8f91", img: "/images/colors/artic-storm.png" },
+  { n: "Auburn Sand", s: "1321 Quartz", c: "#877765", img: "/images/colors/auburn-sand.png" },
+  { n: "Autumn", s: "1321 Quartz", c: "#766847", img: "/images/colors/autumn.png" },
+  { n: "Azul", s: "1321 Quartz", c: "#637092", img: "/images/colors/azul.png" },
+  { n: "Crimson Stone", s: "1321 Quartz", c: "#683e33", img: "/images/colors/crimson-stone.png" },
+  { n: "Evergreen", s: "1321 Quartz", c: "#4c5f55", img: "/images/colors/evergreen.png" },
+  { n: "Granite", s: "1321 Quartz", c: "#8a877f", img: "/images/colors/granite.png" },
+  { n: "Pumpkin Spice", s: "1321 Quartz", c: "#825f46", img: "/images/colors/pumpkin-spice.png" },
+  { n: "Purple Haze", s: "1321 Quartz", c: "#73655b", img: "/images/colors/purple-haze.png" },
+  { n: "Safari", s: "1321 Quartz", c: "#8a795c", img: "/images/colors/safari.png" },
+  { n: "Sage Green", s: "1321 Quartz", c: "#616559", img: "/images/colors/sage-green.png" },
+  { n: "Sapphire", s: "1321 Quartz", c: "#4d5559", img: "/images/colors/sapphire.png" },
+  { n: "C-01", s: "1339 Solid Color", c: "#5c646b", img: "/images/colors/c-01.png" },
+  { n: "C-02", s: "1339 Solid Color", c: "#81888c", img: "/images/colors/c-02.png" },
+  { n: "C-03", s: "1339 Solid Color", c: "#d0d1d2", img: "/images/colors/c-03.png" },
+  { n: "C-05", s: "1339 Solid Color", c: "#0170b6", img: "/images/colors/c-05.png" },
+  { n: "C-06", s: "1339 Solid Color", c: "#91c0d6", img: "/images/colors/c-06.png" },
+  { n: "C-08", s: "1339 Solid Color", c: "#010101", img: "/images/colors/c-08.png" },
+  { n: "C-12", s: "1339 Solid Color", c: "#a02518", img: "/images/colors/c-12.png" },
+  { n: "C-13", s: "1339 Solid Color", c: "#d1b38c", img: "/images/colors/c-13.png" },
+  { n: "C-14", s: "1339 Solid Color", c: "#e4cca4", img: "/images/colors/c-14.png" },
+  { n: "C-16", s: "1339 Solid Color", c: "#e8dabf", img: "/images/colors/c-16.png" },
+  { n: "C-17", s: "1339 Solid Color", c: "#f1d600", img: "/images/colors/c-17.png" },
+  { n: "C-18", s: "1339 Solid Color", c: "#f2f2f2", img: "/images/colors/c-18.png" },
 ];
 
 /**
