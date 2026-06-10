@@ -6,7 +6,9 @@ import {
   getProduct,
   systemsUsing,
   relatedProducts,
+  colorsForProduct,
   CHEM_LABELS,
+  type Color,
 } from "@/lib/catalog";
 import { ProductCard } from "@/components/site/ProductCard";
 import { BuyBox } from "@/components/site/BuyBox";
@@ -52,6 +54,18 @@ export default async function ProductPage({
   const thumbs = [p.img, "/images/cat-flake.jpg", "/images/featured-fin.jpg"];
   const usedIn = systemsUsing(p.sku);
   const related = relatedProducts(p.sku, p.chem);
+
+  // Decorative finishes this product can be ordered in (data-driven, grouped by series).
+  const productColors = colorsForProduct(p.sku);
+  const colorGroups: { series: string; name: string; colors: Color[] }[] = [];
+  for (const c of productColors) {
+    let g = colorGroups.find((x) => x.series === c.s);
+    if (!g) {
+      g = { series: c.s, name: c.s.replace(/^\d+\s+/, ""), colors: [] };
+      colorGroups.push(g);
+    }
+    g.colors.push(c);
+  }
   const breadcrumb = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -213,6 +227,62 @@ export default async function ProductPage({
           )}
         </div>
       </section>
+
+      {/* Available colors & finishes */}
+      {colorGroups.length > 0 && (
+        <section style={{ borderTop: "1px solid var(--line)" }}>
+          <div className="wrap">
+            <div className="sec-head reveal">
+              <div className="l">
+                <span className="eyebrow">Available colors &amp; finishes</span>
+                <h2>Finish {p.sku} your way.</h2>
+                <p className="lede">
+                  {p.name} can be finished in these decorative options. Swatches are reference
+                  images — on-screen color varies, so order physical chips before committing a job.
+                </p>
+              </div>
+              <Link className="seeall" href="/colors">
+                All colors →
+              </Link>
+            </div>
+            {colorGroups.map((g) => (
+              <div key={g.series} style={{ marginTop: 18 }}>
+                <h3
+                  style={{
+                    fontSize: 13,
+                    textTransform: "uppercase",
+                    letterSpacing: ".04em",
+                    color: "var(--txt-2)",
+                    margin: "0 0 12px",
+                  }}
+                >
+                  {g.name}
+                </h3>
+                <div className="swgrid">
+                  {g.colors.map((c) => (
+                    <div key={c.n} className="swcard reveal">
+                      <div
+                        className="chip"
+                        style={{
+                          backgroundColor: c.c,
+                          backgroundImage: `url('${c.img}')`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                        }}
+                        role="img"
+                        aria-label={`${c.n} swatch`}
+                      />
+                      <div className="nm">
+                        <b>{c.n}</b>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Documents */}
       <section style={{ borderTop: "1px solid var(--line)" }}>

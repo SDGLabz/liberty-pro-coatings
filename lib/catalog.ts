@@ -724,6 +724,34 @@ export const COLORS: Color[] = [
 ];
 
 /**
+ * Decorative color series each product can be finished in — derived from the
+ * PN "Colors" collection's product references via the PN↔LPC SKU crosswalk,
+ * then extended to the obvious speed/sheen variants the crosswalk splits apart
+ * (EG-MPE01-F is the fast EG-MPE01; UG-31 / UG-55 are the satin / matte of
+ * UG-21 / UG-51). Products absent here (clear primers, patches, cleaners,
+ * scapes binders) intentionally show no swatch picker.
+ */
+const PRODUCT_COLOR_SERIES: Record<string, string[]> = {
+  "EG-MPE01": ["1375 Flake", "1338 Metallic", "1321 Quartz", "1339 Solid Color"],
+  "EG-MPE01-F": ["1375 Flake", "1338 Metallic", "1321 Quartz", "1339 Solid Color"],
+  "EG-UVE41": ["1375 Flake", "1338 Metallic", "1321 Quartz", "1339 Solid Color"],
+  "PG-61": ["1375 Flake", "1339 Solid Color"],
+  "PG-71": ["1375 Flake", "1339 Solid Color"],
+  "PG-81": ["1375 Flake", "1339 Solid Color"],
+  "UG-21": ["1339 Solid Color"],
+  "UG-31": ["1339 Solid Color"],
+  "UG-51": ["1339 Solid Color"],
+  "UG-55": ["1339 Solid Color"],
+};
+
+/** Decorative swatches available for a product, in catalog (category) order. */
+export function colorsForProduct(sku: string): Color[] {
+  const series = PRODUCT_COLOR_SERIES[sku.toUpperCase()];
+  if (!series) return [];
+  return COLORS.filter((c) => series.includes(c.s));
+}
+
+/**
  * Misc / supporting catalog SKUs (build-plan §2): decorative color media,
  * quartz & aggregate, anti-slip additives, fillers and cleaners. Sequenced
  * after the core resin line — modeled + surfaced (on /colors) but not
