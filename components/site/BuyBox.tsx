@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSite } from "./SiteProvider";
 import { SurveyButton } from "./SurveyButton";
+import { ColorPicker } from "./ColorPicker";
 import type { ProductStatus, Color } from "@/lib/catalog";
 
 // Disabled-CTA copy for products that aren't add-to-cart-able yet.
@@ -104,26 +105,13 @@ export function BuyBox({ sku, name, price, pkg, finish, img, status, colors = []
 
       {colors.length > 0 && (
         <div className="opt-row">
-          <div className="lbl">
-            Color / finish
-            {colorName && (
-              <span style={{ color: "var(--ink)", marginLeft: 6 }}>· {colorName}</span>
-            )}
-          </div>
-          <div className="swatch-pick">
-            {colors.map((c) => (
-              <button
-                key={c.n}
-                type="button"
-                className={`swp${colorName === c.n ? " active" : ""}`}
-                title={`${c.n} — ${c.s.replace(/^\d+\s+/, "")}`}
-                aria-label={c.n}
-                aria-pressed={colorName === c.n}
-                onClick={() => setColorName((v) => (v === c.n ? null : c.n))}
-                style={{ backgroundColor: c.c, backgroundImage: `url('${c.img}')` }}
-              />
-            ))}
-          </div>
+          <div className="lbl">Color / finish</div>
+          <ColorPicker
+            colors={colors}
+            value={colorName}
+            onChange={setColorName}
+            productName={name}
+          />
         </div>
       )}
 
