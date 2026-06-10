@@ -71,6 +71,11 @@ export interface Product {
   desc: string;
   pkg: string[];
   price: number;
+  /** Per-package list prices keyed by the pkg label. Optional — single-size
+   *  products use `price` for their only package; multi-size products (the
+   *  2.5/5-Gal polyaspartics) carry per-size prices so checkout charges the
+   *  amount for the selected size. */
+  pkgPrices?: Record<string, number>;
   status: ProductStatus;
   img: string;
   finish: string[];
@@ -312,6 +317,7 @@ export const PRODUCTS: Product[] = [
     desc: "83% solids clear slow-speed polyaspartic, 1:1, for larger working windows.",
     pkg: ["2.5 Gal", "5 Gal"],
     price: 211.54,
+    pkgPrices: { "2.5 Gal": 211.54, "5 Gal": 423.08 },
     status: "active-off",
     img: "/images/prod-metal.jpg",
     finish: ["Clear", "Color Packs"],
@@ -325,6 +331,7 @@ export const PRODUCTS: Product[] = [
     desc: "Medium-speed clear polyaspartic, 1:1 — balanced working and return-to-service time.",
     pkg: ["2.5 Gal", "5 Gal"],
     price: 211.54,
+    pkgPrices: { "2.5 Gal": 211.54, "5 Gal": 423.08 },
     status: "active-off",
     img: "/images/prod-metal.jpg",
     finish: ["Clear", "Color Packs"],
@@ -338,6 +345,7 @@ export const PRODUCTS: Product[] = [
     desc: "Fast-speed clear polyaspartic — the engine of the 1-day floor system, 1:1.",
     pkg: ["2.5 Gal", "5 Gal"],
     price: 211.54,
+    pkgPrices: { "2.5 Gal": 211.54, "5 Gal": 423.08 },
     status: "active-off",
     img: "/images/prod-1day.jpg",
     finish: ["Clear", "Color Packs"],
@@ -851,6 +859,12 @@ export function bestSellers(limit = 4): Product[] {
 export function getProduct(sku: string): Product | undefined {
   const key = sku.toLowerCase();
   return PRODUCTS.find((p) => p.sku.toLowerCase() === key);
+}
+
+/** List price for a specific package of a product (falls back to the base
+ *  `price` for single-size products or unknown package labels). */
+export function priceForPkg(product: Product, pkg: string): number {
+  return product.pkgPrices?.[pkg] ?? product.price;
 }
 
 /**

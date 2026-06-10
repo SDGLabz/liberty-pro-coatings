@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { getStripe, stripeConfigured } from "@/lib/stripe/server";
 import { createClient } from "@/lib/supabase/server";
-import { getProduct } from "@/lib/catalog";
+import { getProduct, priceForPkg } from "@/lib/catalog";
 import { computeTotals } from "@/lib/checkout-pricing";
 
 // Creates a Stripe PaymentIntent for the signed-in, APPROVED contractor's
@@ -86,7 +86,7 @@ export async function POST(request: Request) {
     if (!product) {
       return Response.json({ ok: false, error: `Unknown product: ${item.sku}` }, { status: 400 });
     }
-    subtotalCents += Math.round(product.price * 100) * item.qty;
+    subtotalCents += Math.round(priceForPkg(product, item.pkg) * 100) * item.qty;
     skuSummary.push(`${item.sku}x${item.qty}`);
   }
 

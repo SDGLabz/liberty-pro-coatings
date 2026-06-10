@@ -130,6 +130,7 @@ export default async function ProductPage({
                 sku={p.sku}
                 name={p.name}
                 price={p.price}
+                pkgPrices={p.pkgPrices}
                 pkg={p.pkg}
                 finish={p.finish}
                 img={p.img}

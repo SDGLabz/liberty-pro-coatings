@@ -18,6 +18,8 @@ export interface BuyBoxProps {
   sku: string;
   name: string;
   price: number;
+  /** Per-package prices for multi-size products; falls back to `price`. */
+  pkgPrices?: Record<string, number>;
   pkg: string[];
   finish: string[];
   img: string;
@@ -28,7 +30,7 @@ export interface BuyBoxProps {
 
 // Interactive product buy box. Packaging / finish / quantity selection plus
 // a working "Add to cart" that pushes a real line item into the cart.
-export function BuyBox({ sku, name, price, pkg, finish, img, status, colors = [] }: BuyBoxProps) {
+export function BuyBox({ sku, name, price, pkgPrices, pkg, finish, img, status, colors = [] }: BuyBoxProps) {
   const { addToCart } = useSite();
   const [pkgIdx, setPkgIdx] = useState(0);
   const [finishIdx, setFinishIdx] = useState(0);
@@ -39,6 +41,8 @@ export function BuyBox({ sku, name, price, pkg, finish, img, status, colors = []
   const purchasable = status === "active-off";
   const selectedPkg = pkg[pkgIdx] ?? "";
   const selectedFinish = finish[finishIdx] ?? "";
+  // Price for the selected package size (multi-size products price per size).
+  const unitPrice = pkgPrices?.[selectedPkg] ?? price;
   // The order line carries the finish plus the chosen decorative color, if any.
   const finishLabel = colorName
     ? selectedFinish
@@ -53,7 +57,7 @@ export function BuyBox({ sku, name, price, pkg, finish, img, status, colors = []
   };
 
   const handleAdd = () => {
-    addToCart({ sku, name, price, pkg: selectedPkg, finish: finishLabel, img, qty });
+    addToCart({ sku, name, price: unitPrice, pkg: selectedPkg, finish: finishLabel, img, qty });
     setAdded(true);
     setTimeout(() => setAdded(false), 1600);
   };
@@ -61,9 +65,9 @@ export function BuyBox({ sku, name, price, pkg, finish, img, status, colors = []
   return (
     <div className="pd-buy">
       <div className="priceline">
-        <span className="price">${price}</span>
+        <span className="price">${unitPrice}</span>
         <span style={{ fontFamily: "var(--mono)", fontSize: 12, color: "var(--txt-3)" }}>
-          starting · per {pkg[0]}
+          per {selectedPkg || pkg[0]}
         </span>
       </div>
 
