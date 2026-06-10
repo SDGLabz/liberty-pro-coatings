@@ -81,7 +81,7 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
       application:
         "Pour entire content of mixed material onto the floor in ribbons. Spread material using a flat blade or notched squeegee. Back roll material using a 3/8” nap roller cover to maintain an even mil thickness of material. To make an epoxy patching material mix no more material than can be mixed and applied within the stated gel time and add the selected aggregate until the desired thickness is achieved. Recoat within 24 hours. Clean tools with a solvent similar to Xylene or Acetone.",
       technical: [
-        ["Packaging", "3, 15 & 165 Gal Kits"],
+        ["Packaging", "3 Gal Kit"],
         ["Mix Ratio by Volume", "2:1 (A:B)"],
         ["Mixed Viscosity", "500–600 cP @ 25°C/77°F"],
         ["Gel Time", "45 minutes"],
@@ -141,7 +141,7 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
       application:
         "Pour entire content of mixed material onto the floor in ribbons. Spread material using a flat blade or notched squeegee. Back roll material using a 3/8” nap roller cover to maintain an even mil thickness of material. To make an epoxy patching material mix no more material than can be mixed and applied within the stated gel time and add the selected aggregate until the desired thickness is achieved. Recoat within 24 hours. Clean tools with a solvent similar to Xylene or Acetone.",
       technical: [
-        ["Packaging", "3, 15 & 165 Gal Kits"],
+        ["Packaging", "3 Gal Kit"],
         ["Mix Ratio by Volume", "2:1 (A:B)"],
         ["Mixed Viscosity", "500–600 cP @ 25°C/77°F"],
         ["Gel Time", "15 minutes"],
@@ -201,7 +201,7 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
       application:
         "Pour entire content of mixed material onto the floor in ribbons. Spread material using a flat blade or notched squeegee. Back roll material using a 3/8” nap roller cover to maintain an even mil thickness of material. Recoat within 24 hours. Clean tools with a solvent similar to Xylene or Acetone.",
       technical: [
-        ["Packaging", "3, 15 & 165 Gal Kits"],
+        ["Packaging", "3 Gal Kit"],
         ["Mix Ratio by Volume", "2:1 (A:B)"],
         ["Mixed Viscosity", "600–700 cP @ 25°C/77°F"],
         ["Gel Time", "45 minutes"],
@@ -439,7 +439,7 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
       application:
         "Pour ribbon of mixed material onto the floor and spread using a flat blade or notched squeegee. Back roll material immediately using a 3/8” nap roller cover to maintain an even mil thickness of material while maintain a wet edge. Pour next ribbon on top of wet material and repeat the process. Recoat within 24 hours. Clean tools with a solvent similar to Xylene or Acetone.",
       technical: [
-        ["Packaging", "2.5, 5, 10 Gal Kits"],
+        ["Packaging", "2.5 & 5 Gal Kits"],
         ["Mix Ratio by Volume", "1:1 (A:B)"],
         ["Mixed Viscosity", "250–350 cP @ 25°C/77°F"],
         ["Working Time", "15–20 minutes"],
@@ -498,7 +498,7 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
       application:
         "Pour ribbon of mixed material onto the floor and spread using a flat blade or notched squeegee. Back roll material immediately using a 3/8” nap roller cover to maintain an even mil thickness of material while maintain a wet edge. Pour next ribbon on top of wet material and repeat the process. Recoat within 24 hours. Clean tools with a solvent similar to Xylene or Acetone.",
       technical: [
-        ["Packaging", "2.5, 5, 10 Gal Kits"],
+        ["Packaging", "2.5 & 5 Gal Kits"],
         ["Mix Ratio by Volume", "1:1 (A:B)"],
         ["Mixed Viscosity", "250–350 cP @ 25°C/77°F"],
         ["Working Time", "10–15 minutes"],
@@ -557,7 +557,7 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
       application:
         "Pour ribbon of mixed material onto the floor and spread using a flat blade or notched squeegee. Back roll material immediately using a 3/8” nap roller cover to maintain an even mil thickness of material while maintain a wet edge. Pour next ribbon on top of wet material and repeat the process. Recoat within 2-24 hours. Clean tools with a solvent similar to Xylene or Acetone.",
       technical: [
-        ["Packaging", "2.5, 5, 10 Gal Kits"],
+        ["Packaging", "2.5 & 5 Gal Kits"],
         ["Mix Ratio by Volume", "1:1 (A:B)"],
         ["Mixed Viscosity", "250–350 cP @ 25°C/77°F"],
         ["Working Time", "5–10 minutes"],
