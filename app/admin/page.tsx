@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import type { Metadata } from "next";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { sendStatusEmail } from "@/lib/emails";
+import { formatUsd } from "@/lib/checkout-pricing";
 
 export const metadata: Metadata = { title: "Admin — Approvals", robots: { index: false } };
 export const dynamic = "force-dynamic";
@@ -34,10 +35,25 @@ type Application = {
   created_at: string;
 };
 
+type Order = {
+  id: string;
+  email: string | null;
+  status: string;
+  payment_method: string;
+  amount_total: number;
+  items: unknown;
+  created_at: string;
+};
+
 const STATUS_COLOR: Record<string, { color: string; bg: string }> = {
   approved: { color: "#1a7a48", bg: "#e8f5ee" },
   pending: { color: "#9a6e00", bg: "#fdf4e0" },
   rejected: { color: "#d6212e", bg: "#fde9eb" },
+  paid: { color: "#1a7a48", bg: "#e8f5ee" },
+  processing: { color: "#9a6e00", bg: "#fdf4e0" },
+  failed: { color: "#d6212e", bg: "#fde9eb" },
+  canceled: { color: "#5f6f86", bg: "#eef1f5" },
+  refunded: { color: "#5f6f86", bg: "#eef1f5" },
 };
 
 function fmtDate(iso: string) {
@@ -151,7 +167,7 @@ export default async function AdminPage() {
 
   // Read everything with the service-role client (bypasses RLS).
   const admin = createAdminClient();
-  const [{ data: profilesData }, { data: appsData }] = await Promise.all([
+  const [{ data: profilesData }, { data: appsData }, { data: ordersData }] = await Promise.all([
     admin
       .from("profiles")
       .select("id,email,full_name,company,phone,status,role,created_at")
@@ -160,10 +176,16 @@ export default async function AdminPage() {
       .from("contractor_applications")
       .select("*")
       .order("created_at", { ascending: false }),
+    admin
+      .from("orders")
+      .select("id,email,status,payment_method,amount_total,items,created_at")
+      .order("created_at", { ascending: false })
+      .limit(100),
   ]);
 
   const profiles = (profilesData ?? []) as Profile[];
   const apps = (appsData ?? []) as Application[];
+  const orders = (ordersData ?? []) as Order[];
 
   const latestAppByUser = new Map<string, Application>();
   for (const a of apps) {
@@ -225,6 +247,65 @@ export default async function AdminPage() {
               </div>
             );
           })}
+
+          {/* ORDERS */}
+          <h2 style={{ fontSize: 20, margin: "36px 0 16px" }}>Orders ({orders.length})</h2>
+          {orders.length === 0 ? (
+            <p style={{ color: "var(--txt-2)", marginBottom: 8 }}>No orders yet.</p>
+          ) : (
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
+                <thead>
+                  <tr style={{ textAlign: "left", color: "var(--txt-3)", fontSize: 12, textTransform: "uppercase", letterSpacing: ".04em" }}>
+                    <th style={{ padding: "8px 10px" }}>Date</th>
+                    <th style={{ padding: "8px 10px" }}>Customer</th>
+                    <th style={{ padding: "8px 10px" }}>Items</th>
+                    <th style={{ padding: "8px 10px" }}>Pay</th>
+                    <th style={{ padding: "8px 10px", textAlign: "right" }}>Total</th>
+                    <th style={{ padding: "8px 10px" }}>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders.map((o) => {
+                    const items = Array.isArray(o.items)
+                      ? (o.items as Array<{ name: string; qty: number; pkg?: string; finish?: string }>)
+                      : [];
+                    return (
+                      <tr key={o.id} style={{ borderTop: "1px solid var(--line)", verticalAlign: "top" }}>
+                        <td style={{ padding: "10px", whiteSpace: "nowrap", color: "var(--txt-2)" }}>{fmtDate(o.created_at)}</td>
+                        <td style={{ padding: "10px", color: "var(--txt-2)" }}>{o.email || "—"}</td>
+                        <td style={{ padding: "10px", maxWidth: 340 }}>
+                          {items.length === 0
+                            ? "—"
+                            : items.map((it, i) => (
+                                <div key={i} style={{ fontSize: 13 }}>
+                                  {it.name}
+                                  {(it.pkg || it.finish) && (
+                                    <span style={{ color: "var(--txt-3)" }}>
+                                      {" "}
+                                      · {[it.pkg, it.finish].filter(Boolean).join(" · ")}
+                                    </span>
+                                  )}
+                                  <span style={{ color: "var(--txt-3)" }}> ×{it.qty}</span>
+                                </div>
+                              ))}
+                        </td>
+                        <td style={{ padding: "10px", whiteSpace: "nowrap", color: "var(--txt-2)" }}>
+                          {o.payment_method === "ach" ? "ACH" : "Card"}
+                        </td>
+                        <td style={{ padding: "10px", textAlign: "right", fontWeight: 700, whiteSpace: "nowrap" }}>
+                          {formatUsd(o.amount_total)}
+                        </td>
+                        <td style={{ padding: "10px" }}>
+                          <StatusBadge status={o.status} />
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
 
           {/* ALL ACCOUNTS */}
           <h2 style={{ fontSize: 20, margin: "36px 0 16px" }}>All accounts ({profiles.length})</h2>

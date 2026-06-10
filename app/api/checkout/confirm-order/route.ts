@@ -2,6 +2,7 @@ import { z } from "zod";
 import { getStripe, stripeConfigured } from "@/lib/stripe/server";
 import { createClient } from "@/lib/supabase/server";
 import { upsertOrderFromPaymentIntent } from "@/lib/orders";
+import { sendOrderConfirmation } from "@/lib/emails";
 
 // Called by the post-payment success page. Retrieves the PaymentIntent from
 // Stripe (authoritative — never trusting the browser for amounts), confirms it
@@ -42,9 +43,34 @@ export async function POST(request: Request) {
     if (pi.metadata?.user_id !== user.id) {
       return Response.json({ ok: false, error: "Not your order." }, { status: 403 });
     }
+    // Was this order already finalized before this call? Used to send the
+    // confirmation email exactly once — refreshing the success page won't resend.
+    const { data: existing } = await supabase
+      .from("orders")
+      .select("status")
+      .eq("stripe_payment_intent_id", pi.id)
+      .maybeSingle();
+    const wasFinalized = existing?.status === "paid" || existing?.status === "processing";
+
     const items = await upsertOrderFromPaymentIntent(pi);
     const status =
       pi.status === "succeeded" ? "paid" : pi.status === "processing" ? "processing" : "failed";
+
+    // First time this order reaches paid/processing → send the confirmation.
+    // Email never throws and is awaited only so it runs before the response.
+    if (!wasFinalized && (pi.status === "succeeded" || pi.status === "processing")) {
+      await sendOrderConfirmation({
+        to: user.email ?? "",
+        items,
+        subtotalCents: Number(pi.metadata?.subtotal_cents) || pi.amount,
+        discountCents: Number(pi.metadata?.discount_cents) || 0,
+        totalCents: pi.amount,
+        method: pi.metadata?.method === "ach" ? "ach" : "card",
+        orderRef: pi.id.slice(-8).toUpperCase(),
+        processing: pi.status === "processing",
+      });
+    }
+
     return Response.json({ ok: true, status, items });
   } catch (err) {
     console.error("[confirm-order] failed:", err);
