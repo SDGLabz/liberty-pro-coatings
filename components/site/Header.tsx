@@ -62,8 +62,9 @@ export function Header() {
       </div>
       <header>
         <div className="wrap nav">
-          <Link className="logo" href="/">
-            <span className="mark">L</span>Liberty&nbsp;Pro
+          <Link className="logo" href="/" aria-label="Liberty Pro Coatings home">
+            <img src="/brand/liberty-mark.svg" alt="" width={42} height={40} />
+            <span>Liberty&nbsp;Pro</span>
           </Link>
           <nav className="nav-links">
             {NAV.map(([label, href]) => (

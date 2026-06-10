@@ -22,7 +22,8 @@ export function MobileSheet() {
     >
       <div className="top">
         <div className="logo">
-          <span className="mark">L</span>LPC
+          <img src="/brand/liberty-mark-reverse.svg" alt="" width={36} height={34} />
+          <span>Liberty Pro</span>
         </div>
         <button className="close" onClick={closeSheet} aria-label="Close menu">
           ✕

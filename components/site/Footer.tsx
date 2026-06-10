@@ -10,9 +10,10 @@ export function Footer() {
       <div className="wrap">
         <div className="top">
           <div>
-            <div className="logo" style={{ color: "#fff" }}>
-              <span className="mark">L</span>Liberty Pro Coatings
-            </div>
+            <Link className="logo" href="/" aria-label="Liberty Pro Coatings home" style={{ color: "#fff" }}>
+              <img src="/brand/liberty-mark-reverse.svg" alt="" width={42} height={40} />
+              <span>Liberty Pro Coatings</span>
+            </Link>
             <p className="blurb">
               Manufacturer-direct concrete coating systems for approved contractor installers. A
               brand of American Polymer Group.
