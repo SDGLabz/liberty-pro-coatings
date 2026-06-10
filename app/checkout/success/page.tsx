@@ -12,11 +12,13 @@ import { useSite } from "@/components/site/SiteProvider";
 // this page is the customer-facing confirmation.
 
 type ResultState = "loading" | "succeeded" | "processing" | "failed";
+type LineItem = { sku?: string; name: string; pkg?: string; finish?: string; qty: number };
 
 function Result() {
   const params = useSearchParams();
   const { clearCart } = useSite();
   const [state, setState] = useState<ResultState>("loading");
+  const [items, setItems] = useState<LineItem[]>([]);
   const cleared = useRef(false);
 
   useEffect(() => {
@@ -39,6 +41,7 @@ function Result() {
         const s = data?.status;
         if (r.ok && (s === "paid" || s === "processing")) {
           setState(s === "paid" ? "succeeded" : "processing");
+          if (Array.isArray(data?.items)) setItems(data.items as LineItem[]);
           if (!cleared.current) {
             cleared.current = true;
             clearCart();
@@ -83,6 +86,33 @@ function Result() {
           ? "Your bank (ACH) payment is processing and will settle in a few business days. We'll email you when it clears, then your order moves to fulfillment."
           : "Thanks — your payment went through. A receipt and order confirmation will follow by email."}
       </p>
+      {items.length > 0 && (
+        <ul style={{ listStyle: "none", padding: 0, margin: "14px 0", borderTop: "1px solid var(--line)" }}>
+          {items.map((it, i) => (
+            <li
+              key={i}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: 12,
+                padding: "9px 0",
+                borderBottom: "1px solid var(--line)",
+                fontSize: 14,
+              }}
+            >
+              <span>
+                <b>{it.name}</b>
+                {(it.pkg || it.finish) && (
+                  <span style={{ color: "var(--txt-3)", fontSize: 12, display: "block" }}>
+                    {[it.pkg, it.finish].filter(Boolean).join(" · ")}
+                  </span>
+                )}
+              </span>
+              <span style={{ color: "var(--txt-2)", whiteSpace: "nowrap" }}>× {it.qty}</span>
+            </li>
+          ))}
+        </ul>
+      )}
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 8 }}>
         <Link className="btn btn-primary" href="/products">
           Continue shopping

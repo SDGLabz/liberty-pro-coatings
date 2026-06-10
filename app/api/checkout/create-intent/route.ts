@@ -87,7 +87,9 @@ export async function POST(request: Request) {
       return Response.json({ ok: false, error: `Unknown product: ${item.sku}` }, { status: 400 });
     }
     subtotalCents += Math.round(priceForPkg(product, item.pkg) * 100) * item.qty;
-    skuSummary.push(`${item.sku}x${item.qty}`);
+    // Encode the full line — sku|pkg|finish|qty — so the recorded order shows
+    // what was actually ordered (size, finish, color), not just sku × qty.
+    skuSummary.push(`${item.sku}|${item.pkg}|${item.finish}|${item.qty}`);
   }
 
   const totals = computeTotals(subtotalCents, method);
@@ -116,7 +118,7 @@ export async function POST(request: Request) {
         subtotal_cents: String(totals.subtotalCents),
         discount_cents: String(totals.discountCents),
         total_cents: String(totals.totalCents),
-        items: skuSummary.join(", ").slice(0, 480),
+        items: skuSummary.join("~").slice(0, 480),
       },
     });
 

@@ -138,7 +138,13 @@ export default async function AccountPage() {
               <h3 style={{ fontSize: 16, marginBottom: 4 }}>Recent orders</h3>
               {orderRows.map((o) => {
                 const items = Array.isArray(o.items)
-                  ? (o.items as Array<{ sku: string; name: string; qty: number }>)
+                  ? (o.items as Array<{
+                      sku: string;
+                      name: string;
+                      qty: number;
+                      pkg?: string;
+                      finish?: string;
+                    }>)
                   : [];
                 const firstImg = items[0]?.sku ? getProduct(items[0].sku)?.img : undefined;
                 const s = ORDER_STATUS[o.status] ?? { label: o.status, color: "#5f6f86" };
@@ -169,7 +175,12 @@ export default async function AccountPage() {
                       </div>
                       {items.length > 0 && (
                         <div style={{ fontSize: 13, color: "var(--txt-3)" }}>
-                          {items.map((it) => `${it.name} ×${it.qty}`).join(", ")}
+                          {items
+                            .map(
+                              (it) =>
+                                `${it.name}${it.pkg ? ` · ${it.pkg}` : ""}${it.finish ? ` · ${it.finish}` : ""} ×${it.qty}`,
+                            )
+                            .join(", ")}
                         </div>
                       )}
                     </div>

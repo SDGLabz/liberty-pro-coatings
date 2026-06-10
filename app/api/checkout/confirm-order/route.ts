@@ -42,10 +42,10 @@ export async function POST(request: Request) {
     if (pi.metadata?.user_id !== user.id) {
       return Response.json({ ok: false, error: "Not your order." }, { status: 403 });
     }
-    await upsertOrderFromPaymentIntent(pi);
+    const items = await upsertOrderFromPaymentIntent(pi);
     const status =
       pi.status === "succeeded" ? "paid" : pi.status === "processing" ? "processing" : "failed";
-    return Response.json({ ok: true, status });
+    return Response.json({ ok: true, status, items });
   } catch (err) {
     console.error("[confirm-order] failed:", err);
     return Response.json({ ok: false, error: "Could not confirm the order." }, { status: 500 });
