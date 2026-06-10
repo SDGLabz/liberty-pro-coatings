@@ -125,7 +125,7 @@ export function BuyBox({ sku, name, price, pkg, finish, img, status }: BuyBoxPro
           type="button"
           className="btn btn-cart btn-block"
           disabled
-          style={{ opacity: 0.55, cursor: "not-allowed" }}
+          style={{ cursor: "not-allowed" }}
         >
           {DISABLED_CTA[status]}
         </button>

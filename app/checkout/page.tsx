@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
+import CheckoutClient from "@/components/site/CheckoutClient";
 
 export const metadata: Metadata = { title: "Checkout", robots: { index: false } };
 export const dynamic = "force-dynamic";
@@ -64,28 +65,33 @@ export default async function CheckoutPage() {
     );
   }
 
-  // 3) Approved — checkout unlocked. (Cart line items + Stripe payment land in
-  // the commerce phase; for now the gate is open and the cart is empty.)
+  // 3) Approved — checkout unlocked: render the live cart + Stripe payment.
+  //    The approval was already verified server-side above, and again inside
+  //    the create-intent API, so the payment surface can't be reached unapproved.
+  const who = profile?.company || profile?.email || user.email;
   return (
-    <Shell heading="Checkout.">
-      <div
-        className="featurecard"
-        style={{ borderLeft: "4px solid var(--green)", marginBottom: 20 }}
-      >
-        <strong style={{ color: "#1a7a48" }}>✓ Approved to check out</strong>
-        <p style={{ color: "var(--txt-2)", marginTop: 6, fontSize: 14 }}>
-          {profile?.company || profile?.email || user.email} — your account is approved for
-          freight-inclusive checkout.
-        </p>
-      </div>
-      <p style={{ color: "var(--txt-2)", marginBottom: 20 }}>
-        Your cart is empty. Browse the catalog and build an order — card &amp; ACH payment with live
-        LTL freight is coming soon.
-      </p>
-      <Link className="btn btn-primary" href="/products">
-        Shop the catalog →
-      </Link>
-    </Shell>
+    <>
+      <section className="pagehead">
+        <div className="wrap">
+          <span className="eyebrow">Contractor checkout</span>
+          <h1>Checkout.</h1>
+        </div>
+      </section>
+      <section>
+        <div className="wrap">
+          <div
+            className="featurecard"
+            style={{ borderLeft: "4px solid var(--green)", marginBottom: 22 }}
+          >
+            <strong style={{ color: "var(--green)" }}>✓ Approved to check out</strong>
+            <p style={{ color: "var(--txt-2)", marginTop: 6, fontSize: 14 }}>
+              {who} — your account is approved.
+            </p>
+          </div>
+          <CheckoutClient />
+        </div>
+      </section>
+    </>
   );
 }
 

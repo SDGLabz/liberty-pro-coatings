@@ -20,9 +20,14 @@ export function useAuth(): AuthState {
     let active = true;
 
     async function load() {
+      // getSession reads the stored session from cookies without a server
+      // round-trip, so the UI still reflects sign-in when the access token
+      // merely needs a refresh (getUser can transiently return null then,
+      // which made an approved, signed-in user look logged out in the cart).
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
+        data: { session },
+      } = await supabase.auth.getSession();
+      const user = session?.user ?? null;
       if (!active) return;
       if (!user) {
         setState({ loading: false, loggedIn: false, status: null });

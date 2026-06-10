@@ -12,7 +12,7 @@ import { useAuth } from "./useAuth";
 export function CartDrawer() {
   const { drawerOpen, closeCart, openSurvey, items, cartSubtotal, setItemQty, removeItem, clearCart } =
     useSite();
-  const { loggedIn, status } = useAuth();
+  const { loading, loggedIn, status } = useAuth();
   const panelRef = useRef<HTMLElement>(null);
   useDialogA11y(drawerOpen, panelRef);
 
@@ -104,7 +104,13 @@ export function CartDrawer() {
               <p className="cart-note">
                 Estimate only — freight &amp; final contractor pricing are confirmed at checkout.
               </p>
-              {loggedIn && status === "approved" ? (
+              {loading ? (
+                // While auth resolves, keep the path open — /checkout is the
+                // real, server-side gate, so an approved user is never trapped.
+                <Link className="btn btn-primary btn-block" href="/checkout" onClick={closeCart}>
+                  Proceed to checkout →
+                </Link>
+              ) : loggedIn && status === "approved" ? (
                 <Link className="btn btn-primary btn-block" href="/checkout" onClick={closeCart}>
                   Proceed to checkout →
                 </Link>

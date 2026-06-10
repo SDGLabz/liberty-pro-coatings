@@ -582,3 +582,48 @@
 .featurecard:hover{transform:translateY(-4px);border-color:var(--navy-bright);box-shadow:0 20px 44px -28px rgba(8,12,18,.35)}
 .featurecard .ct{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--red-ink)}
 .featurecard h3{color:var(--ink);font-size:20px;margin:0}
+
+/* ---- Contractor checkout (Stripe) ---- */
+.co-grid{display:grid;grid-template-columns:1fr;gap:24px;align-items:start}
+@media(min-width:860px){.co-grid{grid-template-columns:1.3fr .9fr;gap:32px}}
+.co-h{font-size:18px;color:var(--ink);margin:0 0 14px}
+.co-pay{min-width:0}
+.co-methods{display:grid;gap:12px;margin-bottom:22px}
+.co-method{display:flex;flex-direction:column;gap:3px;text-align:left;padding:14px 16px;border:1.5px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;transition:border-color .2s,box-shadow .2s,background .2s}
+.co-method:hover{border-color:var(--navy-bright)}
+.co-method.is-on{border-color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy);background:#f7faff}
+.co-method-t{font-weight:700;color:var(--ink);font-size:15px}
+.co-method-s{font-size:12.5px;color:var(--txt-2)}
+.co-save{display:inline-block;margin-left:6px;font-size:11px;font-weight:800;letter-spacing:.02em;color:#fff;background:var(--green);border-radius:999px;padding:2px 8px;vertical-align:middle}
+.co-form{display:flex;flex-direction:column;gap:16px}
+.co-pay-btn{width:100%;justify-content:center;font-size:16px;padding:14px}
+.co-secure{font-size:12px;color:var(--txt-3);text-align:center;margin:0}
+.co-loading,.co-error{font-size:13.5px;border-radius:10px;padding:12px 14px}
+.co-loading{color:var(--txt-2);background:var(--bg-2)}
+.co-error{color:#8a1119;background:#fdeced;border:1px solid #f5c2c7;margin-bottom:14px}
+.co-summary{background:var(--bg-2);border:1px solid var(--line);border-radius:14px;padding:22px 20px;position:sticky;top:96px}
+.co-lines{list-style:none;margin:0 0 14px;padding:0;display:flex;flex-direction:column;gap:12px}
+.co-line{display:flex;justify-content:space-between;gap:12px;font-size:14px}
+.co-line-main{display:flex;flex-direction:column;gap:2px;min-width:0}
+.co-line-main strong{color:var(--ink);font-weight:600}
+.co-line-sub{font-size:12px;color:var(--txt-2)}
+.co-line-amt{color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+.co-tot{border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:8px}
+.co-row{display:flex;justify-content:space-between;font-size:14px;color:var(--txt-2)}
+.co-row-accent{color:var(--green);font-weight:700}
+.co-row-big{font-size:18px;font-weight:800;color:var(--ink);border-top:1px dashed var(--line);padding-top:10px;margin-top:2px}
+.co-row-big span{font-variant-numeric:tabular-nums}
+.co-note{font-size:12px;color:var(--txt-3);margin:14px 0 0;line-height:1.5}
+.co-empty{align-items:flex-start;gap:10px}
+
+/* Add-to-cart button — navy fill, white text (was unstyled → white-on-white) */
+.btn-cart{background:var(--navy);color:#fff}
+.btn-cart:hover:not(:disabled){background:var(--navy-bright)}
+.btn-cart:disabled{background:#e7ecf3;color:var(--txt-2);cursor:not-allowed}
+
+/* Dismissible approval notice + order thumbnails (account page) */
+.approved-notice{position:relative}
+.approved-notice-badge{display:inline-block;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#1a7a48;background:#e8f5ee}
+.approved-notice-x{position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;font-size:15px;line-height:1;color:var(--txt-3);padding:4px;border-radius:6px;transition:color .15s,background .15s}
+.approved-notice-x:hover{color:var(--ink);background:var(--bg-2)}
+.order-thumb{width:46px;height:46px;flex:none;border-radius:8px;background:var(--bg-2) center/cover no-repeat;border:1px solid var(--line)}

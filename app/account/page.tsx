@@ -2,8 +2,28 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
+import { formatUsd } from "@/lib/checkout-pricing";
+import { getProduct } from "@/lib/catalog";
+import { ApprovedNotice } from "@/components/site/ApprovedNotice";
 
 export const metadata: Metadata = { title: "My Account", robots: { index: false } };
+
+type OrderRow = {
+  id: string;
+  status: string;
+  payment_method: string;
+  amount_total: number;
+  items: unknown;
+  created_at: string;
+};
+
+const ORDER_STATUS: Record<string, { label: string; color: string }> = {
+  paid: { label: "Paid", color: "#1a7a48" },
+  processing: { label: "Processing", color: "#9a6e00" },
+  failed: { label: "Failed", color: "#d6212e" },
+  canceled: { label: "Canceled", color: "#5f6f86" },
+  refunded: { label: "Refunded", color: "#5f6f86" },
+};
 
 const STATUS_UI: Record<string, { label: string; note: string; color: string; bg: string }> = {
   approved: {
@@ -39,6 +59,14 @@ export default async function AccountPage() {
     .eq("id", user.id)
     .single();
 
+  const { data: ordersData } = await supabase
+    .from("orders")
+    .select("id, status, payment_method, amount_total, items, created_at")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(10);
+  const orderRows = (ordersData ?? []) as unknown as OrderRow[];
+
   const status = profile?.status ?? "pending";
   const ui = STATUS_UI[status] ?? STATUS_UI.pending;
   const isAdmin = profile?.role === "admin";
@@ -62,24 +90,28 @@ export default async function AccountPage() {
 
       <section>
         <div className="wrap" style={{ maxWidth: 640 }}>
-          <div className="featurecard" style={{ marginBottom: 18 }}>
-            <span
-              style={{
-                display: "inline-block",
-                padding: "5px 12px",
-                borderRadius: 999,
-                fontSize: 12,
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: ".05em",
-                color: ui.color,
-                background: ui.bg,
-              }}
-            >
-              {ui.label}
-            </span>
-            <p style={{ marginTop: 12, color: "var(--txt-2)", lineHeight: 1.6 }}>{ui.note}</p>
-          </div>
+          {status === "approved" ? (
+            <ApprovedNotice />
+          ) : (
+            <div className="featurecard" style={{ marginBottom: 18 }}>
+              <span
+                style={{
+                  display: "inline-block",
+                  padding: "5px 12px",
+                  borderRadius: 999,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: ".05em",
+                  color: ui.color,
+                  background: ui.bg,
+                }}
+              >
+                {ui.label}
+              </span>
+              <p style={{ marginTop: 12, color: "var(--txt-2)", lineHeight: 1.6 }}>{ui.note}</p>
+            </div>
+          )}
 
           <div className="featurecard" style={{ marginBottom: 18 }}>
             <h3 style={{ fontSize: 16, marginBottom: 12 }}>Account details</h3>
@@ -100,6 +132,56 @@ export default async function AccountPage() {
               )}
             </dl>
           </div>
+
+          {orderRows.length > 0 && (
+            <div className="featurecard" style={{ marginBottom: 18 }}>
+              <h3 style={{ fontSize: 16, marginBottom: 4 }}>Recent orders</h3>
+              {orderRows.map((o) => {
+                const items = Array.isArray(o.items)
+                  ? (o.items as Array<{ sku: string; name: string; qty: number }>)
+                  : [];
+                const firstImg = items[0]?.sku ? getProduct(items[0].sku)?.img : undefined;
+                const s = ORDER_STATUS[o.status] ?? { label: o.status, color: "#5f6f86" };
+                return (
+                  <div
+                    key={o.id}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      borderTop: "1px solid var(--line)",
+                      padding: "12px 0",
+                    }}
+                  >
+                    <div
+                      className="order-thumb"
+                      style={firstImg ? { backgroundImage: `url('${firstImg}')` } : undefined}
+                      aria-hidden="true"
+                    />
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <div style={{ fontSize: 13, color: "var(--txt-2)" }}>
+                        {new Date(o.created_at).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}{" "}
+                        · {o.payment_method === "ach" ? "Bank (ACH)" : "Card"}
+                      </div>
+                      {items.length > 0 && (
+                        <div style={{ fontSize: 13, color: "var(--txt-3)" }}>
+                          {items.map((it) => `${it.name} ×${it.qty}`).join(", ")}
+                        </div>
+                      )}
+                    </div>
+                    <div style={{ textAlign: "right", whiteSpace: "nowrap" }}>
+                      <div style={{ fontWeight: 700 }}>{formatUsd(o.amount_total)}</div>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: s.color }}>{s.label}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
 
           {isAdmin && (
             <div className="featurecard" style={{ marginBottom: 18 }}>
