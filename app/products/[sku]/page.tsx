@@ -8,7 +8,6 @@ import {
   relatedProducts,
   colorsForProduct,
   CHEM_LABELS,
-  type Color,
 } from "@/lib/catalog";
 import { ProductCard } from "@/components/site/ProductCard";
 import { BuyBox } from "@/components/site/BuyBox";
@@ -55,17 +54,9 @@ export default async function ProductPage({
   const usedIn = systemsUsing(p.sku);
   const related = relatedProducts(p.sku, p.chem);
 
-  // Decorative finishes this product can be ordered in (data-driven, grouped by series).
+  // Decorative finishes this product can be ordered in (data-driven) — rendered
+  // as a swatch picker inside the buy box.
   const productColors = colorsForProduct(p.sku);
-  const colorGroups: { series: string; name: string; colors: Color[] }[] = [];
-  for (const c of productColors) {
-    let g = colorGroups.find((x) => x.series === c.s);
-    if (!g) {
-      g = { series: c.s, name: c.s.replace(/^\d+\s+/, ""), colors: [] };
-      colorGroups.push(g);
-    }
-    g.colors.push(c);
-  }
   const breadcrumb = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -143,6 +134,7 @@ export default async function ProductPage({
                 finish={p.finish}
                 img={p.img}
                 status={p.status}
+                colors={productColors}
               />
             </div>
           </div>
@@ -228,62 +220,6 @@ export default async function ProductPage({
         </div>
       </section>
 
-      {/* Available colors & finishes */}
-      {colorGroups.length > 0 && (
-        <section style={{ borderTop: "1px solid var(--line)" }}>
-          <div className="wrap">
-            <div className="sec-head reveal">
-              <div className="l">
-                <span className="eyebrow">Available colors &amp; finishes</span>
-                <h2>Finish {p.sku} your way.</h2>
-                <p className="lede">
-                  {p.name} can be finished in these decorative options. Swatches are reference
-                  images — on-screen color varies, so order physical chips before committing a job.
-                </p>
-              </div>
-              <Link className="seeall" href="/colors">
-                All colors →
-              </Link>
-            </div>
-            {colorGroups.map((g) => (
-              <div key={g.series} style={{ marginTop: 18 }}>
-                <h3
-                  style={{
-                    fontSize: 13,
-                    textTransform: "uppercase",
-                    letterSpacing: ".04em",
-                    color: "var(--txt-2)",
-                    margin: "0 0 12px",
-                  }}
-                >
-                  {g.name}
-                </h3>
-                <div className="swgrid">
-                  {g.colors.map((c) => (
-                    <div key={c.n} className="swcard reveal">
-                      <div
-                        className="chip"
-                        style={{
-                          backgroundColor: c.c,
-                          backgroundImage: `url('${c.img}')`,
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                        }}
-                        role="img"
-                        aria-label={`${c.n} swatch`}
-                      />
-                      <div className="nm">
-                        <b>{c.n}</b>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
       {/* Documents */}
       <section style={{ borderTop: "1px solid var(--line)" }}>
         <div className="wrap">
@@ -305,7 +241,7 @@ export default async function ProductPage({
                 <h4>{p.sku} Technical Data Sheet</h4>
                 <p>PDF · LPC_TDS_{p.sku}</p>
               </div>
-              <span className="dl">Download →</span>
+              <span className="dl">Download <span className="ar" aria-hidden>→</span></span>
             </a>
             <a className="docrow" href="/contact">
               <span className="ic">SDS</span>
@@ -313,7 +249,7 @@ export default async function ProductPage({
                 <h4>{p.sku} Safety Data Sheet</h4>
                 <p>Available on request</p>
               </div>
-              <span className="dl">Request →</span>
+              <span className="dl">Request <span className="ar" aria-hidden>→</span></span>
             </a>
           </div>
         </div>
@@ -338,7 +274,7 @@ export default async function ProductPage({
                     <h4>{s.name}</h4>
                     <p>{s.blurb}</p>
                   </div>
-                  <span className="lsku">View →</span>
+                  <span className="lsku">View <span className="ar" aria-hidden>→</span></span>
                 </Link>
               ))}
             </div>
@@ -356,7 +292,7 @@ export default async function ProductPage({
                 <h2>Same chemistry.</h2>
               </div>
               <Link className="seeall" href="/products">
-                All products →
+                All products <span className="ar" aria-hidden>→</span>
               </Link>
             </div>
             <div className="pgrid">

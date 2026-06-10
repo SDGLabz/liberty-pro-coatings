@@ -65,7 +65,7 @@ export default function ContactPage() {
                 </div>
                 <div style={{ marginTop: 16 }}>
                   <SurveyButton className="btn btn-primary btn-block">
-                    Become a Contractor →
+                    Become a Contractor <span className="ar" aria-hidden>→</span>
                   </SurveyButton>
                 </div>
               </div>

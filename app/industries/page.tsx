@@ -91,7 +91,7 @@ export default function IndustriesPage() {
           </p>
           <div className="cta-row">
             <Link className="btn btn-primary" href="/products">
-              Shop Products →
+              Shop Products <span className="ar" aria-hidden>→</span>
             </Link>
             <Link className="btn btn-out" href="/systems">
               Browse Systems
@@ -121,7 +121,7 @@ export default function IndustriesPage() {
               <SystemPills slugs={flagship.systems} />
               <div style={{ marginTop: 18 }}>
                 <Link className="btn btn-primary" href="/industries/residential-garage">
-                  Explore residential garage →
+                  Explore residential garage <span className="ar" aria-hidden>→</span>
                 </Link>
               </div>
             </div>
@@ -157,7 +157,7 @@ export default function IndustriesPage() {
               <h2>Stock the systems your market needs.</h2>
               <p>Get approved to buy direct with freight-inclusive pricing.</p>
               <div className="cta-row">
-                <SurveyButton className="btn btn-primary">Become a Contractor →</SurveyButton>
+                <SurveyButton className="btn btn-primary">Become a Contractor <span className="ar" aria-hidden>→</span></SurveyButton>
                 <Link className="btn btn-out" href="/products">
                   Shop Products
                 </Link>

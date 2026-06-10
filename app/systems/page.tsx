@@ -26,7 +26,7 @@ export default function SystemsPage() {
           </p>
           <div className="cta-row">
             <Link className="btn btn-primary" href="/products">
-              Shop Products →
+              Shop Products <span className="ar" aria-hidden>→</span>
             </Link>
             <SurveyButton className="btn btn-out">Become a Contractor</SurveyButton>
           </div>

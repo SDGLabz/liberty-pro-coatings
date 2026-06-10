@@ -46,7 +46,7 @@ export function ProductCard({ p, reveal = true }: { p: ProductCardData; reveal?:
             className="gated"
             style={{ fontFamily: "var(--mono)", fontSize: 12, color: "var(--navy)" }}
           >
-            View →
+            View <span className="ar" aria-hidden>→</span>
           </span>
         </div>
       </div>

@@ -39,7 +39,7 @@ export function MobileSheet() {
         style={{ color: "var(--gold-bright)" }}
         onClick={openSurvey}
       >
-        Become a Contractor →
+        Become a Contractor <span className="ar" aria-hidden>→</span>
       </button>
     </div>
   );

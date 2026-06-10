@@ -190,7 +190,7 @@ export default async function AccountPage() {
                 Review contractor applications and approve who can check out.
               </p>
               <Link className="btn btn-out" href="/admin">
-                Open approval queue →
+                Open approval queue <span className="ar" aria-hidden>→</span>
               </Link>
             </div>
           )}

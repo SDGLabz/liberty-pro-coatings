@@ -108,11 +108,11 @@ export function CartDrawer() {
                 // While auth resolves, keep the path open — /checkout is the
                 // real, server-side gate, so an approved user is never trapped.
                 <Link className="btn btn-primary btn-block" href="/checkout" onClick={closeCart}>
-                  Proceed to checkout →
+                  Proceed to checkout <span className="ar" aria-hidden>→</span>
                 </Link>
               ) : loggedIn && status === "approved" ? (
                 <Link className="btn btn-primary btn-block" href="/checkout" onClick={closeCart}>
-                  Proceed to checkout →
+                  Proceed to checkout <span className="ar" aria-hidden>→</span>
                 </Link>
               ) : loggedIn ? (
                 <>
@@ -127,7 +127,7 @@ export function CartDrawer() {
               ) : (
                 <>
                   <button type="button" className="btn btn-primary btn-block" onClick={openSurvey}>
-                    Become an Approved Contractor →
+                    Become an Approved Contractor <span className="ar" aria-hidden>→</span>
                   </button>
                   <Link
                     className="btn btn-out btn-block"
@@ -151,7 +151,7 @@ export function CartDrawer() {
                   <h4>You&apos;re approved ✓</h4>
                   <p>Your account can check out with freight-inclusive pricing.</p>
                   <Link className="btn btn-primary btn-block" href="/products" onClick={closeCart}>
-                    Shop the catalog →
+                    Shop the catalog <span className="ar" aria-hidden>→</span>
                   </Link>
                 </>
               ) : loggedIn ? (
@@ -173,7 +173,7 @@ export function CartDrawer() {
                     approved contractor account.
                   </p>
                   <button type="button" className="btn btn-primary btn-block" onClick={openSurvey}>
-                    Become an Approved Contractor →
+                    Become an Approved Contractor <span className="ar" aria-hidden>→</span>
                   </button>
                   <Link
                     className="btn btn-out btn-block"

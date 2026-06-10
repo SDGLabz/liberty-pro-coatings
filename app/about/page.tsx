@@ -91,7 +91,7 @@ export default function AboutPage() {
               <h2>Buy direct from the manufacturer.</h2>
               <p>Get approved to check out with freight-inclusive pricing.</p>
               <div className="cta-row">
-                <SurveyButton className="btn btn-primary">Become a Contractor →</SurveyButton>
+                <SurveyButton className="btn btn-primary">Become a Contractor <span className="ar" aria-hidden>→</span></SurveyButton>
                 <Link className="btn btn-out" href="/contact">
                   Contact Us
                 </Link>

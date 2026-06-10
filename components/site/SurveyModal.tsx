@@ -193,7 +193,7 @@ export function SurveyModal() {
                 </div>
               </button>
               <p className="foot-note">
-                Prefer another way? <a href="/contact">Contact us →</a> · (224) 733-1919
+                Prefer another way? <a href="/contact">Contact us <span className="ar" aria-hidden>→</span></a> · (224) 733-1919
               </p>
             </div>
 

@@ -70,7 +70,7 @@ export default async function SystemPage({
           <p>{s.blurb}</p>
           <div className="cta-row">
             <a className="btn btn-primary" href="#components">
-              View Components →
+              View Components <span className="ar" aria-hidden>→</span>
             </a>
             <a
               className="btn btn-out"
@@ -153,7 +153,7 @@ export default async function SystemPage({
               <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
                 <AddSystemToCart items={componentItems} />
                 <Link className="seeall" href="/products">
-                  All products →
+                  All products <span className="ar" aria-hidden>→</span>
                 </Link>
               </div>
             </div>
@@ -183,7 +183,7 @@ export default async function SystemPage({
           </p>
           <div className="cta-row" style={{ justifyContent: "center" }}>
             <Link className="btn btn-primary" href="/resources#calculator">
-              Coverage Calculator →
+              Coverage Calculator <span className="ar" aria-hidden>→</span>
             </Link>
             <SurveyButton className="btn btn-out btn-on-dark">Become a Contractor</SurveyButton>
           </div>

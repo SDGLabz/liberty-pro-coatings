@@ -82,7 +82,7 @@ export default function CheckoutClient() {
         <h2 className="co-h">Your cart is empty.</h2>
         <p style={{ color: "var(--txt-2)" }}>Browse the catalog and build an order.</p>
         <Link className="btn btn-primary" href="/products">
-          Shop the catalog →
+          Shop the catalog <span className="ar" aria-hidden>→</span>
         </Link>
       </div>
     );

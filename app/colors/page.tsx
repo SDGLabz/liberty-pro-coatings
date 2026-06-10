@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { COLORS, SUPPORTING_SKUS, type Color, type SupportingSku } from "@/lib/catalog";
+import { SwatchGrid } from "@/components/site/SwatchGrid";
 
 export const metadata: Metadata = {
   title: "Colors",
@@ -52,37 +53,7 @@ export default function ColorsPage() {
       </section>
       <section>
         <div className="wrap">
-          {GROUPS.map((g) => (
-            <div key={g.series}>
-              <div className="sec-head reveal" style={{ marginTop: 36 }}>
-                <div className="l">
-                  <span className="eyebrow">{g.series}</span>
-                  <h2 style={{ fontSize: "clamp(24px,3vw,38px)" }}>{g.name}</h2>
-                </div>
-              </div>
-              <div className="swgrid">
-                {g.colors.map((c) => (
-                  <div key={c.n} className="swcard reveal">
-                    <div
-                      className="chip"
-                      style={{
-                        backgroundColor: c.c,
-                        backgroundImage: `url('${c.img}')`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }}
-                      role="img"
-                      aria-label={`${c.n} swatch`}
-                    />
-                    <div className="nm">
-                      <b>{c.n}</b>
-                      <span>{c.s}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
+          <SwatchGrid groups={GROUPS} />
           <p style={{ marginTop: 30, fontFamily: "var(--mono)", fontSize: 12, color: "var(--txt-3)" }}>
             Swatches are reference images — on-screen color varies by display, so order physical
             chips before committing a job.

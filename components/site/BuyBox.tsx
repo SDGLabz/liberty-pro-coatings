@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useSite } from "./SiteProvider";
 import { SurveyButton } from "./SurveyButton";
-import type { ProductStatus } from "@/lib/catalog";
+import type { ProductStatus, Color } from "@/lib/catalog";
 
 // Disabled-CTA copy for products that aren't add-to-cart-able yet.
 // "active-off" ("Coming Soon") IS purchasable into a cart (open browsing,
@@ -21,20 +21,29 @@ export interface BuyBoxProps {
   finish: string[];
   img: string;
   status: ProductStatus;
+  /** Decorative swatches this product can be ordered in (empty → no picker). */
+  colors?: Color[];
 }
 
 // Interactive product buy box. Packaging / finish / quantity selection plus
 // a working "Add to cart" that pushes a real line item into the cart.
-export function BuyBox({ sku, name, price, pkg, finish, img, status }: BuyBoxProps) {
+export function BuyBox({ sku, name, price, pkg, finish, img, status, colors = [] }: BuyBoxProps) {
   const { addToCart } = useSite();
   const [pkgIdx, setPkgIdx] = useState(0);
   const [finishIdx, setFinishIdx] = useState(0);
+  const [colorName, setColorName] = useState<string | null>(null);
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
 
   const purchasable = status === "active-off";
   const selectedPkg = pkg[pkgIdx] ?? "";
   const selectedFinish = finish[finishIdx] ?? "";
+  // The order line carries the finish plus the chosen decorative color, if any.
+  const finishLabel = colorName
+    ? selectedFinish
+      ? `${selectedFinish} · ${colorName}`
+      : colorName
+    : selectedFinish;
 
   const bump = (delta: number) => setQty((q) => Math.max(1, q + delta));
   const onQtyInput = (raw: string) => {
@@ -43,7 +52,7 @@ export function BuyBox({ sku, name, price, pkg, finish, img, status }: BuyBoxPro
   };
 
   const handleAdd = () => {
-    addToCart({ sku, name, price, pkg: selectedPkg, finish: selectedFinish, img, qty });
+    addToCart({ sku, name, price, pkg: selectedPkg, finish: finishLabel, img, qty });
     setAdded(true);
     setTimeout(() => setAdded(false), 1600);
   };
@@ -88,6 +97,31 @@ export function BuyBox({ sku, name, price, pkg, finish, img, status }: BuyBoxPro
               >
                 {f}
               </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {colors.length > 0 && (
+        <div className="opt-row">
+          <div className="lbl">
+            Color / finish
+            {colorName && (
+              <span style={{ color: "var(--ink)", marginLeft: 6 }}>· {colorName}</span>
+            )}
+          </div>
+          <div className="swatch-pick">
+            {colors.map((c) => (
+              <button
+                key={c.n}
+                type="button"
+                className={`swp${colorName === c.n ? " active" : ""}`}
+                title={`${c.n} — ${c.s.replace(/^\d+\s+/, "")}`}
+                aria-label={c.n}
+                aria-pressed={colorName === c.n}
+                onClick={() => setColorName((v) => (v === c.n ? null : c.n))}
+                style={{ backgroundColor: c.c, backgroundImage: `url('${c.img}')` }}
+              />
             ))}
           </div>
         </div>

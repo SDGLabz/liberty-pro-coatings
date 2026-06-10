@@ -121,7 +121,7 @@ export default function ResourcesPage() {
                         {p.sku} · TDS &amp; SDS
                       </p>
                     </div>
-                    <span className="dl">Open →</span>
+                    <span className="dl">Open <span className="ar" aria-hidden>→</span></span>
                   </Link>
                 ))}
               </div>
@@ -156,7 +156,7 @@ export default function ResourcesPage() {
                   <h4>{s.name}</h4>
                   <p>{s.tag} · System guide</p>
                 </div>
-                <span className="dl">Download →</span>
+                <span className="dl">Download <span className="ar" aria-hidden>→</span></span>
               </a>
             ))}
           </div>

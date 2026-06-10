@@ -34,7 +34,7 @@ export default function Home() {
             </p>
             <div className="cta-row">
               <Link className="btn btn-primary" href="/products">
-                Shop the Catalog →
+                Shop the Catalog <span className="ar" aria-hidden>→</span>
               </Link>
               <Link className="btn btn-out" href="/systems">
                 Explore Systems
@@ -107,7 +107,7 @@ export default function Home() {
               </p>
             </div>
             <Link className="seeall" href="/systems">
-              All 9 systems →
+              All 9 systems <span className="ar" aria-hidden>→</span>
             </Link>
           </div>
           <div className="cats bento">
@@ -133,7 +133,7 @@ export default function Home() {
               <h2>Find the right resin.</h2>
             </div>
             <Link className="seeall" href="/products">
-              All products →
+              All products <span className="ar" aria-hidden>→</span>
             </Link>
           </div>
           <div className="cats cols-4">
@@ -164,7 +164,7 @@ export default function Home() {
               </p>
             </div>
             <Link className="seeall" href="/products">
-              Shop all →
+              Shop all <span className="ar" aria-hidden>→</span>
             </Link>
           </div>
           <div className="pgrid">
@@ -190,7 +190,7 @@ export default function Home() {
                 polyaspartic systems handle all of it, and install in a day when you need them to.
               </p>
               <Link className="btn btn-primary" href="/industries">
-                Residential Garage Systems →
+                Residential Garage Systems <span className="ar" aria-hidden>→</span>
               </Link>
             </div>
           </div>
@@ -211,14 +211,14 @@ export default function Home() {
                 across the full catalog.
               </p>
               <div className="cta-row">
-                <SurveyButton className="btn btn-primary">Become a Contractor →</SurveyButton>
+                <SurveyButton className="btn btn-primary">Become a Contractor <span className="ar" aria-hidden>→</span></SurveyButton>
                 <Link className="btn btn-out" href="/contact">
                   Talk to Our Team
                 </Link>
               </div>
               <p className="micro">
                 Already approved?{" "}
-                <SurveyButton className="signin-link">Sign in to check out →</SurveyButton>
+                <SurveyButton className="signin-link">Sign in to check out <span className="ar" aria-hidden>→</span></SurveyButton>
               </p>
             </div>
           </div>

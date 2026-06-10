@@ -93,7 +93,7 @@ export default function ResidentialGaragePage() {
           </p>
           <div className="cta-row">
             <Link className="btn btn-primary" href="/systems/flake-broadcast">
-              The flagship system →
+              The flagship system <span className="ar" aria-hidden>→</span>
             </Link>
             <Link className="btn btn-out" href="/resources#calculator">
               Coverage Calculator
@@ -151,7 +151,7 @@ export default function ResidentialGaragePage() {
               </p>
             </div>
             <Link className="seeall" href="/systems">
-              All systems →
+              All systems <span className="ar" aria-hidden>→</span>
             </Link>
           </div>
           <div className="cats cols-3">
@@ -171,7 +171,7 @@ export default function ResidentialGaragePage() {
               <h2>The materials that do the work.</h2>
             </div>
             <Link className="seeall" href="/products">
-              All products →
+              All products <span className="ar" aria-hidden>→</span>
             </Link>
           </div>
           <div className="pgrid">
@@ -193,7 +193,7 @@ export default function ResidentialGaragePage() {
               <h2>Buy the garage systems direct.</h2>
               <p>Get approved to order with freight-inclusive pricing and same-day-system stock.</p>
               <div className="cta-row">
-                <SurveyButton className="btn btn-primary">Become a Contractor →</SurveyButton>
+                <SurveyButton className="btn btn-primary">Become a Contractor <span className="ar" aria-hidden>→</span></SurveyButton>
                 <Link className="btn btn-out" href="/systems/1-day-flake-broadcast">
                   See the 1-day system
                 </Link>
