@@ -240,7 +240,7 @@ function Panel({
           closing ? "a11y-panel-exit" : "a11y-panel-enter",
         )}
       >
-        {/* Header — Belzona-blue gradient chrome: brand icon + title on the
+        {/* Header — LPC-red gradient chrome: brand icon + title on the
             left, frosted control buttons on the right, a status pill + subtle
             wordmark below. */}
         <div className="relative shrink-0 overflow-hidden bg-gradient-to-br from-[#ef4b54] via-brand to-brand-dark text-white">
@@ -559,7 +559,7 @@ function Panel({
           <p className="mt-2.5 text-center text-[11px] text-muted2">
             Accessibility tools by{" "}
             <span className="font-semibold text-slate2">
-              Industrial Maintenance Solutions
+              Liberty Pro Coatings
             </span>
           </p>
         </div>
