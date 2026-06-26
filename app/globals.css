@@ -1,5 +1,21 @@
 @import "tailwindcss";
 
+/* Tailwind v4 theme tokens consumed by the ported accessibility widget
+   (components/a11y/*). Mapped (inline) onto LPC's existing palette so the
+   widget's `bg-brand` / `text-ink` / `bg-surface` utilities resolve to the
+   Liberty Pro Coatings colors instead of being undefined. */
+@theme inline {
+  --color-brand: var(--red);
+  --color-brand-dark: #b51d27;
+  --color-ink: var(--ink);
+  --color-slate2: var(--txt-2);
+  --color-muted2: var(--txt-3);
+  --color-line: var(--line);
+  --color-surface: var(--bg);
+  --color-surface-alt: var(--bg-2);
+  --color-accent: var(--navy);
+}
+
 :root{
     --bg:#ffffff;            /* light canvas */
     --bg-2:#f4f6fa;          /* soft grey section */
@@ -11,6 +27,7 @@
     --ink-2:#111d31;
     --navy:#0a3a6b; --navy-bright:#1666c0;
     --red:#d6212e; --red-soft:#e0242f;
+    --brand:214 33 46; /* RGB triple of --red, for the a11y widget's rgb(var(--brand)/a) glow shadows */
     --gold:#b8860b; --gold-bright:#e8b73a; --gold-text:#9a6e00; /* AA-safe gold for small text on light bg */
     --txt:#0e1a2b; --txt-2:#4a5b71; --txt-3:#5f6f86; /* muted slate darkened from #7e8da3 for WCAG AA on light bg */
     --maxw:1320px;
@@ -681,3 +698,177 @@ button.swcard{font:inherit;text-align:left;cursor:pointer;padding:0;width:100%;d
 .approved-notice-x{position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;font-size:15px;line-height:1;color:var(--txt-3);padding:4px;border-radius:6px;transition:color .15s,background .15s}
 .approved-notice-x:hover{color:var(--ink);background:var(--bg-2)}
 .order-thumb{width:46px;height:46px;flex:none;border-radius:8px;background:var(--bg-2) center/cover no-repeat;border:1px solid var(--line)}
+
+/* ============================================================
+   ACCESSIBILITY WIDGET OVERRIDES — classes toggled on <html> by
+   components/a11y/AccessibilityProvider. Page-content re-skins
+   (contrast / saturation / recolor / hide-images / hover / read-mode)
+   are scoped to #a11y-root so the fixed widget itself (mounted OUTSIDE
+   #a11y-root) is never affected. Ported from carenet.pro and adapted to
+   LPC's token palette (var(--red) brand, --bg/--txt/--line surfaces).
+   ============================================================ */
+html.a11y-font-scaled {
+  font-size: calc(100% * var(--a11y-font-scale, 1));
+}
+html.a11y-readable-font,
+html.a11y-readable-font
+  :where(p, li, a, span, h1, h2, h3, h4, h5, h6, button, input, label, td, th, blockquote, figcaption) {
+  font-family: Verdana, Tahoma, "Helvetica Neue", Arial, sans-serif !important;
+  letter-spacing: 0.01em;
+}
+html.a11y-highlight-links a {
+  outline: 2px solid var(--red) !important;
+  outline-offset: 2px;
+  text-decoration: underline !important;
+}
+html.a11y-stop-motion,
+html.a11y-stop-motion *,
+html.a11y-stop-motion *::before,
+html.a11y-stop-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+html.a11y-line-height :where(p, li, blockquote, dd, figcaption) {
+  line-height: var(--a11y-line-height, 1.5) !important;
+}
+html.a11y-letter-spacing
+  :where(p, li, a, span, h1, h2, h3, h4, h5, h6, button, label, td, th, blockquote, dd, figcaption) {
+  letter-spacing: var(--a11y-letter-spacing, 0.05em) !important;
+}
+html.a11y-highlight-titles :where(h1, h2, h3, h4, h5, h6) {
+  outline: 2px dashed var(--red) !important;
+  outline-offset: 3px;
+}
+html.a11y-align-left :where(p, li, h1, h2, h3, h4, h5, h6, blockquote) {
+  text-align: left !important;
+}
+html.a11y-align-center :where(p, li, h1, h2, h3, h4, h5, h6, blockquote) {
+  text-align: center !important;
+}
+html.a11y-align-right :where(p, li, h1, h2, h3, h4, h5, h6, blockquote) {
+  text-align: right !important;
+}
+
+/* Contrast — re-skin LPC's surface/text/line tokens on #a11y-root only, so the
+   fixed widget (which consumes the same tokens via @theme) stays untouched.
+   --ink / --navy / --red are deliberately NOT remapped: LPC uses --ink as the
+   dark-section BACKGROUND (hero/footer/CTA) with hardcoded white text, so
+   flipping it would break those sections. In dark mode every section becomes
+   dark, so headings (normally color:var(--ink)) are forced light. */
+html.a11y-contrast-dark {
+  background: #0f1216;
+}
+html.a11y-contrast-dark #a11y-root {
+  --bg: #13161c;
+  --bg-2: #1a1e26;
+  --panel: #1a1e26;
+  --panel-2: #232833;
+  --surface-2: #1a1e26;
+  --line: #2c323d;
+  --line-soft: #262b34;
+  --border: #2c323d;
+  --txt: #eef2f7;
+  --txt-2: #c4ccd6;
+  --txt-3: #9aa3ae;
+}
+html.a11y-contrast-dark #a11y-root :where(h1, h2, h3, h4, h5, h6) {
+  color: #f3f6fa !important;
+}
+html.a11y-contrast-light #a11y-root {
+  --bg: #ffffff;
+  --bg-2: #ffffff;
+  --panel: #ffffff;
+  --panel-2: #ffffff;
+  --surface-2: #ffffff;
+  --line: #c9d2dd;
+  --line-soft: #d6deea;
+  --border: #c9d2dd;
+  --txt: #0a0f18;
+  --txt-2: #1f2a3a;
+  --txt-3: #2b3647;
+}
+html.a11y-contrast-high #a11y-root {
+  --bg: #ffffff;
+  --bg-2: #ffffff;
+  --panel: #ffffff;
+  --panel-2: #ffffff;
+  --surface-2: #ffffff;
+  --line: #000000;
+  --line-soft: #000000;
+  --border: #000000;
+  --txt: #000000;
+  --txt-2: #000000;
+  --txt-3: #1a1a1a;
+}
+
+/* Saturation — filter the page wrapper only, so the widget keeps true color. */
+html.a11y-saturate-high #a11y-root {
+  filter: saturate(1.8);
+}
+html.a11y-saturate-low #a11y-root {
+  filter: saturate(0.5);
+}
+html.a11y-saturate-mono #a11y-root {
+  filter: grayscale(1);
+}
+
+/* Recolor — optional text / title / page-background overrides. */
+html.a11y-recolor-text
+  :where(p, li, span, a, td, th, dd, figcaption, button, label) {
+  color: var(--a11y-recolor-text) !important;
+}
+html.a11y-recolor-title :where(h1, h2, h3, h4, h5, h6) {
+  color: var(--a11y-recolor-title) !important;
+}
+html.a11y-recolor-bg #a11y-root {
+  background: var(--a11y-recolor-bg) !important;
+}
+
+/* Hide Images — keep layout, hide media within page content only. */
+html.a11y-hide-images
+  #a11y-root
+  :where(img, picture, video, [style*="background-image"]) {
+  visibility: hidden !important;
+}
+
+/* Big Cursor — large arrow cursor via SVG data-URI. */
+html.a11y-cursor-black,
+html.a11y-cursor-black * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath d='M5 2 L5 21 L10 16 L13 22 L16 21 L13 15 L20 15 Z' fill='black' stroke='white' stroke-width='1'/%3E%3C/svg%3E")
+      0 0,
+    auto !important;
+}
+html.a11y-cursor-white,
+html.a11y-cursor-white * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath d='M5 2 L5 21 L10 16 L13 22 L16 21 L13 15 L20 15 Z' fill='white' stroke='black' stroke-width='1'/%3E%3C/svg%3E")
+      0 0,
+    auto !important;
+}
+
+/* Highlight Focus — strong outline on any focused interactive element. */
+html.a11y-highlight-focus
+  :where(a, button, input, select, textarea, [tabindex]):focus {
+  outline: 3px solid var(--red) !important;
+  outline-offset: 2px !important;
+}
+
+/* Highlight Hover — outline interactive page elements on hover. */
+html.a11y-highlight-hover
+  #a11y-root
+  :where(a, button, [role="button"]):hover {
+  outline: 2px solid var(--red) !important;
+  outline-offset: 2px !important;
+}
+
+/* Read Mode — strip decorative chrome/media + constrain text width. */
+html.a11y-read-mode
+  #a11y-root
+  :where(header, footer, nav, aside, [data-decorative]) {
+  display: none !important;
+}
+html.a11y-read-mode #a11y-root main {
+  max-width: 46rem !important;
+  margin: 0 auto !important;
+}
