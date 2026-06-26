@@ -1,19 +1,18 @@
 @import "tailwindcss";
 
-/* Tailwind v4 theme tokens consumed by the ported accessibility widget
-   (components/a11y/*). Mapped (inline) onto LPC's existing palette so the
-   widget's `bg-brand` / `text-ink` / `bg-surface` utilities resolve to the
-   Liberty Pro Coatings colors instead of being undefined. */
-@theme inline {
-  --color-brand: var(--red);
+/* Accessibility-widget palette consumed by the ported a11y menu
+   (components/a11y/*). Neutral tokens copied EXACTLY from imsbelzona so the
+   panel's surfaces, text and borders match IMS; only the brand is LPC red. */
+@theme {
+  --color-brand: #d6212e; /* LPC red (was IMS Belzona blue) */
   --color-brand-dark: #b51d27;
-  --color-ink: var(--ink);
-  --color-slate2: var(--txt-2);
-  --color-muted2: var(--txt-3);
-  --color-line: var(--line);
-  --color-surface: var(--bg);
-  --color-surface-alt: var(--bg-2);
-  --color-accent: var(--navy);
+  --color-surface: #ffffff;
+  --color-surface-alt: #f4f7fa;
+  --color-ink: #0b1f33;
+  --color-slate2: #5b6675;
+  --color-muted2: #8a96a3;
+  --color-line: #e4e9ef;
+  --color-accent: #d6212e; /* LPC red (was IMS orange) */
 }
 
 :root{
