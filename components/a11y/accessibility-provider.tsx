@@ -1,10 +1,9 @@
 "use client";
 // Accessibility widget — state store + effect applier.
-// Mirrors the lib/providers.tsx pattern: a small React context persisted to
-// localStorage. A single effect reflects the current settings onto <html>
-// (classes + CSS vars); the override styles live in globals.css. Content
-// adjustments (A3a–b) live here; later sub-stages add color / orientation /
-// profiles by extending this same shape + the same CSS hooks.
+// A small React context persisted to localStorage. A single effect reflects
+// the current settings onto <html> (classes + CSS vars); the override styles
+// live in globals.css. Content adjustments live here; color / orientation /
+// profiles extend this same shape + the same CSS hooks.
 import React, {
   createContext,
   useContext,
@@ -43,7 +42,7 @@ export interface A11ySettings {
   readMode: boolean;
 }
 
-// One-click profiles (A3e). Each bundles a set of the settings above; turning
+// One-click profiles. Each bundles a set of the settings above; turning
 // one ON merges its `apply`, turning it OFF reverts exactly those keys back to
 // their DEFAULTS. Active profiles ride the persisted settings object.
 export type ProfileKey =
@@ -262,7 +261,7 @@ export function AccessibilityProvider({
 
     html.classList.toggle("a11y-stop-motion", settings.stopAnimations);
 
-    // Orientation adjustments (A3d).
+    // Orientation adjustments.
     html.classList.toggle("a11y-hide-images", settings.hideImages);
     html.classList.toggle("a11y-cursor-black", settings.bigCursor === "black");
     html.classList.toggle("a11y-cursor-white", settings.bigCursor === "white");

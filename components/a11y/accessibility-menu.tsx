@@ -2,16 +2,18 @@
 // Accessibility widget — a fixed launcher button + a focus-trapped panel.
 // UI styled after the familiar industry-standard accessibility widget
 // (branded header → one-click profiles → icon-tile adjustment grids →
-// footer). All state lives in AccessibilityProvider; this file is purely the
-// launcher + panel + a few cursor-following portals (magnifier / guide / mask).
+// footer). All state lives in the accessibility-provider; this file is purely
+// the launcher + panel + a few cursor-following portals (magnifier / guide /
+// mask). The panel slide-in is plain CSS (see globals.css), no JS motion lib.
 import {
+  useCallback,
   useEffect,
+  useId,
   useRef,
   useState,
   type ReactNode,
   type RefObject,
 } from "react";
-import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import {
   Accessibility,
   X,
@@ -56,8 +58,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import {
-  AccessibilityProvider,
   useA11y,
   PROFILE_ORDER,
   type TextAlign,
@@ -65,26 +67,34 @@ import {
   type Saturation,
   type BigCursor,
   type ProfileKey,
-} from "./AccessibilityProvider";
+} from "./accessibility-provider";
 import { cn } from "@/lib/cn";
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 export function AccessibilityMenu() {
-  return (
-    <AccessibilityProvider>
-      <Widget />
-    </AccessibilityProvider>
-  );
+  // The provider is mounted once in app/layout.tsx (wrapping both the page
+  // content and this widget), so the widget just consumes that context.
+  return <Widget />;
 }
 
 function Widget() {
   const [open, setOpen] = useState(false);
+  const [closing, setClosing] = useState(false);
   const [hidden, setHidden] = useState(false);
   const { settings, activeCount } = useA11y();
-  const reduce = useReducedMotion();
   const launcherRef = useRef<HTMLButtonElement>(null);
+
+  // Animated close: play the genie-out animation, then unmount. Duration must
+  // match .a11y-panel-exit in globals.css (~0.34s).
+  const requestClose = useCallback(() => {
+    setClosing(true);
+    window.setTimeout(() => {
+      setClosing(false);
+      setOpen(false);
+    }, 340);
+  }, []);
 
   // "Hide Interface" removes the widget for this page session; a reload
   // restores it (deliberately not persisted, so it can't be lost for good).
@@ -100,16 +110,22 @@ function Widget() {
         aria-expanded={open}
         aria-label="Open accessibility menu"
         onClick={() => setOpen(true)}
-        className="group fixed bottom-5 right-5 z-[55] flex h-14 w-14 items-center justify-center rounded-full bg-brand text-white shadow-[0_12px_34px_-8px_rgb(var(--brand)/0.6)] outline-none ring-[6px] ring-brand/15 transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:shadow-[0_18px_44px_-10px_rgb(var(--brand)/0.65)] focus-visible:ring-brand/40 active:translate-y-0"
+        className="group fixed bottom-5 right-5 z-[10010] flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#ef4b54] via-brand to-brand-dark text-white shadow-[0_14px_38px_-8px_rgb(var(--brand)/0.65)] outline-none ring-1 ring-white/30 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:shadow-[0_22px_50px_-10px_rgb(var(--brand)/0.7)] focus-visible:ring-4 focus-visible:ring-brand/40 active:translate-y-0"
       >
+        <span
+          aria-hidden
+          className="pointer-events-none absolute right-full mr-3 translate-x-1 whitespace-nowrap rounded-full bg-ink px-3 py-1.5 text-xs font-semibold text-white opacity-0 shadow-lg transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100"
+        >
+          Accessibility
+        </span>
         <Accessibility
           aria-hidden
-          className="h-7 w-7 transition-transform duration-300 group-hover:rotate-[12deg]"
+          className="h-7 w-7 transition-transform duration-300 group-hover:rotate-[14deg]"
         />
         {activeCount > 0 && (
           <span
             aria-hidden
-            className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[11px] font-bold text-white ring-2 ring-surface"
+            className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[11px] font-bold text-white ring-2 ring-surface"
           >
             {activeCount}
           </span>
@@ -121,30 +137,29 @@ function Widget() {
       <ReadingGuide active={settings.readingGuide} />
       <ReadingMask active={settings.readingMask} />
 
-      <AnimatePresence>
-        {open && (
-          <Panel
-            reduce={!!reduce}
-            onClose={() => setOpen(false)}
-            onHide={() => {
-              setOpen(false);
-              setHidden(true);
-            }}
-            launcherRef={launcherRef}
-          />
-        )}
-      </AnimatePresence>
+      {open && (
+        <Panel
+          closing={closing}
+          onClose={requestClose}
+          onHide={() => {
+            setClosing(false);
+            setOpen(false);
+            setHidden(true);
+          }}
+          launcherRef={launcherRef}
+        />
+      )}
     </>
   );
 }
 
 function Panel({
-  reduce,
+  closing,
   onClose,
   onHide,
   launcherRef,
 }: {
-  reduce: boolean;
+  closing: boolean;
   onClose: () => void;
   onHide: () => void;
   launcherRef: RefObject<HTMLButtonElement | null>;
@@ -156,10 +171,13 @@ function Panel({
 
   // Focus the close button on open; restore focus to the launcher on close.
   useEffect(() => {
+    // Capture the launcher node now; it persists for the panel's lifetime, so
+    // it's safe to focus it from cleanup.
+    const launcherEl = launcherRef.current;
     const id = window.requestAnimationFrame(() => closeBtnRef.current?.focus());
     return () => {
       window.cancelAnimationFrame(id);
-      launcherRef.current?.focus?.();
+      launcherEl?.focus?.();
     };
   }, [launcherRef]);
 
@@ -200,84 +218,50 @@ function Panel({
     n === 0 ? "Default" : `${plus && n > 0 ? "+" : ""}${n}`;
 
   return (
-    <div className="fixed inset-0 z-[60] flex justify-end">
-      <m.div
-        className="absolute inset-0 bg-black/70 backdrop-blur-[3px]"
+    <div className="fixed inset-0 z-[10020] flex justify-end">
+      {/* Backdrop — plain element with a CSS opacity transition (was framer). */}
+      <div
+        aria-hidden
+        className={cn(
+          "absolute inset-0 bg-black/45 backdrop-blur-[2px]",
+          closing ? "a11y-backdrop-exit" : "a11y-backdrop-enter",
+        )}
         onClick={onClose}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: reduce ? 0 : 0.25 }}
       />
-      <m.div
+      {/* Panel — slides in from the right via a CSS keyframe (was framer); the
+          slide is disabled under prefers-reduced-motion in globals.css. */}
+      <aside
         ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-label="Accessibility menu"
-        style={{ transformOrigin: "bottom right", willChange: "transform" }}
-        className="relative z-10 flex h-full w-full max-w-[420px] flex-col overflow-hidden bg-surface shadow-[0_28px_80px_-12px_rgba(0,0,0,0.6)] ring-1 ring-black/10 sm:my-3 sm:mr-3 sm:h-[calc(100%-1.5rem)] sm:rounded-2xl"
-        // macOS Dock "genie": anchored at the launcher corner, the panel rises
-        // out of the dock as a tall thin column (the neck) and then unfurls to
-        // full width; closing reverses it — narrow to a column, then pour down
-        // into the icon. Staged keyframes give the column/neck phase that a
-        // uniform scale can't.
-        initial={
-          reduce
-            ? { opacity: 0 }
-            : { opacity: 0, scaleX: 0.06, scaleY: 0.03, x: 22, y: 30 }
-        }
-        animate={
-          reduce
-            ? { opacity: 1 }
-            : {
-                opacity: [0, 1, 1, 1],
-                scaleX: [0.06, 0.12, 0.5, 1],
-                scaleY: [0.03, 0.62, 0.92, 1],
-                x: [22, 16, 5, 0],
-                y: [30, 18, 6, 0],
-              }
-        }
-        exit={
-          reduce
-            ? { opacity: 0 }
-            : {
-                opacity: [1, 1, 1, 0],
-                scaleX: [1, 0.5, 0.12, 0.06],
-                scaleY: [1, 0.92, 0.55, 0.03],
-                x: [0, 5, 16, 22],
-                y: [0, 6, 18, 30],
-              }
-        }
-        transition={
-          reduce
-            ? { duration: 0 }
-            : {
-                duration: 0.58,
-                ease: [0.4, 0, 0.2, 1],
-                times: [0, 0.35, 0.7, 1],
-              }
-        }
+        className={cn(
+          "relative z-10 flex h-full w-full max-w-[440px] flex-col overflow-hidden bg-surface shadow-[0_30px_80px_-20px_rgba(4,30,66,0.55)] sm:my-3 sm:mr-3 sm:h-[calc(100%-1.5rem)] sm:rounded-3xl",
+          closing ? "a11y-panel-exit" : "a11y-panel-enter",
+        )}
       >
-        {/* Header — slate brand chrome with the Liberty Pro logo (two rows: brand +
-            controls on top, the titled bar below, so the wide wordmark breathes) */}
-        <div className="shrink-0 text-white" style={{ backgroundColor: "#26323b" }}>
-          <div className="h-1 w-full bg-brand" aria-hidden />
-          <div className="flex items-center justify-between gap-2 px-4 pt-3.5">
-            <span className="flex min-w-0 items-center gap-2">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/brand/liberty-mark-reverse.svg"
-                alt=""
-                aria-hidden
-                className="h-6 w-auto"
-              />
-              <span
-                className="truncate text-[15px] font-bold uppercase tracking-[0.04em] text-white"
-                style={{ fontFamily: "var(--head)" }}
-              >
-                Liberty Pro
+        {/* Header — Belzona-blue gradient chrome: brand icon + title on the
+            left, frosted control buttons on the right, a status pill + subtle
+            wordmark below. */}
+        <div className="relative shrink-0 overflow-hidden bg-gradient-to-br from-[#ef4b54] via-brand to-brand-dark text-white">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -right-12 -top-14 h-44 w-44 rounded-full bg-white/15 blur-2xl"
+          />
+          <div className="relative flex items-start justify-between gap-3 px-5 pt-4">
+            <div className="flex items-center gap-3">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/15 ring-1 ring-inset ring-white/25 backdrop-blur-sm">
+                <Accessibility aria-hidden className="h-6 w-6" />
               </span>
-            </span>
+              <div className="min-w-0">
+                <h2 className="text-[18px] font-bold leading-tight tracking-tight">
+                  Accessibility
+                </h2>
+                <p className="text-[12.5px] leading-tight text-white/75">
+                  Adjust this site to your needs
+                </p>
+              </div>
+            </div>
             <div className="flex shrink-0 items-center gap-1">
               <HeaderBtn
                 onClick={reset}
@@ -298,29 +282,30 @@ function Panel({
               />
             </div>
           </div>
-          <div className="flex items-center gap-3 px-4 pb-4 pt-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/10">
-              <Accessibility aria-hidden className="h-5 w-5" />
+          <div className="relative flex items-center justify-between gap-2 px-5 pb-4 pt-3.5">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[12px] font-semibold text-white ring-1 ring-inset ring-white/20">
+              {activeCount > 0 ? (
+                <>
+                  <Check aria-hidden className="h-3.5 w-3.5" strokeWidth={3} />
+                  {activeCount} active
+                </>
+              ) : (
+                "No adjustments yet"
+              )}
             </span>
-            <div className="min-w-0">
-              <h2 className="text-[17px] font-bold leading-tight">
-                Accessibility Adjustments
-              </h2>
-              <p className="text-[12px] leading-tight text-white/60">
-                Make this site work for you
-              </p>
-            </div>
+            <Image
+              src="/brand/liberty-mark-reverse.png"
+              alt=""
+              aria-hidden
+              width={64}
+              height={61}
+              className="h-7 w-auto opacity-100"
+            />
           </div>
         </div>
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto overscroll-contain">
-          <div className="px-4 pb-1 pt-4">
-            <p className="text-[12.5px] leading-relaxed text-muted2">
-              Your choices are saved on this device.
-            </p>
-          </div>
-
+        <div className="flex-1 divide-y divide-line overflow-y-auto overscroll-contain pt-1">
           {/* Profiles */}
           <SectionBlock title="Accessibility profiles">
             <div
@@ -548,39 +533,37 @@ function Panel({
         </div>
 
         {/* Footer */}
-        <div className="shrink-0 border-t border-line bg-surface-alt px-4 py-3">
+        <div className="shrink-0 border-t border-line bg-surface-alt px-5 py-3.5">
           <button
             type="button"
             onClick={reset}
             disabled={activeCount === 0}
-            className={cn(
-              "mb-3.5 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-colors",
-              activeCount === 0
-                ? "cursor-not-allowed bg-surface text-muted2 ring-1 ring-line"
-                : "bg-brand text-white shadow-[0_10px_24px_-10px_rgb(var(--brand)/0.7)] hover:bg-brand-dark",
-            )}
+            className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-dark focus-visible:ring-2 focus-visible:ring-brand/40 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            <RotateCcw aria-hidden className="h-[18px] w-[18px]" />
-            Reset all settings{activeCount > 0 ? ` · ${activeCount}` : ""}
+            <RotateCcw aria-hidden className="h-4 w-4" />
+            Reset all settings
           </button>
-          <div className="flex items-center justify-between gap-2 text-xs">
+          <div className="flex items-center justify-between gap-2">
             <Link
               href="/legal"
               onClick={onClose}
-              className="font-semibold text-brand underline-offset-2 hover:underline"
+              className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-brand underline-offset-2 hover:underline"
             >
+              <BookOpen aria-hidden className="h-4 w-4" />
               Accessibility Statement
             </Link>
-            <span className="inline-flex items-center gap-1 rounded-full border border-line bg-surface px-2.5 py-1 font-medium text-slate2">
+            <span className="inline-flex items-center gap-1 rounded-full border border-line bg-surface px-2.5 py-1 text-xs font-medium text-slate2">
               <Globe aria-hidden className="h-3.5 w-3.5" /> English
             </span>
           </div>
           <p className="mt-2.5 text-center text-[11px] text-muted2">
             Accessibility tools by{" "}
-            <span className="font-semibold text-slate2">Liberty Pro Coatings</span>
+            <span className="font-semibold text-slate2">
+              Industrial Maintenance Solutions
+            </span>
           </p>
         </div>
-      </m.div>
+      </aside>
     </div>
   );
 }
@@ -625,7 +608,7 @@ function HeaderBtn({
       disabled={disabled}
       aria-label={label}
       title={label}
-      className="flex h-9 w-9 items-center justify-center rounded-full text-white/85 outline-none transition-colors hover:bg-white/15 hover:text-white focus-visible:ring-2 focus-visible:ring-white/60 disabled:opacity-40 disabled:hover:bg-transparent"
+      className="flex h-9 w-9 items-center justify-center rounded-full text-white/90 outline-none transition-colors hover:bg-white/20 hover:text-white focus-visible:ring-2 focus-visible:ring-white/70 disabled:opacity-40 disabled:hover:bg-transparent"
     >
       {icon}
     </button>
@@ -642,9 +625,8 @@ function SectionBlock({
   children: ReactNode;
 }) {
   return (
-    <section className="px-4 py-3">
-      <h3 className="mb-2.5 flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.08em] text-muted2">
-        <span className="h-px w-3.5 bg-brand" aria-hidden />
+    <section className="px-5 py-4">
+      <h3 className="mb-3 text-[11.5px] font-bold uppercase tracking-[0.12em] text-muted2">
         {title}
       </h3>
       {children}
@@ -695,8 +677,6 @@ const PROFILE_META: Record<
   },
 };
 
-let profileToggleSeq = 0;
-
 function ProfileRow({
   title,
   desc,
@@ -711,7 +691,7 @@ function ProfileRow({
   onChange: (v: boolean) => void;
 }) {
   // Stable id for aria-describedby linking the description to the switch.
-  const descId = useRef(`a11y-profile-${++profileToggleSeq}`).current;
+  const descId = useId();
   return (
     <button
       type="button"
@@ -720,24 +700,24 @@ function ProfileRow({
       aria-describedby={descId}
       onClick={() => onChange(!checked)}
       className={cn(
-        "flex w-full items-center justify-between gap-3 rounded-xl border px-3 py-3 text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-brand/40",
+        "flex w-full items-center justify-between gap-3 rounded-2xl border px-3.5 py-3 text-left outline-none transition-all duration-150 focus-visible:ring-2 focus-visible:ring-brand/40",
         checked
-          ? "border-brand bg-brand/[0.06]"
-          : "border-line bg-surface hover:border-brand/30 hover:bg-surface-alt",
+          ? "border-brand bg-brand/[0.06] shadow-[0_6px_18px_-10px_rgb(var(--brand)/0.5)]"
+          : "border-line bg-surface hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-md",
       )}
     >
       <span className="flex min-w-0 items-center gap-3">
         <span
           className={cn(
-            "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors",
+            "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl transition-colors",
             checked ? "bg-brand text-white" : "bg-surface-alt text-slate2",
           )}
         >
           {icon}
         </span>
         <span className="min-w-0">
-          <span className="block text-sm font-semibold text-ink">{title}</span>
-          <span id={descId} className="block text-xs text-muted2">
+          <span className="block text-[14px] font-semibold text-ink">{title}</span>
+          <span id={descId} className="block text-[12px] text-muted2">
             {desc}
           </span>
         </span>
@@ -754,14 +734,14 @@ function Switch({ checked }: { checked: boolean }) {
     <span
       aria-hidden
       className={cn(
-        "relative inline-flex h-6 w-11 shrink-0 rounded-full transition-colors",
-        checked ? "bg-brand" : "bg-gray-300",
+        "relative inline-flex h-6 w-11 shrink-0 items-center rounded-full px-0.5 transition-colors duration-200",
+        checked ? "bg-brand" : "bg-slate-300",
       )}
     >
       <span
         className={cn(
-          "inline-block h-5 w-5 translate-y-0.5 rounded-full bg-white shadow transition-transform",
-          checked ? "translate-x-5.5" : "translate-x-0.5",
+          "inline-block h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-200",
+          checked ? "translate-x-5" : "translate-x-0",
         )}
       />
     </span>
@@ -789,33 +769,33 @@ function Tile({
       aria-label={label}
       onClick={onClick}
       className={cn(
-        "group relative flex min-h-[84px] flex-col items-center justify-center gap-2 rounded-xl border p-2 text-center outline-none transition-colors focus-visible:ring-2 focus-visible:ring-brand/40",
+        "group relative flex min-h-[92px] flex-col items-center justify-center gap-2 rounded-2xl border p-2.5 text-center outline-none transition-all duration-150 focus-visible:ring-2 focus-visible:ring-brand/40",
         active
-          ? "border-brand bg-brand/[0.07]"
-          : "border-line bg-surface hover:border-brand/40 hover:bg-surface-alt",
+          ? "border-brand bg-brand/[0.06] shadow-[0_6px_18px_-10px_rgb(var(--brand)/0.5)]"
+          : "border-line bg-surface hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-md",
       )}
     >
       {active && (
         <span
           aria-hidden
-          className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-brand text-white"
+          className="absolute right-2 top-2 flex h-4 w-4 items-center justify-center rounded-full bg-brand text-white"
         >
           <Check className="h-3 w-3" strokeWidth={3} />
         </span>
       )}
       <span
         className={cn(
-          "flex h-10 w-10 items-center justify-center rounded-xl transition-colors",
+          "flex h-11 w-11 items-center justify-center rounded-xl transition-colors",
           active
             ? "bg-brand text-white"
-            : "bg-surface-alt text-slate2 group-hover:text-brand",
+            : "bg-surface-alt text-slate2 group-hover:bg-brand/10 group-hover:text-brand",
         )}
       >
         {icon}
       </span>
       <span
         className={cn(
-          "text-[11.5px] font-semibold leading-tight",
+          "text-[12px] font-semibold leading-tight",
           active ? "text-brand" : "text-ink",
         )}
       >
@@ -843,13 +823,15 @@ function StepTile({
   return (
     <div
       className={cn(
-        "flex min-h-[84px] flex-col items-center justify-between gap-1.5 rounded-xl border p-2 text-center transition-colors",
-        active ? "border-brand bg-brand/[0.07]" : "border-line bg-surface",
+        "flex min-h-[92px] flex-col items-center justify-between gap-1.5 rounded-2xl border p-2.5 text-center transition-colors",
+        active
+          ? "border-brand bg-brand/[0.06] shadow-[0_6px_18px_-10px_rgb(var(--brand)/0.5)]"
+          : "border-line bg-surface",
       )}
     >
       <span
         className={cn(
-          "flex h-9 w-9 items-center justify-center rounded-xl transition-colors",
+          "flex h-10 w-10 items-center justify-center rounded-xl transition-colors",
           active ? "bg-brand text-white" : "bg-surface-alt text-slate2",
         )}
       >
@@ -857,7 +839,7 @@ function StepTile({
       </span>
       <span
         className={cn(
-          "text-[11.5px] font-semibold leading-tight",
+          "text-[12px] font-semibold leading-tight",
           active ? "text-brand" : "text-ink",
         )}
       >
@@ -868,13 +850,13 @@ function StepTile({
           type="button"
           onClick={onDec}
           aria-label={`Decrease ${label}`}
-          className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-line bg-surface text-ink outline-none transition-colors hover:border-brand/40 hover:text-brand focus-visible:ring-2 focus-visible:ring-brand/40"
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-line bg-surface text-ink outline-none transition-colors hover:border-brand/40 hover:bg-brand/5 hover:text-brand focus-visible:ring-2 focus-visible:ring-brand/40"
         >
           <Minus aria-hidden className="h-3.5 w-3.5" />
         </button>
         <span
           aria-live="polite"
-          className="min-w-0 flex-1 truncate text-[11px] font-bold text-slate2"
+          className="min-w-0 flex-1 truncate text-[12px] font-bold text-ink"
         >
           {display}
         </span>
@@ -882,7 +864,7 @@ function StepTile({
           type="button"
           onClick={onInc}
           aria-label={`Increase ${label}`}
-          className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-line bg-surface text-ink outline-none transition-colors hover:border-brand/40 hover:text-brand focus-visible:ring-2 focus-visible:ring-brand/40"
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-line bg-surface text-ink outline-none transition-colors hover:border-brand/40 hover:bg-brand/5 hover:text-brand focus-visible:ring-2 focus-visible:ring-brand/40"
         >
           <Plus aria-hidden className="h-3.5 w-3.5" />
         </button>
@@ -978,10 +960,7 @@ function TextMagnifier({ active }: { active: boolean }) {
   );
 
   useEffect(() => {
-    if (!active) {
-      setBox(null);
-      return;
-    }
+    if (!active) return;
     let raf = 0;
     function onMove(e: MouseEvent) {
       window.cancelAnimationFrame(raf);
@@ -1007,6 +986,7 @@ function TextMagnifier({ active }: { active: boolean }) {
     return () => {
       document.removeEventListener("mousemove", onMove);
       window.cancelAnimationFrame(raf);
+      setBox(null);
     };
   }, [active]);
 
@@ -1018,7 +998,7 @@ function TextMagnifier({ active }: { active: boolean }) {
     <div
       data-a11y-magnifier
       aria-hidden
-      className="pointer-events-none fixed z-[70] max-w-[22rem] rounded-lg border border-brand/30 bg-surface px-4 py-3 text-xl font-semibold leading-snug text-ink shadow-2xl"
+      className="pointer-events-none fixed z-[10002] max-w-[22rem] rounded-lg border border-brand/30 bg-surface px-4 py-3 text-xl font-semibold leading-snug text-ink shadow-2xl"
       style={{ left, top }}
     >
       {box.text}
@@ -1064,10 +1044,7 @@ function ReadingGuide({ active }: { active: boolean }) {
   const [y, setY] = useState<number | null>(null);
 
   useEffect(() => {
-    if (!active) {
-      setY(null);
-      return;
-    }
+    if (!active) return;
     let raf = 0;
     function onMove(e: MouseEvent) {
       const cy = e.clientY;
@@ -1078,6 +1055,7 @@ function ReadingGuide({ active }: { active: boolean }) {
     return () => {
       document.removeEventListener("mousemove", onMove);
       window.cancelAnimationFrame(raf);
+      setY(null);
     };
   }, [active]);
 
@@ -1086,7 +1064,7 @@ function ReadingGuide({ active }: { active: boolean }) {
     <div
       data-a11y-reading-guide
       aria-hidden
-      className="pointer-events-none fixed inset-x-0 z-[65] h-1 bg-brand shadow-[0_0_8px_rgb(var(--brand)/0.6)]"
+      className="pointer-events-none fixed inset-x-0 z-[10001] h-1 bg-brand shadow-[0_0_8px_rgb(var(--brand)/0.6)]"
       style={{ top: y - 2 }}
     />
   );
@@ -1098,10 +1076,7 @@ function ReadingMask({ active }: { active: boolean }) {
   const [y, setY] = useState<number | null>(null);
 
   useEffect(() => {
-    if (!active) {
-      setY(null);
-      return;
-    }
+    if (!active) return;
     let raf = 0;
     function onMove(e: MouseEvent) {
       const cy = e.clientY;
@@ -1112,13 +1087,14 @@ function ReadingMask({ active }: { active: boolean }) {
     return () => {
       document.removeEventListener("mousemove", onMove);
       window.cancelAnimationFrame(raf);
+      setY(null);
     };
   }, [active]);
 
   if (!active || y === null) return null;
   const half = 60; // ~120px clear strip
   return (
-    <div data-a11y-reading-mask aria-hidden className="pointer-events-none fixed inset-0 z-[64]">
+    <div data-a11y-reading-mask aria-hidden className="pointer-events-none fixed inset-0 z-[10000]">
       <div
         className="absolute inset-x-0 top-0 bg-black/55"
         style={{ height: Math.max(0, y - half) }}

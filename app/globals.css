@@ -876,3 +876,79 @@ html.a11y-read-mode #a11y-root main {
   max-width: 46rem !important;
   margin: 0 auto !important;
 }
+
+/* ------------------------------------------------------------
+   Accessibility panel open/close — CSS genie (no JS motion lib),
+   ported from imsbelzona. The panel + backdrop mount only while open,
+   so a one-shot keyframe gives the enter/exit motion; the panel emerges
+   from / collapses toward the launcher button at the bottom-right corner.
+   Disabled under reduced-motion.
+   ------------------------------------------------------------ */
+@keyframes a11y-genie-in {
+  0% {
+    opacity: 0;
+    transform: translate(44px, 64px) scale(0.06, 0.16);
+    border-radius: 9999px;
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1, 1);
+    border-radius: 1.5rem;
+  }
+}
+@keyframes a11y-genie-out {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1, 1);
+    border-radius: 1.5rem;
+  }
+  45% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(44px, 64px) scale(0.06, 0.16);
+    border-radius: 9999px;
+  }
+}
+@keyframes a11y-backdrop-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes a11y-backdrop-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.a11y-panel-enter {
+  transform-origin: bottom right;
+  animation: a11y-genie-in 0.44s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.a11y-panel-exit {
+  transform-origin: bottom right;
+  animation: a11y-genie-out 0.34s cubic-bezier(0.4, 0, 1, 1) both;
+}
+.a11y-backdrop-enter {
+  animation: a11y-backdrop-fade-in 0.32s ease both;
+}
+.a11y-backdrop-exit {
+  animation: a11y-backdrop-fade-out 0.3s ease both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .a11y-panel-enter,
+  .a11y-panel-exit,
+  .a11y-backdrop-enter,
+  .a11y-backdrop-exit {
+    animation: none !important;
+  }
+}

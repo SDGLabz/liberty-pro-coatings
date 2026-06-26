@@ -9,7 +9,8 @@ import { CartDrawer } from "@/components/site/CartDrawer";
 import { MobileSheet } from "@/components/site/MobileSheet";
 import { SurveyModal } from "@/components/site/SurveyModal";
 import { Effects } from "@/components/site/Effects";
-import { A11yWidget } from "@/components/site/A11yWidget";
+import { AccessibilityProvider } from "@/components/a11y/accessibility-provider";
+import { AccessibilityMenu } from "@/components/a11y/accessibility-menu";
 
 // Variable fonts — names match the CSS vars globals.css already consumes
 // (--font-oswald / --font-inter / --font-jetbrains).
@@ -93,20 +94,22 @@ export default function RootLayout({
           <a href="#main" className="skip-link">
             Skip to content
           </a>
-          {/* #a11y-root wraps all page content so the accessibility widget's
-              saturation / recolor / read-mode adjustments can target the site
-              without affecting the fixed widget itself (mounted outside). */}
-          <div id="a11y-root">
-            <Header />
-            <main id="main">{children}</main>
-            <Footer />
-            <CartDrawer />
-            <MobileSheet />
-            <SurveyModal />
-            <Effects />
-          </div>
+          <AccessibilityProvider>
+            {/* #a11y-root wraps all page content so the accessibility widget's
+                saturation / recolor / read-mode adjustments can target the site
+                without affecting the fixed widget itself (mounted outside it). */}
+            <div id="a11y-root">
+              <Header />
+              <main id="main">{children}</main>
+              <Footer />
+              <CartDrawer />
+              <MobileSheet />
+              <SurveyModal />
+              <Effects />
+            </div>
+            <AccessibilityMenu />
+          </AccessibilityProvider>
         </SiteProvider>
-        <A11yWidget />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
