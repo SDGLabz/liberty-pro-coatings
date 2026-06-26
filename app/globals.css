@@ -955,3 +955,37 @@ html.a11y-read-mode #a11y-root main {
     animation: none !important;
   }
 }
+
+/* ------------------------------------------------------------
+   Cookie-consent banner + preferences modal enter motion.
+   ------------------------------------------------------------ */
+@keyframes lpcConsentIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes lpcConsentFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.lpc-consent-in {
+  animation: lpcConsentIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.lpc-consent-fade {
+  animation: lpcConsentFade 0.25s ease both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lpc-consent-in,
+  .lpc-consent-fade {
+    animation: none !important;
+  }
+}

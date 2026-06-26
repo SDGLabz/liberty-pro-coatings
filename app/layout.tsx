@@ -11,6 +11,7 @@ import { SurveyModal } from "@/components/site/SurveyModal";
 import { Effects } from "@/components/site/Effects";
 import { AccessibilityProvider } from "@/components/a11y/accessibility-provider";
 import { AccessibilityMenu } from "@/components/a11y/accessibility-menu";
+import { CookieConsent } from "@/components/site/CookieConsent";
 
 // Variable fonts — names match the CSS vars globals.css already consumes
 // (--font-oswald / --font-inter / --font-jetbrains).
@@ -109,6 +110,7 @@ export default function RootLayout({
             </div>
             <AccessibilityMenu />
           </AccessibilityProvider>
+          <CookieConsent />
         </SiteProvider>
         <script
           type="application/ld+json"

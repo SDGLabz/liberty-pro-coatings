@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useSite } from "./SiteProvider";
+import { openCookiePreferences } from "@/lib/consent";
 
 export function Footer() {
   const { openSurvey } = useSite();
@@ -49,6 +50,13 @@ export function Footer() {
             </button>
             <Link href="/contact">Contact</Link>
             <Link href="/legal">Legal &amp; Shipping</Link>
+            <button
+              type="button"
+              className="footer-link"
+              onClick={openCookiePreferences}
+            >
+              Cookie Preferences
+            </button>
           </div>
         </div>
         <div className="bottom">
