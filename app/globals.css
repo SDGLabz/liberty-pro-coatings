@@ -36,7 +36,11 @@
     --ease:cubic-bezier(.22,.7,.25,1);
     --r:16px;
   }
-  *{box-sizing:border-box;margin:0;padding:0}
+  /* @layer base so this reset sits BELOW Tailwind's utilities — otherwise its
+     padding:0/margin:0 (unlayered) beats the accessibility widget's px-/py-/
+     space-y- utilities and clumps the panel. Page styling is unchanged.
+     (Same fix the CMS site uses.) */
+  @layer base { *{box-sizing:border-box;margin:0;padding:0} }
   html{scroll-behavior:smooth}
   body{font-family:var(--font);color:var(--txt);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
   img{max-width:100%;display:block}
