@@ -263,13 +263,21 @@ function Panel({
         <div className="shrink-0 text-white" style={{ backgroundColor: "#26323b" }}>
           <div className="h-1 w-full bg-brand" aria-hidden />
           <div className="flex items-center justify-between gap-2 px-4 pt-3.5">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/brand/liberty-mark-reverse.svg"
-              alt=""
-              aria-hidden
-              className="h-5 w-auto"
-            />
+            <span className="flex min-w-0 items-center gap-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/brand/liberty-mark-reverse.svg"
+                alt=""
+                aria-hidden
+                className="h-6 w-auto"
+              />
+              <span
+                className="truncate text-[15px] font-bold uppercase tracking-[0.04em] text-white"
+                style={{ fontFamily: "var(--head)" }}
+              >
+                Liberty Pro
+              </span>
+            </span>
             <div className="flex shrink-0 items-center gap-1">
               <HeaderBtn
                 onClick={reset}
@@ -318,7 +326,7 @@ function Panel({
             <div
               role="group"
               aria-label="Accessibility profiles"
-              className="space-y-2.5"
+              className="space-y-2"
             >
               {PROFILE_ORDER.map((key) => {
                 const p = PROFILE_META[key];
@@ -338,7 +346,7 @@ function Panel({
 
           {/* Content adjustments */}
           <SectionBlock title="Content adjustments">
-            <div className="grid grid-cols-3 gap-2.5">
+            <div className="grid grid-cols-3 gap-2">
               <StepTile
                 label="Bigger Text"
                 icon={<Type aria-hidden className="h-5 w-5" />}
@@ -364,7 +372,7 @@ function Panel({
                 onInc={() => step("letterSpacing", 1)}
               />
             </div>
-            <div className="mt-2.5 grid grid-cols-3 gap-2.5">
+            <div className="mt-2 grid grid-cols-3 gap-2">
               <Tile
                 label="Readable Font"
                 icon={<Baseline aria-hidden className="h-5 w-5" />}
@@ -412,7 +420,7 @@ function Panel({
 
           {/* Color adjustments */}
           <SectionBlock title="Color adjustments">
-            <div className="grid grid-cols-3 gap-2.5">
+            <div className="grid grid-cols-3 gap-2">
               <Tile
                 label="Dark Contrast"
                 icon={<Moon aria-hidden className="h-5 w-5" />}
@@ -474,7 +482,7 @@ function Panel({
 
           {/* Orientation adjustments */}
           <SectionBlock title="Orientation adjustments">
-            <div className="grid grid-cols-3 gap-2.5">
+            <div className="grid grid-cols-3 gap-2">
               <Tile
                 label="Mute Sounds"
                 icon={<VolumeX aria-hidden className="h-5 w-5" />}
@@ -540,7 +548,7 @@ function Panel({
         </div>
 
         {/* Footer */}
-        <div className="shrink-0 border-t border-line bg-surface-alt px-4 py-4">
+        <div className="shrink-0 border-t border-line bg-surface-alt px-4 py-3">
           <button
             type="button"
             onClick={reset}
@@ -634,9 +642,9 @@ function SectionBlock({
   children: ReactNode;
 }) {
   return (
-    <section className="border-t border-line/70 px-4 py-5">
-      <h3 className="mb-3.5 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.1em] text-muted2">
-        <span className="h-[2px] w-4 rounded-full bg-brand" aria-hidden />
+    <section className="px-4 py-3">
+      <h3 className="mb-2.5 flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.08em] text-muted2">
+        <span className="h-px w-3.5 bg-brand" aria-hidden />
         {title}
       </h3>
       {children}
