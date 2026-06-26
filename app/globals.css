@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 /* Accessibility-widget palette consumed by the ported a11y menu
-   (components/a11y/*). Neutral tokens copied EXACTLY from imsbelzona so the
-   panel's surfaces, text and borders match IMS; only the brand is LPC red. */
+   (components/a11y/*). Copied EXACTLY from the CMS (cmsolutionsus) site so the
+   panel matches it 1:1 — Belzona-blue brand, orange accent, CMS neutrals. */
 @theme {
-  --color-brand: #d6212e; /* LPC red (was IMS Belzona blue) */
-  --color-brand-dark: #b51d27;
+  --color-brand: #003c71; /* CMS belzona-blue */
+  --color-brand-dark: #041e42;
   --color-surface: #ffffff;
-  --color-surface-alt: #f4f7fa;
-  --color-ink: #0b1f33;
-  --color-slate2: #5b6675;
-  --color-muted2: #8a96a3;
-  --color-line: #e4e9ef;
-  --color-accent: #d6212e; /* LPC red (was IMS orange) */
+  --color-surface-alt: #f7f9fc;
+  --color-ink: #0e1a2b;
+  --color-slate2: #46586e;
+  --color-muted2: #64717f;
+  --color-line: #e6ecf3;
+  --color-accent: #ff6a14; /* CMS orange */
 }
 
 :root{
@@ -26,7 +26,7 @@
     --ink-2:#111d31;
     --navy:#0a3a6b; --navy-bright:#1666c0;
     --red:#d6212e; --red-soft:#e0242f;
-    --brand:214 33 46; /* RGB triple of --red, for the a11y widget's rgb(var(--brand)/a) glow shadows */
+    --brand:0 60 113; /* RGB triple of CMS belzona-blue #003c71, for the a11y widget's rgb(var(--brand)/a) glow shadows */
     --gold:#b8860b; --gold-bright:#e8b73a; --gold-text:#9a6e00; /* AA-safe gold for small text on light bg */
     --txt:#0e1a2b; --txt-2:#4a5b71; --txt-3:#5f6f86; /* muted slate darkened from #7e8da3 for WCAG AA on light bg */
     --maxw:1320px;

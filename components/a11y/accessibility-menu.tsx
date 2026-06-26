@@ -110,7 +110,7 @@ function Widget() {
         aria-expanded={open}
         aria-label="Open accessibility menu"
         onClick={() => setOpen(true)}
-        className="group fixed bottom-5 right-5 z-[10010] flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#ef4b54] via-brand to-brand-dark text-white shadow-[0_14px_38px_-8px_rgb(var(--brand)/0.65)] outline-none ring-1 ring-white/30 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:shadow-[0_22px_50px_-10px_rgb(var(--brand)/0.7)] focus-visible:ring-4 focus-visible:ring-brand/40 active:translate-y-0"
+        className="group fixed bottom-5 right-5 z-[10010] flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#0a5fae] via-brand to-brand-dark text-white shadow-[0_14px_38px_-8px_rgb(var(--brand)/0.65)] outline-none ring-1 ring-white/30 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:shadow-[0_22px_50px_-10px_rgb(var(--brand)/0.7)] focus-visible:ring-4 focus-visible:ring-brand/40 active:translate-y-0"
       >
         <span
           aria-hidden
@@ -243,7 +243,7 @@ function Panel({
         {/* Header — LPC-red gradient chrome: brand icon + title on the
             left, frosted control buttons on the right, a status pill + subtle
             wordmark below. */}
-        <div className="relative shrink-0 overflow-hidden bg-gradient-to-br from-[#ef4b54] via-brand to-brand-dark text-white">
+        <div className="relative shrink-0 overflow-hidden bg-gradient-to-br from-[#0a5fae] via-brand to-brand-dark text-white">
           <div
             aria-hidden
             className="pointer-events-none absolute -right-12 -top-14 h-44 w-44 rounded-full bg-white/15 blur-2xl"
