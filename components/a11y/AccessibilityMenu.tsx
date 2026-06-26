@@ -214,24 +214,49 @@ function Panel({
         role="dialog"
         aria-modal="true"
         aria-label="Accessibility menu"
-        style={{ transformOrigin: "bottom right" }}
+        style={{ transformOrigin: "bottom right", willChange: "transform" }}
         className="relative z-10 flex h-full w-full max-w-[420px] flex-col overflow-hidden bg-surface shadow-[0_28px_80px_-12px_rgba(0,0,0,0.6)] ring-1 ring-black/10 sm:my-3 sm:mr-3 sm:h-[calc(100%-1.5rem)] sm:rounded-2xl"
+        // macOS Dock "genie": anchored at the launcher corner, the panel rises
+        // out of the dock as a tall thin column (the neck) and then unfurls to
+        // full width; closing reverses it — narrow to a column, then pour down
+        // into the icon. Staged keyframes give the column/neck phase that a
+        // uniform scale can't.
         initial={
           reduce
             ? { opacity: 0 }
-            : { opacity: 0, scaleX: 0.3, scaleY: 0.06, x: 24, y: 40 }
+            : { opacity: 0, scaleX: 0.06, scaleY: 0.03, x: 22, y: 30 }
         }
         animate={
           reduce
             ? { opacity: 1 }
-            : { opacity: 1, scaleX: 1, scaleY: 1, x: 0, y: 0 }
+            : {
+                opacity: [0, 1, 1, 1],
+                scaleX: [0.06, 0.12, 0.5, 1],
+                scaleY: [0.03, 0.62, 0.92, 1],
+                x: [22, 16, 5, 0],
+                y: [30, 18, 6, 0],
+              }
         }
         exit={
           reduce
             ? { opacity: 0 }
-            : { opacity: 0, scaleX: 0.3, scaleY: 0.06, x: 24, y: 40 }
+            : {
+                opacity: [1, 1, 1, 0],
+                scaleX: [1, 0.5, 0.12, 0.06],
+                scaleY: [1, 0.92, 0.55, 0.03],
+                x: [0, 5, 16, 22],
+                y: [0, 6, 18, 30],
+              }
         }
-        transition={{ duration: reduce ? 0 : 0.42, ease: [0.22, 1, 0.36, 1] }}
+        transition={
+          reduce
+            ? { duration: 0 }
+            : {
+                duration: 0.58,
+                ease: [0.4, 0, 0.2, 1],
+                times: [0, 0.35, 0.7, 1],
+              }
+        }
       >
         {/* Header — slate brand chrome with the Liberty Pro logo (two rows: brand +
             controls on top, the titled bar below, so the wide wordmark breathes) */}
