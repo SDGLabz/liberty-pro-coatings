@@ -202,23 +202,36 @@ function Panel({
   return (
     <div className="fixed inset-0 z-[60] flex justify-end">
       <m.div
-        className="absolute inset-0 bg-black/45 backdrop-blur-[2px]"
+        className="absolute inset-0 bg-black/70 backdrop-blur-[3px]"
         onClick={onClose}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: reduce ? 0 : 0.2 }}
+        transition={{ duration: reduce ? 0 : 0.25 }}
       />
       <m.div
         ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-label="Accessibility menu"
-        className="relative z-10 flex h-full w-full max-w-[420px] flex-col overflow-hidden bg-surface shadow-2xl sm:my-3 sm:mr-3 sm:h-[calc(100%-1.5rem)] sm:rounded-2xl"
-        initial={reduce ? { opacity: 0 } : { x: "104%" }}
-        animate={reduce ? { opacity: 1 } : { x: 0 }}
-        exit={reduce ? { opacity: 0 } : { x: "104%" }}
-        transition={{ duration: reduce ? 0 : 0.3, ease: [0.16, 1, 0.3, 1] }}
+        style={{ transformOrigin: "bottom right" }}
+        className="relative z-10 flex h-full w-full max-w-[420px] flex-col overflow-hidden bg-surface shadow-[0_28px_80px_-12px_rgba(0,0,0,0.6)] ring-1 ring-black/10 sm:my-3 sm:mr-3 sm:h-[calc(100%-1.5rem)] sm:rounded-2xl"
+        initial={
+          reduce
+            ? { opacity: 0 }
+            : { opacity: 0, scaleX: 0.3, scaleY: 0.06, x: 24, y: 40 }
+        }
+        animate={
+          reduce
+            ? { opacity: 1 }
+            : { opacity: 1, scaleX: 1, scaleY: 1, x: 0, y: 0 }
+        }
+        exit={
+          reduce
+            ? { opacity: 0 }
+            : { opacity: 0, scaleX: 0.3, scaleY: 0.06, x: 24, y: 40 }
+        }
+        transition={{ duration: reduce ? 0 : 0.42, ease: [0.22, 1, 0.36, 1] }}
       >
         {/* Header — slate brand chrome with the Liberty Pro logo (two rows: brand +
             controls on top, the titled bar below, so the wide wordmark breathes) */}
@@ -280,7 +293,7 @@ function Panel({
             <div
               role="group"
               aria-label="Accessibility profiles"
-              className="space-y-2"
+              className="space-y-2.5"
             >
               {PROFILE_ORDER.map((key) => {
                 const p = PROFILE_META[key];
@@ -300,7 +313,7 @@ function Panel({
 
           {/* Content adjustments */}
           <SectionBlock title="Content adjustments">
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-2.5">
               <StepTile
                 label="Bigger Text"
                 icon={<Type aria-hidden className="h-5 w-5" />}
@@ -326,7 +339,7 @@ function Panel({
                 onInc={() => step("letterSpacing", 1)}
               />
             </div>
-            <div className="mt-2 grid grid-cols-3 gap-2">
+            <div className="mt-2.5 grid grid-cols-3 gap-2.5">
               <Tile
                 label="Readable Font"
                 icon={<Baseline aria-hidden className="h-5 w-5" />}
@@ -374,7 +387,7 @@ function Panel({
 
           {/* Color adjustments */}
           <SectionBlock title="Color adjustments">
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-2.5">
               <Tile
                 label="Dark Contrast"
                 icon={<Moon aria-hidden className="h-5 w-5" />}
@@ -436,7 +449,7 @@ function Panel({
 
           {/* Orientation adjustments */}
           <SectionBlock title="Orientation adjustments">
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-2.5">
               <Tile
                 label="Mute Sounds"
                 icon={<VolumeX aria-hidden className="h-5 w-5" />}
@@ -502,7 +515,21 @@ function Panel({
         </div>
 
         {/* Footer */}
-        <div className="shrink-0 border-t border-line bg-surface-alt px-4 py-3">
+        <div className="shrink-0 border-t border-line bg-surface-alt px-4 py-4">
+          <button
+            type="button"
+            onClick={reset}
+            disabled={activeCount === 0}
+            className={cn(
+              "mb-3.5 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-colors",
+              activeCount === 0
+                ? "cursor-not-allowed bg-surface text-muted2 ring-1 ring-line"
+                : "bg-brand text-white shadow-[0_10px_24px_-10px_rgb(var(--brand)/0.7)] hover:bg-brand-dark",
+            )}
+          >
+            <RotateCcw aria-hidden className="h-[18px] w-[18px]" />
+            Reset all settings{activeCount > 0 ? ` · ${activeCount}` : ""}
+          </button>
           <div className="flex items-center justify-between gap-2 text-xs">
             <Link
               href="/legal"
@@ -582,9 +609,9 @@ function SectionBlock({
   children: ReactNode;
 }) {
   return (
-    <section className="px-4 py-3">
-      <h3 className="mb-2.5 flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.08em] text-muted2">
-        <span className="h-px w-3.5 bg-brand" aria-hidden />
+    <section className="border-t border-line/70 px-4 py-5">
+      <h3 className="mb-3.5 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.1em] text-muted2">
+        <span className="h-[2px] w-4 rounded-full bg-brand" aria-hidden />
         {title}
       </h3>
       {children}
