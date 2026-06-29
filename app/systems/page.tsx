@@ -7,7 +7,7 @@ import { SurveyButton } from "@/components/site/SurveyButton";
 export const metadata: Metadata = {
   title: "Systems",
   description:
-    "Nine engineered concrete floor systems — primer to topcoat — built from Liberty Pro products. Garage-led, with commercial, industrial and decorative options.",
+    "Nine engineered concrete floor systems, primer to topcoat, built from Liberty Pro products. Garage-led, with commercial, industrial and decorative options.",
   alternates: { canonical: "/systems" },
 };
 
@@ -20,7 +20,7 @@ export default function SystemsPage() {
           <span className="eyebrow">Nine engineered build-ups</span>
           <h1>Floor systems.</h1>
           <p>
-            Each system is a complete, spec&apos;d build-up — primer to topcoat — built from Liberty
+            Each system is a complete, spec&apos;d build-up, primer to topcoat, built from Liberty
             Pro products. Garage-led, with commercial, industrial and decorative options. Pick a
             look or a use, and we&apos;ll show you the layers and the products behind them.
           </p>

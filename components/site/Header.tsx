@@ -55,7 +55,7 @@ export function Header() {
   return (
     <>
       <div className="announce">
-        Made in the USA · independently tested · contractor-grade —{" "}
+        Made in the USA · independently tested · contractor-grade ·{" "}
         <button type="button" className="announce-link" onClick={openSurvey}>
           become an approved contractor <span className="ar" aria-hidden>→</span>
         </button>

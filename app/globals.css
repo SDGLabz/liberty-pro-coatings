@@ -50,10 +50,12 @@
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
   .skip-link:focus{position:fixed;left:12px;top:12px;width:auto;height:auto;z-index:9999;padding:.6rem 1rem;background:var(--navy);color:#fff;border:2px solid var(--gold-bright);border-radius:8px;font:600 .95rem/1 var(--font);text-decoration:none}
-  /* @layer base so these element rules sit BELOW Tailwind's utilities layer.
-     Without this they are unlayered and beat the accessibility widget's
-     utility classes (uppercase Oswald navy headings leaking into the panel).
-     LPC's own pages are unaffected — none put competing utilities on h1-4. */
+  /* Scoped to #a11y-root via :where() (which contributes 0 specificity): the
+     heading defaults reach LPC's own pages but NOT the accessibility panel
+     (mounted outside #a11y-root), so its utility-styled headings never inherit
+     uppercase Oswald navy. The zero-specificity wrapper also lets any Tailwind
+     utility still override these on LPC pages. (Not a @layer; the :where scope
+     is what keeps it safe, per the durable a11y-widget lesson.) */
   :where(#a11y-root) :is(h1,h2,h3,h4){font-family:var(--head);color:var(--ink);line-height:1.02;text-transform:uppercase;font-weight:600;letter-spacing:.005em}
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
   .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:#886608;font-weight:500;display:inline-flex;align-items:center;gap:9px} /* darker ochre than --gold #b8860b for WCAG AA on light sections; dark-section eyebrows override to --gold-bright below */
@@ -263,8 +265,8 @@
   @media(max-width:560px){.cta-panel{border-radius:28px}}
 
   /* ===== FOOTER ===== */
-  footer{background:#080c12;color:#9fb0c5;padding:60px 0 36px;font-size:14px;border-top:1px solid var(--line)} /* light slate: --txt-3 is now too dark for the near-black footer */
-  footer .top{display:grid;grid-template-columns:1.7fr 1fr 1fr 1fr;gap:40px;padding-bottom:34px;border-bottom:1px solid var(--line-soft)}
+  footer{background:#080c12;color:#9fb0c5;padding:60px 0 36px;font-size:14px;border-top:1px solid rgba(255,255,255,.08)} /* light slate: --txt-3 is now too dark for the near-black footer */
+  footer .top{display:grid;grid-template-columns:1.7fr 1fr 1fr 1fr;gap:40px;padding-bottom:34px;border-bottom:1px solid rgba(255,255,255,.10)}
   footer .logo{margin-bottom:14px}
   footer .logo img{height:42px}
   footer .blurb{font-size:14px;line-height:1.7;max-width:36ch;color:#9fb0c5}
@@ -560,7 +562,7 @@
 /* color swatch grid */
 .swgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:14px}
 .swcard{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;transition:transform .22s,box-shadow .22s}
-.swcard:hover{transform:translateY(-4px);box-shadow:0 22px 44px -30px rgba(10,58,107,.5)}
+@media(hover:hover){.swcard:hover{transform:translateY(-4px);box-shadow:0 22px 44px -30px rgba(10,58,107,.5)}}
 .swcard .chip{height:96px}
 .swcard .nm{padding:11px 13px}
 .swcard .nm b{font-family:var(--head);font-size:14px;color:var(--ink);display:block}
@@ -711,7 +713,7 @@ button.swcard{font:inherit;text-align:left;cursor:pointer;padding:0;width:100%;d
 .btn-on-dark:hover{border-color:#fff}
 /* clean light info card (About "why us") — not the photo-overlay .cat */
 .featurecard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px 22px;display:flex;flex-direction:column;gap:6px;transition:transform .26s var(--ease),box-shadow .26s,border-color .26s}
-.featurecard:hover{transform:translateY(-4px);border-color:var(--navy-bright);box-shadow:0 20px 44px -28px rgba(8,12,18,.35)}
+@media(hover:hover){.featurecard:hover{transform:translateY(-4px);border-color:var(--navy-bright);box-shadow:0 20px 44px -28px rgba(8,12,18,.35)}}
 .featurecard .ct{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--red-ink)}
 .featurecard h3{color:var(--ink);font-size:20px;margin:0}
 

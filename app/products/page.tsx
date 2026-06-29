@@ -6,7 +6,7 @@ import { ProductCatalog, type CatalogItem } from "@/components/site/ProductCatal
 export const metadata: Metadata = {
   title: "Products",
   description:
-    "Every Liberty Pro coating with full technical data and public pricing — 20 products across epoxy, polyaspartic, polyurea and urethane chemistries.",
+    "Every Liberty Pro coating with full technical data and public pricing: 20 products across epoxy, polyaspartic, polyurea and urethane chemistries.",
   alternates: { canonical: "/products" },
 };
 
@@ -51,7 +51,7 @@ export default async function ProductsPage({
           <p className="lede">
             Every Liberty Pro coating, with full technical data, public pricing, and add-to-cart. 20
             products across epoxy, polyaspartic, polyurea and urethane chemistries. All products
-            ship switched off at launch — visible and specced, buyable once activated.
+            ship switched off at launch: visible and specced, buyable once activated.
           </p>
         </div>
       </section>

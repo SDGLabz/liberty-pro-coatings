@@ -6,7 +6,7 @@ import { SurveyLauncher } from "@/components/site/SurveyLauncher";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Reach the Liberty Pro Coatings team for product, spec or account questions — or start a contractor application. (224) 733-1919 · info@libertyprocoatings.com.",
+    "Reach the Liberty Pro Coatings team for product, spec or account questions, or start a contractor application. (224) 733-1919 · info@libertyprocoatings.com.",
   alternates: { canonical: "/contact" },
 };
 
@@ -26,7 +26,7 @@ export default function ContactPage() {
           <span className="eyebrow">Get in touch</span>
           <h1>Contact.</h1>
           <p className="lede">
-            Questions on products, specs or your account? Reach the Liberty Pro team — or start a
+            Questions on products, specs or your account? Reach the Liberty Pro team, or start a
             contractor application.
           </p>
         </div>

@@ -280,7 +280,7 @@ export function ProductCatalog({
                 {CHEM_LABELS[c]}
               </button>
             ))}
-            <span className="sort">Sort: {query.trim() ? "Relevance" : "Featured"} ▾</span>
+            <span className="sort">Sort: {query.trim() ? "Relevance" : "Featured"}</span>
           </div>
         </div>
         {filtered.length > 0 ? (
@@ -295,11 +295,16 @@ export function ProductCatalog({
             ))}
           </div>
         ) : (
-          <p className="lede" style={{ padding: "32px 0" }}>
-            {query.trim()
-              ? `No products match “${query.trim()}”. Try a SKU, chemistry, or role.`
-              : "No products match those filters."}
-          </p>
+          <div style={{ padding: "32px 0" }}>
+            <p className="lede" style={{ marginBottom: 16 }}>
+              {query.trim()
+                ? `No products match “${query.trim()}”. Try a SKU, chemistry, or role.`
+                : "No products match those filters."}
+            </p>
+            <button type="button" className="btn btn-out" onClick={clearAll}>
+              Clear all filters
+            </button>
+          </div>
         )}
       </div>
     </div>

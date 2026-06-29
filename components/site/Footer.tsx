@@ -60,7 +60,7 @@ export function Footer() {
           </div>
         </div>
         <div className="bottom">
-          <span>© 2026 Liberty Pro Coatings — a brand of American Polymer Group · US shipping</span>
+          <span>© 2026 Liberty Pro Coatings, a brand of American Polymer Group · US shipping</span>
           <span>Card &amp; ACH · Live LTL Freight</span>
         </div>
       </div>
