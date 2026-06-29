@@ -19,7 +19,7 @@ export default function AboutPage() {
   return (
     <>
       <section className="ihero">
-        <div className="photo" style={{ backgroundImage: "url('/images/featured-fin.jpg')" }} />
+        <div className="photo" style={{ backgroundImage: "url('/images/cat-slurry.jpg')" }} />
         <div className="wrap">
           <span className="eyebrow">The brand</span>
           <h1>Liberty Pro Coatings.</h1>
@@ -57,7 +57,7 @@ export default function AboutPage() {
                 installers.
               </p>
             </div>
-            <div className="visual" style={{ backgroundImage: "url('/images/hero.jpg')" }} />
+            <div className="visual" style={{ backgroundImage: "url('/images/cat-flake.jpg')" }} />
           </div>
         </div>
       </section>

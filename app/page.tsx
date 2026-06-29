@@ -7,8 +7,8 @@ import { SurveyButton } from "@/components/site/SurveyButton";
 const CHEMISTRY = [
   { chem: "epoxy", ct: "Epo-Guard", label: "Epoxy", img: "/images/prod-flake.jpg" },
   { chem: "polyaspartic", ct: "Poly-Guard", label: "Polyaspartic", img: "/images/prod-1day.jpg" },
-  { chem: "polyurea", ct: "Poly-Bond", label: "Polyurea", img: "/images/cat-pig.jpg" },
-  { chem: "urethane", ct: "Ure-Guard", label: "Urethane", img: "/images/cat-metal.jpg" },
+  { chem: "polyurea", ct: "Poly-Bond", label: "Polyurea", img: "/images/promo-b.jpg" },
+  { chem: "urethane", ct: "Ure-Guard", label: "Urethane", img: "/images/prod-metal.jpg" },
 ] as const;
 
 export default function Home() {

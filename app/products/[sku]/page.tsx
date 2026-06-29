@@ -45,7 +45,6 @@ export default async function ProductPage({
   const p = getProduct(sku);
   if (!p) notFound();
 
-  const thumbs = [p.img, "/images/cat-flake.jpg", "/images/featured-fin.jpg"];
   const usedIn = systemsUsing(p.sku);
   const related = relatedProducts(p.sku, p.chem);
 
@@ -83,15 +82,6 @@ export default async function ProductPage({
             <div>
               <div className="pd-gallery">
                 <div className="main" style={{ backgroundImage: `url('${p.img}')` }} />
-              </div>
-              <div className="pd-thumbs">
-                {thumbs.map((t, i) => (
-                  <div
-                    key={i}
-                    className={`pd-thumb${i === 0 ? " active" : ""}`}
-                    style={{ backgroundImage: `url('${t}')` }}
-                  />
-                ))}
               </div>
             </div>
             <div>

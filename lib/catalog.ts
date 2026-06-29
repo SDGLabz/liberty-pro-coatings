@@ -139,7 +139,7 @@ export const PRODUCTS: Product[] = [
     pkg: ["2.5 Gal"],
     price: 112.31,
     status: "active-off",
-    img: "/images/prod-flake.jpg",
+    img: "/images/hero.jpg",
     finish: ["Clear"],
   },
   {
@@ -152,7 +152,7 @@ export const PRODUCTS: Product[] = [
     pkg: ["3 Gal"],
     price: 135,
     status: "active-off",
-    img: "/images/prod-flake.jpg",
+    img: "/images/featured-fin.jpg",
     finish: ["Clear", "Color Packs (1339)"],
     featured: true,
     glance: { coverage: "80–200 sq.ft./gal.", recoat: "Within 24 hours", cure: "7 days" },
@@ -623,7 +623,7 @@ export const SYSTEMS: System[] = [
     slug: "epoxyscapes-flooring",
     name: "EpoxyScapes Flooring System",
     tag: "EP · Designer",
-    img: "/images/cat-flake.jpg",
+    img: "/images/prod-metal.jpg",
     blurb: "A designer decorative epoxy broadcast system for retail and hospitality interiors.",
     uses: "Retail, hospitality and commercial interiors wanting a refined decorative aggregate finish.",
     layers: [
@@ -636,7 +636,7 @@ export const SYSTEMS: System[] = [
     slug: "polyscapes-flooring",
     name: "PolyScapes Flooring System",
     tag: "PS · Fast-Cure",
-    img: "/images/cat-quartz.jpg",
+    img: "/images/promo-b.jpg",
     blurb: "The Scapes decorative look with a fast-cure polyaspartic binder for quicker installs.",
     uses: "Retail, hospitality and commercial floors needing a decorative finish with faster return to service.",
     layers: [
@@ -649,7 +649,7 @@ export const SYSTEMS: System[] = [
     slug: "urescapes-flooring",
     name: "Urescapes Flooring System",
     tag: "UG · Urethane",
-    img: "/images/cat-metal.jpg",
+    img: "/images/prod-flake.jpg",
     blurb:
       "A flexible aliphatic urethane decorative system with elevated UV stability and crack tolerance.",
     uses: "Exterior-exposed and UV-critical decorative floors, and substrates where flexibility matters.",
