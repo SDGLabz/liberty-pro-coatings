@@ -64,28 +64,28 @@ export default function Home() {
         <h2 className="sr-only">Why contractors choose Liberty Pro Coatings</h2>
         <div className="wrap">
           <div className="val">
-            <div className="vi">🏠</div>
+            <div className="vi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5" /><path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5" /><path d="M9.5 21v-6h5v6" /></svg></div>
             <div>
               <h3>Garage-First</h3>
               <p>Hot-tire, abrasion &amp; moisture-ready systems</p>
             </div>
           </div>
           <div className="val">
-            <div className="vi">⤓</div>
+            <div className="vi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 16V6h11v10" /><path d="M14 9h4l3 3v4h-7" /><circle cx="7" cy="18" r="2" /><circle cx="17" cy="18" r="2" /></svg></div>
             <div>
               <h3>Live Freight</h3>
               <p>Hazmat LTL priced before you pay</p>
             </div>
           </div>
           <div className="val">
-            <div className="vi">▤</div>
+            <div className="vi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5" /><path d="M9 13h6M9 17h5" /></svg></div>
             <div>
               <h3>Full Data</h3>
               <p>Complete TDS &amp; SDS on every product</p>
             </div>
           </div>
           <div className="val">
-            <div className="vi">⚙</div>
+            <div className="vi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 7h7M15 7h5" /><circle cx="13" cy="7" r="2" /><path d="M4 12h3M11 12h9" /><circle cx="9" cy="12" r="2" /><path d="M4 17h9M17 17h3" /><circle cx="15" cy="17" r="2" /></svg></div>
             <div>
               <h3>Build-a-Kit</h3>
               <p>Configure a system to a real SKU</p>
@@ -131,6 +131,9 @@ export default function Home() {
             <div className="l">
               <span className="eyebrow">Shop by chemistry</span>
               <h2>Find the right resin.</h2>
+              <p className="lede">
+                Four resin families, each tuned to a different job, cure speed and finish.
+              </p>
             </div>
             <Link className="seeall" href="/products">
               All products <span className="ar" aria-hidden>→</span>
@@ -176,7 +179,7 @@ export default function Home() {
       </section>
 
       {/* INDUSTRY: RESIDENTIAL GARAGE FLAGSHIP */}
-      <section style={{ paddingTop: 0 }}>
+      <section style={{ background: "var(--bg-2)", borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)" }}>
         <div className="wrap">
           <div className="twocol reveal">
             <div className="visual" style={{ backgroundImage: "url('/images/cat-1day.jpg')" }} />
