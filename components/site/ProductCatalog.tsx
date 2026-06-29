@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Fuse from "fuse.js";
 import { ProductCard, type ProductCardData } from "./ProductCard";
 import { CHEM_LABELS, type Chem, type ProductStatus } from "@/lib/catalog";
@@ -97,9 +97,68 @@ export function ProductCatalog({
     families.size === 0 &&
     statuses.size === 0;
 
+  // Mobile filters live in a bottom-sheet drawer (the 15-checkbox sidebar is
+  // too tall to sit inline above the products on a phone).
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const activeCount = chems.size + roles.size + families.size + statuses.size;
+  const clearAll = () => {
+    setChems(new Set());
+    setRoles(new Set());
+    setFamilies(new Set());
+    setStatuses(new Set());
+    setQuery("");
+  };
+
+  // While the sheet is open: lock body scroll and close on Escape.
+  useEffect(() => {
+    if (!drawerOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setDrawerOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [drawerOpen]);
+
   return (
     <div className="catalog">
-      <aside className="filters">
+      {drawerOpen && (
+        <div className="filters-backdrop" onClick={() => setDrawerOpen(false)} aria-hidden />
+      )}
+      <aside className={`filters${drawerOpen ? " open" : ""}`} id="filters-panel">
+        <div className="drawer-head drawer-only">
+          <h3>Filters</h3>
+          <button
+            type="button"
+            className="drawer-x"
+            onClick={() => setDrawerOpen(false)}
+            aria-label="Close filters"
+          >
+            ✕
+          </button>
+        </div>
+        <div className="catalog-search drawer-only" style={{ marginBottom: 8 }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search products, SKUs…"
+            aria-label="Search products"
+          />
+          {query && (
+            <button type="button" className="cs-clear" onClick={() => setQuery("")} aria-label="Clear search">
+              ✕
+            </button>
+          )}
+        </div>
         <div className="fgroup">
           <h4>Chemistry</h4>
           {CHEM_ORDER.map((c) => (
@@ -153,8 +212,33 @@ export function ProductCatalog({
             </label>
           ))}
         </div>
+        <div className="drawer-foot drawer-only">
+          <button type="button" className="btn btn-out" onClick={clearAll}>
+            Clear all
+          </button>
+          <button type="button" className="btn btn-primary" onClick={() => setDrawerOpen(false)}>
+            Show {filtered.length} {filtered.length === 1 ? "result" : "results"}
+          </button>
+        </div>
       </aside>
       <div>
+        <div className="filters-bar">
+          <button
+            type="button"
+            className="filters-trigger"
+            onClick={() => setDrawerOpen(true)}
+            aria-expanded={drawerOpen}
+            aria-controls="filters-panel"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <line x1="4" y1="6" x2="20" y2="6" />
+              <line x1="7" y1="12" x2="17" y2="12" />
+              <line x1="10" y1="18" x2="14" y2="18" />
+            </svg>
+            Filters
+            {activeCount > 0 && <span className="fcount">{activeCount}</span>}
+          </button>
+        </div>
         <div className="catalog-search">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <circle cx="11" cy="11" r="7" />
