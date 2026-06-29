@@ -34,10 +34,12 @@ export default function SystemsPage() {
       </section>
       <section>
         <div className="wrap">
-          <div className="cats cols-3">
-            {SYSTEMS.map((s) => (
-              <SystemCard key={s.slug} s={s} />
-            ))}
+          <div className="cats bento">
+            {[...SYSTEMS]
+              .sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0))
+              .map((s) => (
+                <SystemCard key={s.slug} s={s} />
+              ))}
           </div>
         </div>
       </section>
