@@ -48,7 +48,12 @@ export default function Home() {
             </div>
           </div>
           <div className="right">
-            <div className="photo" style={{ backgroundImage: "url('/images/hero.jpg')" }} />
+            <div
+              className="photo"
+              role="img"
+              aria-label="Installer in spiked shoes spreading a freshly applied gray resin floor coating across a concrete floor"
+              style={{ backgroundImage: "url('/images/hero.jpg')" }}
+            />
             <div className="floatcard">
               <div className="fk">Flagship system</div>
               <div className="fv">
@@ -182,7 +187,12 @@ export default function Home() {
       <section style={{ background: "var(--bg-2)", borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)" }}>
         <div className="wrap">
           <div className="twocol reveal">
-            <div className="visual" style={{ backgroundImage: "url('/images/cat-1day.jpg')" }} />
+            <div
+              className="visual"
+              role="img"
+              aria-label="Automotive garage with a smooth gray coated concrete floor, a car raised on a lift and a wheeled tool cabinet"
+              style={{ backgroundImage: "url('/images/cat-1day.jpg')" }}
+            />
             <div>
               <span className="eyebrow">Flagship use · Residential garage</span>
               <h2 style={{ fontSize: "clamp(28px,3.8vw,46px)", margin: "12px 0 14px" }}>

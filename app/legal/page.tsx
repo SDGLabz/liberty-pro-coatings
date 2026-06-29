@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { breadcrumbJsonLd } from "@/lib/breadcrumb-schema";
+
+const description =
+  "Terms of sale, privacy, shipping & hazmat policy, and product warranty/disclaimer for Liberty Pro Coatings.";
 
 export const metadata: Metadata = {
   title: "Legal & Shipping",
-  description:
-    "Terms of sale, privacy, shipping & hazmat policy, and product warranty/disclaimer for Liberty Pro Coatings.",
+  description,
   alternates: { canonical: "/legal" },
+  openGraph: { type: "website", title: "Legal & Shipping · Liberty Pro Coatings", description, url: "/legal" },
+  twitter: { title: "Legal & Shipping · Liberty Pro Coatings", description },
 };
 
 // Placeholder legal structure — final copy is supplied by counsel before
@@ -13,6 +18,17 @@ export const metadata: Metadata = {
 export default function LegalPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", url: "/" },
+              { name: "Legal", url: "/legal" },
+            ]),
+          ),
+        }}
+      />
       <div className="wrap crumbs">
         <Link href="/">Home</Link>
         <span className="sep">/</span>

@@ -3,12 +3,17 @@ import Link from "next/link";
 import { COLORS, SUPPORTING_SKUS, type Color, type SupportingSku } from "@/lib/catalog";
 import { SwatchGrid } from "@/components/site/SwatchGrid";
 import { SurveyButton } from "@/components/site/SurveyButton";
+import { breadcrumbJsonLd } from "@/lib/breadcrumb-schema";
+
+const description =
+  "Decorative flake (1375), quartz (1321), metallic (1338) and universal color-pack (1339) options for Liberty Pro floor systems. Reference swatches — order chips before committing a job.";
 
 export const metadata: Metadata = {
   title: "Colors",
-  description:
-    "Decorative flake (1375), quartz (1321), metallic (1338) and universal color-pack (1339) options for Liberty Pro floor systems. Reference swatches — order chips before committing a job.",
+  description,
   alternates: { canonical: "/colors" },
+  openGraph: { type: "website", title: "Colors · Liberty Pro Coatings", description, url: "/colors" },
+  twitter: { title: "Colors · Liberty Pro Coatings", description },
 };
 
 // Short factual descriptor per decorative series — what the medium IS, so the
@@ -54,6 +59,17 @@ for (const x of SUPPORTING_SKUS) {
 export default function ColorsPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", url: "/" },
+              { name: "Colors", url: "/colors" },
+            ]),
+          ),
+        }}
+      />
       <div className="wrap crumbs">
         <Link href="/">Home</Link>
         <span className="sep">/</span>

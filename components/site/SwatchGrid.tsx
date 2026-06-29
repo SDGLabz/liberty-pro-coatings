@@ -74,15 +74,15 @@ export function SwatchGrid({ groups }: { groups: SwatchGroup[] }) {
                   onClick={() => setActive(idx)}
                   aria-label={`View ${c.n} swatch larger`}
                 >
-                  <div
-                    className="chip"
-                    style={{
-                      backgroundColor: c.c,
-                      backgroundImage: `url('${c.img}')`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  />
+                  <div className="chip" style={{ backgroundColor: c.c }}>
+                    <img
+                      src={c.img}
+                      alt={`${c.n} — ${c.s} swatch`}
+                      loading="lazy"
+                      decoding="async"
+                      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                    />
+                  </div>
                   <div className="nm">
                     <b>{c.n}</b>
                     <span>{c.s}</span>

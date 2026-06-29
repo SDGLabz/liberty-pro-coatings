@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SurveyButton } from "@/components/site/SurveyButton";
+import { breadcrumbJsonLd } from "@/lib/breadcrumb-schema";
+
+const description =
+  "Liberty Pro Coatings is a concrete floor coating manufacturer and a brand of American Polymer Group — professional epoxy, polyaspartic and urethane systems, manufacturer-direct to approved contractors.";
 
 export const metadata: Metadata = {
   title: "About",
-  description:
-    "Liberty Pro Coatings is a concrete floor coating manufacturer and a brand of American Polymer Group — professional epoxy, polyaspartic and urethane systems, manufacturer-direct to approved contractors.",
+  description,
   alternates: { canonical: "/about" },
+  openGraph: { type: "website", title: "About · Liberty Pro Coatings", description, url: "/about" },
+  twitter: { title: "About · Liberty Pro Coatings", description },
 };
 
 const FEATURES = [
@@ -30,6 +35,17 @@ const FEATURES = [
 export default function AboutPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", url: "/" },
+              { name: "About", url: "/about" },
+            ]),
+          ),
+        }}
+      />
       <section className="ihero">
         <div className="photo" style={{ backgroundImage: "url('/images/cat-slurry.jpg')" }} />
         <div className="wrap">

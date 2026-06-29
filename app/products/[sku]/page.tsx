@@ -61,11 +61,52 @@ export default async function ProductPage({
     ],
   };
 
+  // Product + Offer JSON-LD (schema.org/Product). Availability is derived
+  // HONESTLY from the catalog status (no product is purchasable at launch):
+  //   purchasable → InStock · active-off ("Coming Soon") → PreOrder ·
+  //   mto ("Made to Order") → BackOrder · rnd-hold ("In Development") → OutOfStock.
+  // The Offer is emitted only when a real list price exists. No aggregateRating
+  // or review is included — there are no real reviews, and inventing them is a
+  // Google policy violation.
+  const availability = p.purchasable
+    ? "https://schema.org/InStock"
+    : p.status === "mto"
+      ? "https://schema.org/BackOrder"
+      : p.status === "rnd-hold"
+        ? "https://schema.org/OutOfStock"
+        : "https://schema.org/PreOrder";
+  const productLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: p.name,
+    description: p.desc,
+    sku: p.sku,
+    category: `${p.family} · ${CHEM_LABELS[p.chem]}`,
+    brand: { "@type": "Brand", name: SITE.name },
+    manufacturer: { "@type": "Organization", name: SITE.name },
+    image: `${SITE.url}${p.img}`,
+    ...(p.price && p.price > 0
+      ? {
+          offers: {
+            "@type": "Offer",
+            url: `${SITE.url}/products/${p.sku.toLowerCase()}`,
+            price: p.price,
+            priceCurrency: "USD",
+            availability,
+          },
+        }
+      : {}),
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productLd) }}
       />
       <div className="wrap crumbs">
         <Link href="/">Home</Link>
@@ -81,7 +122,12 @@ export default async function ProductPage({
           <div className="pd-top">
             <div>
               <div className="pd-gallery">
-                <div className="main" style={{ backgroundImage: `url('${p.img}')` }} />
+                <div
+                  className="main"
+                  role="img"
+                  aria-label={`${p.name} — ${CHEM_LABELS[p.chem]} floor coating`}
+                  style={{ backgroundImage: `url('${p.img}')` }}
+                />
               </div>
             </div>
             <div>

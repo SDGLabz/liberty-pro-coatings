@@ -5,12 +5,17 @@ import {
   CoverageCalculator,
   type CoverageProduct,
 } from "@/components/site/CoverageCalculator";
+import { breadcrumbJsonLd } from "@/lib/breadcrumb-schema";
+
+const description =
+  "Liberty Pro Coatings resources — a coverage calculator and the technical data (TDS) and safety data (SDS) sheets for every product.";
 
 export const metadata: Metadata = {
   title: "Resources",
-  description:
-    "Liberty Pro Coatings resources — a coverage calculator and the technical data (TDS) and safety data (SDS) sheets for every product.",
+  description,
   alternates: { canonical: "/resources" },
+  openGraph: { type: "website", title: "Resources · Liberty Pro Coatings", description, url: "/resources" },
+  twitter: { title: "Resources · Liberty Pro Coatings", description },
 };
 
 // Products that publish a per-gallon coverage rate → calculator presets.
@@ -44,6 +49,17 @@ for (const p of PRODUCTS) {
 export default function ResourcesPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", url: "/" },
+              { name: "Resources", url: "/resources" },
+            ]),
+          ),
+        }}
+      />
       <div className="wrap crumbs">
         <Link href="/">Home</Link>
         <span className="sep">/</span>

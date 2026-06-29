@@ -3,17 +3,33 @@ import Link from "next/link";
 import { SYSTEMS } from "@/lib/catalog";
 import { SystemCard } from "@/components/site/SystemCard";
 import { SurveyButton } from "@/components/site/SurveyButton";
+import { breadcrumbJsonLd } from "@/lib/breadcrumb-schema";
+
+const description =
+  "Nine engineered concrete floor systems, primer to topcoat, built from Liberty Pro products. Garage-led, with commercial, industrial and decorative options.";
 
 export const metadata: Metadata = {
   title: "Systems",
-  description:
-    "Nine engineered concrete floor systems, primer to topcoat, built from Liberty Pro products. Garage-led, with commercial, industrial and decorative options.",
+  description,
   alternates: { canonical: "/systems" },
+  openGraph: { type: "website", title: "Systems · Liberty Pro Coatings", description, url: "/systems" },
+  twitter: { title: "Systems · Liberty Pro Coatings", description },
 };
 
 export default function SystemsPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", url: "/" },
+              { name: "Systems", url: "/systems" },
+            ]),
+          ),
+        }}
+      />
       <section className="ihero">
         <div className="photo" style={{ backgroundImage: "url('/images/cat-flake.jpg')" }} />
         <div className="wrap">

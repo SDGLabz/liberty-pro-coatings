@@ -2,12 +2,17 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SurveyButton } from "@/components/site/SurveyButton";
 import { SurveyLauncher } from "@/components/site/SurveyLauncher";
+import { breadcrumbJsonLd } from "@/lib/breadcrumb-schema";
+
+const description =
+  "Reach the Liberty Pro Coatings team for product, spec or account questions, or start a contractor application. (224) 733-1919 · info@libertyprocoatings.com.";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description:
-    "Reach the Liberty Pro Coatings team for product, spec or account questions, or start a contractor application. (224) 733-1919 · info@libertyprocoatings.com.",
+  description,
   alternates: { canonical: "/contact" },
+  openGraph: { type: "website", title: "Contact · Liberty Pro Coatings", description, url: "/contact" },
+  twitter: { title: "Contact · Liberty Pro Coatings", description },
 };
 
 // The contact page launches the shared contractor survey (SurveyLauncher →
@@ -16,6 +21,17 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", url: "/" },
+              { name: "Contact", url: "/contact" },
+            ]),
+          ),
+        }}
+      />
       <div className="wrap crumbs">
         <Link href="/">Home</Link>
         <span className="sep">/</span>

@@ -6,12 +6,17 @@ import {
   type BaseOption,
   type FinishOption,
 } from "@/components/site/Configurator";
+import { breadcrumbJsonLd } from "@/lib/breadcrumb-schema";
+
+const description =
+  "Configure a Liberty Pro floor system — pick a base, color, flake blend and finish, and the configurator resolves your choices to real product SKUs with an estimated material subtotal.";
 
 export const metadata: Metadata = {
   title: "Build a Kit",
-  description:
-    "Configure a Liberty Pro floor system — pick a base, color, flake blend and finish, and the configurator resolves your choices to real product SKUs with an estimated material subtotal.",
+  description,
   alternates: { canonical: "/configurator" },
+  openGraph: { type: "website", title: "Build a Kit · Liberty Pro Coatings", description, url: "/configurator" },
+  twitter: { title: "Build a Kit · Liberty Pro Coatings", description },
 };
 
 const BASE_DEFS = [
@@ -60,6 +65,17 @@ const SWATCHES = COLORS.slice(0, 6).map((c) => ({ n: c.n, c: c.c, s: c.s }));
 export default function ConfiguratorPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", url: "/" },
+              { name: "Build a Kit", url: "/configurator" },
+            ]),
+          ),
+        }}
+      />
       <div className="wrap crumbs">
         <Link href="/">Home</Link>
         <span className="sep">/</span>

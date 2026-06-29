@@ -4,7 +4,7 @@ import { getSystem, getProduct, type System, type Product } from "@/lib/catalog"
 import { SystemCard } from "@/components/site/SystemCard";
 import { ProductCard } from "@/components/site/ProductCard";
 import { SurveyButton } from "@/components/site/SurveyButton";
-import { SITE } from "@/lib/site";
+import { breadcrumbJsonLd } from "@/lib/breadcrumb-schema";
 
 export const metadata: Metadata = {
   title: "Residential Garage Floors",
@@ -17,6 +17,11 @@ export const metadata: Metadata = {
     description:
       "Systems built for hot-tire pickup, abrasion, slab moisture and the look homeowners want.",
     url: "/industries/residential-garage",
+  },
+  twitter: {
+    title: "Residential Garage Floors · Liberty Pro Coatings",
+    description:
+      "Systems built for hot-tire pickup, abrasion, slab moisture and the look homeowners want.",
   },
 };
 
@@ -59,20 +64,11 @@ export default function ResidentialGaragePage() {
   const systems = SYSTEM_SLUGS.map((s) => getSystem(s)).filter(Boolean) as System[];
   const products = PRODUCT_SKUS.map((s) => getProduct(s)).filter(Boolean) as Product[];
 
-  const breadcrumb = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: SITE.url },
-      { "@type": "ListItem", position: 2, name: "Industries", item: `${SITE.url}/industries` },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: "Residential Garage",
-        item: `${SITE.url}/industries/residential-garage`,
-      },
-    ],
-  };
+  const breadcrumb = breadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: "Industries", url: "/industries" },
+    { name: "Residential Garage", url: "/industries/residential-garage" },
+  ]);
 
   return (
     <>

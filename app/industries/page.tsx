@@ -2,12 +2,17 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getSystem } from "@/lib/catalog";
 import { SurveyButton } from "@/components/site/SurveyButton";
+import { breadcrumbJsonLd } from "@/lib/breadcrumb-schema";
+
+const description =
+  "Garage-led, every vertical. The same Liberty Pro systems carry from residential garages into commercial, industrial, food & beverage, automotive and institutional floors.";
 
 export const metadata: Metadata = {
   title: "Industries",
-  description:
-    "Garage-led, every vertical. The same Liberty Pro systems carry from residential garages into commercial, industrial, food & beverage, automotive and institutional floors.",
+  description,
   alternates: { canonical: "/industries" },
+  openGraph: { type: "website", title: "Industries · Liberty Pro Coatings", description, url: "/industries" },
+  twitter: { title: "Industries · Liberty Pro Coatings", description },
 };
 
 // Editorial verticals (not catalog-derived). System slugs resolve to live
@@ -79,6 +84,17 @@ export default function IndustriesPage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", url: "/" },
+              { name: "Industries", url: "/industries" },
+            ]),
+          ),
+        }}
+      />
       <section className="ihero">
         <div className="photo" style={{ backgroundImage: "url('/images/cat-1day.jpg')" }} />
         <div className="wrap">
