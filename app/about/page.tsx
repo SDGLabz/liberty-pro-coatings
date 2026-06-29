@@ -10,9 +10,21 @@ export const metadata: Metadata = {
 };
 
 const FEATURES = [
-  { tag: "Made in USA", title: "American-made" },
-  { tag: "Independently tested", title: "Real ASTM data" },
-  { tag: "Contractor-grade", title: "Built for the trade" },
+  {
+    tag: "Made in USA",
+    title: "American-made",
+    desc: "Formulated and manufactured in the United States.",
+  },
+  {
+    tag: "Independently tested",
+    title: "Real ASTM data",
+    desc: "Performance backed by independent ASTM lab testing.",
+  },
+  {
+    tag: "Contractor-grade",
+    title: "Built for the trade",
+    desc: "Sold manufacturer-direct to approved professional installers.",
+  },
 ];
 
 export default function AboutPage() {
@@ -51,7 +63,7 @@ export default function AboutPage() {
                 focus on residential garage flooring and full coverage of commercial, industrial and
                 specialty concrete.
               </p>
-              <p className="lede">
+              <p style={{ color: "var(--txt-2)", fontSize: 15.5, lineHeight: 1.7 }}>
                 As a brand under American Polymer Group, we own the formulation and the supply chain,
                 which means consistent quality, real documentation, and direct pricing for approved
                 installers.
@@ -70,11 +82,21 @@ export default function AboutPage() {
         }}
       >
         <div className="wrap">
+          <div className="sec-head reveal">
+            <div className="l">
+              <span className="eyebrow">Why Liberty Pro</span>
+              <h2 style={{ fontSize: "clamp(24px,3vw,38px)" }}>Made right. Proven. Trade-ready.</h2>
+              <p className="lede">The fundamentals behind every Liberty Pro system.</p>
+            </div>
+          </div>
           <div className="cats cols-3">
             {FEATURES.map((f) => (
               <div key={f.title} className="featurecard reveal">
                 <span className="ct">{f.tag}</span>
                 <h3>{f.title}</h3>
+                <p style={{ color: "var(--txt-2)", fontSize: 14, marginTop: 4, lineHeight: 1.5 }}>
+                  {f.desc}
+                </p>
               </div>
             ))}
           </div>

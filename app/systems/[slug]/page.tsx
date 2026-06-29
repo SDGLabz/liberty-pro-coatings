@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SYSTEMS, getSystem, productsInSystem } from "@/lib/catalog";
 import { ProductCard } from "@/components/site/ProductCard";
+import { SystemCard } from "@/components/site/SystemCard";
 import { SurveyButton } from "@/components/site/SurveyButton";
 import { AddSystemToCart } from "@/components/site/AddSystemToCart";
 import { SITE } from "@/lib/site";
@@ -39,6 +40,7 @@ export default async function SystemPage({
   if (!s) notFound();
 
   const components = productsInSystem(s);
+  const others = SYSTEMS.filter((x) => x.slug !== s.slug).slice(0, 4);
   const componentItems = components.map((p) => ({
     sku: p.sku,
     name: p.name,
@@ -166,26 +168,48 @@ export default async function SystemPage({
         </section>
       )}
 
-      {/* Spec / order CTA */}
-      <section style={{ background: "var(--ink)", color: "#fff", textAlign: "center" }}>
+      {/* Other systems rail */}
+      {others.length > 0 && (
+        <section>
+          <div className="wrap">
+            <div className="sec-head reveal">
+              <div className="l">
+                <span className="eyebrow">Keep exploring</span>
+                <h2>Other systems.</h2>
+              </div>
+              <Link className="seeall" href="/systems">
+                All systems <span className="ar" aria-hidden>→</span>
+              </Link>
+            </div>
+            <div className="cats cols-4">
+              {others.map((o) => (
+                <SystemCard key={o.slug} s={o} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Spec / order CTA — contained panel so it doesn't bleed into the dark footer */}
+      <section className="cta">
         <div className="wrap">
-          <span className="eyebrow" style={{ color: "var(--gold-bright)", justifyContent: "center" }}>
-            Estimate &amp; order
-          </span>
-          <h2
-            style={{ color: "#fff", fontSize: "clamp(28px,4vw,48px)", margin: "14px 0 14px" }}
-          >
-            Spec this system for your job.
-          </h2>
-          <p style={{ color: "#9fb0c5", maxWidth: "46ch", margin: "0 auto 26px" }}>
-            Use the coverage calculator to size the kits, add the components to a cart, and check out
-            once you&apos;re an approved contractor.
-          </p>
-          <div className="cta-row" style={{ justifyContent: "center" }}>
-            <Link className="btn btn-primary" href="/resources#calculator">
-              Coverage Calculator <span className="ar" aria-hidden>→</span>
-            </Link>
-            <SurveyButton className="btn btn-out btn-on-dark">Become a Contractor</SurveyButton>
+          <div className="cta-panel reveal">
+            <div className="bg" />
+            <div className="grid-tex" />
+            <div className="inner">
+              <span className="eyebrow">Estimate &amp; order</span>
+              <h2>Spec this system for your job.</h2>
+              <p>
+                Use the coverage calculator to size the kits, add the components to a cart, and check
+                out once you&apos;re an approved contractor.
+              </p>
+              <div className="cta-row">
+                <Link className="btn btn-primary" href="/resources#calculator">
+                  Coverage Calculator <span className="ar" aria-hidden>→</span>
+                </Link>
+                <SurveyButton className="btn btn-out">Become a Contractor</SurveyButton>
+              </div>
+            </div>
           </div>
         </div>
       </section>
