@@ -14,6 +14,7 @@ import {
   type OrderTotals,
   type PaymentChoice,
 } from "@/lib/checkout-pricing";
+import { estimateFreight } from "@/lib/freight";
 
 // The approved-contractor checkout experience. We pick the payment method with
 // our OWN toggle (card vs. ACH) because the price differs by method — so each
@@ -36,6 +37,13 @@ export default function CheckoutClient() {
     [items],
   );
   const localTotals = useMemo(() => computeTotals(subtotalCents, method), [subtotalCents, method]);
+
+  // Banyan-shaped freight estimate (mock until real rates). Shown as a separate
+  // "confirmed before shipment" line — NOT added to the charged total.
+  const freight = useMemo(
+    () => estimateFreight(items.map((i) => ({ sku: i.sku, qty: i.qty }))),
+    [items],
+  );
 
   // Create / recreate a PaymentIntent whenever the method or cart changes. The
   // server re-prices from the catalog and returns the authoritative totals; a
@@ -171,10 +179,16 @@ export default function CheckoutClient() {
               accent
             />
           )}
-          <Row label="Total" value={formatUsd(totals.totalCents)} big />
+          <Row label="Total due now" value={formatUsd(totals.totalCents)} big />
         </div>
+        {freight && (
+          <div className="co-freight">
+            <Row label="Estimated freight" value={`~${formatUsd(freight.estimateCents)}`} />
+            <p className="co-freight-note">{freight.disclaimer}</p>
+          </div>
+        )}
         <p className="co-note">
-          Tax &amp; freight are added in a later step. <strong>Test mode</strong> — no real charge.
+          Sales tax is calculated at fulfillment. <strong>Test mode</strong>: no real charge.
         </p>
       </aside>
     </div>
