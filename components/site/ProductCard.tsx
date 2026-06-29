@@ -20,10 +20,23 @@ export interface ProductCardData {
 // `reveal` controls the scroll-in animation; pass false where the card
 // can mount after the Effects observer has already run (e.g. the
 // client-filtered listing), so it never stays stuck invisible.
-export function ProductCard({ p, reveal = true }: { p: ProductCardData; reveal?: boolean }) {
+// `hero` promotes the card to the dominant featured tile (2×2 span in the
+// product grid's default view); only the chrome changes — same markup.
+export function ProductCard({
+  p,
+  reveal = true,
+  hero = false,
+}: {
+  p: ProductCardData;
+  reveal?: boolean;
+  hero?: boolean;
+}) {
   const [statusLabel, statusClass] = STATUS_LABELS[p.status];
   return (
-    <Link className={`card${reveal ? " reveal" : ""}`} href={`/products/${p.sku.toLowerCase()}`}>
+    <Link
+      className={`card${hero ? " card--hero" : ""}${reveal ? " reveal" : ""}`}
+      href={`/products/${p.sku.toLowerCase()}`}
+    >
       <div className="media">
         <div className="bg" style={{ background: `url('${p.img}') center/cover no-repeat` }} />
         <div className="badges">

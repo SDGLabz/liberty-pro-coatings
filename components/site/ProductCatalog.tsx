@@ -87,6 +87,16 @@ export function ProductCatalog({
     setChems(chem ? new Set([chem]) : new Set());
   const chipActive = (chem: Chem) => chems.size === 1 && chems.has(chem);
 
+  // The default view = nothing searched and no facet applied. Only then does
+  // the first (featured-first) product get promoted to the dominant hero tile,
+  // so the hierarchy never fights search-relevance or filter results.
+  const isDefaultView =
+    !query.trim() &&
+    chems.size === 0 &&
+    roles.size === 0 &&
+    families.size === 0 &&
+    statuses.size === 0;
+
   return (
     <div className="catalog">
       <aside className="filters">
@@ -190,9 +200,14 @@ export function ProductCatalog({
           </div>
         </div>
         {filtered.length > 0 ? (
-          <div className="pgrid">
-            {filtered.map((p) => (
-              <ProductCard key={p.sku} p={p} reveal={false} />
+          <div className={`pgrid${isDefaultView ? " pgrid--hero" : ""}`}>
+            {filtered.map((p, i) => (
+              <ProductCard
+                key={p.sku}
+                p={p}
+                reveal={false}
+                hero={isDefaultView && i === 0}
+              />
             ))}
           </div>
         ) : (
