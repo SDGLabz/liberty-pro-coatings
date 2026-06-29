@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { Color } from "@/lib/catalog";
+import { useDialogA11y } from "./useDialogA11y";
 
 // Compact color control for the buy box: shows the selected swatch + name as a
 // trigger, and opens a large, category-grouped picker overlay (lightbox-style)
@@ -20,6 +21,8 @@ export function ColorPicker({
 }) {
   const [open, setOpen] = useState(false);
   const selected = colors.find((c) => c.n === value) ?? null;
+  const panelRef = useRef<HTMLDivElement>(null);
+  useDialogA11y(open, panelRef);
 
   const groups: { series: string; name: string; colors: Color[] }[] = [];
   for (const c of colors) {
@@ -77,10 +80,12 @@ export function ColorPicker({
 
       {open && (
         <div
+          ref={panelRef}
           className="cp-modal"
           role="dialog"
           aria-modal="true"
           aria-label="Choose a color"
+          inert={!open}
           onClick={() => setOpen(false)}
         >
           <div className="cp-panel" onClick={(e) => e.stopPropagation()}>

@@ -20,6 +20,26 @@ export const runtime = "nodejs";
 const STRIPE_MIN_CENTS = 50; // Stripe rejects charges under $0.50.
 const MAX_QTY = 999;
 
+// Basic in-memory rate limit (per serverless instance). Instances aren't
+// shared, so this is a soft first-gate — combined with the auth/approval
+// boundary above it blunts abuse without needing an external store. Mirrors
+// the public lead route's pattern, but keyed per identity (user id) since
+// this endpoint is already authenticated.
+const RATE_LIMIT = 5;
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+const hits = new Map<string, { count: number; resetAt: number }>();
+
+function rateLimited(key: string): boolean {
+  const now = Date.now();
+  const entry = hits.get(key);
+  if (!entry || now > entry.resetAt) {
+    hits.set(key, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return false;
+  }
+  entry.count += 1;
+  return entry.count > RATE_LIMIT;
+}
+
 const intentSchema = z.object({
   method: z.enum(["card", "ach"]),
   items: z
@@ -59,6 +79,18 @@ export async function POST(request: Request) {
     return Response.json(
       { ok: false, error: "Your account isn't approved for checkout yet." },
       { status: 403 },
+    );
+  }
+
+  // Rate-limit per identity so an approved account can't be used to mint a
+  // flood of PaymentIntents. Key on the user id; fall back to the forwarded
+  // IP only if it's somehow missing.
+  const fwd = request.headers.get("x-forwarded-for") ?? "";
+  const ip = fwd.split(",")[0].trim() || "unknown";
+  if (rateLimited(user.id || ip)) {
+    return Response.json(
+      { ok: false, error: "Too many requests. Please slow down and try again in a few minutes." },
+      { status: 429 },
     );
   }
 

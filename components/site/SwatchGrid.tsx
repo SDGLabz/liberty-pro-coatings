@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import type { Color } from "@/lib/catalog";
+import { useDialogA11y } from "./useDialogA11y";
 
 export type SwatchGroup = { series: string; name: string; colors: Color[]; lede?: string };
 
@@ -20,6 +21,8 @@ export function SwatchGrid({ groups }: { groups: SwatchGroup[] }) {
 
   const [active, setActive] = useState<number | null>(null);
   const open = active !== null;
+  const panelRef = useRef<HTMLDivElement>(null);
+  useDialogA11y(open, panelRef);
 
   const go = useCallback(
     (delta: number) =>
@@ -93,10 +96,12 @@ export function SwatchGrid({ groups }: { groups: SwatchGroup[] }) {
 
       {current && (
         <div
+          ref={panelRef}
           className="lb"
           role="dialog"
           aria-modal="true"
           aria-label={`${current.n} swatch`}
+          inert={!open}
           onClick={() => setActive(null)}
         >
           <button type="button" className="lb-x" aria-label="Close" onClick={() => setActive(null)}>

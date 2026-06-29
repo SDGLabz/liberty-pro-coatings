@@ -13,12 +13,15 @@ import { AccessibilityProvider } from "@/components/a11y/accessibility-provider"
 import { AccessibilityMenu } from "@/components/a11y/accessibility-menu";
 import { CookieConsent } from "@/components/site/CookieConsent";
 
-// Variable fonts — names match the CSS vars globals.css already consumes
-// (--font-oswald / --font-inter / --font-jetbrains).
-const oswald = Oswald({ subsets: ["latin"], variable: "--font-oswald", display: "swap" });
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+// Weights pinned to exactly the faces globals.css uses, so the browser stops
+// fetching the full variable axis (Oswald 500/600/700, Inter 400/600/700/800,
+// JetBrains Mono 400/500/600). The `variable` names still match the CSS vars
+// (--font-oswald / --font-inter / --font-jetbrains) globals.css already consumes.
+const oswald = Oswald({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-oswald", display: "swap" });
+const inter = Inter({ subsets: ["latin"], weight: ["400", "600", "700", "800"], variable: "--font-inter", display: "swap" });
 const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
   variable: "--font-jetbrains",
   display: "swap",
 });
