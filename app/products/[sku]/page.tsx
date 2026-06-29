@@ -11,13 +11,8 @@ import {
 } from "@/lib/catalog";
 import { ProductCard } from "@/components/site/ProductCard";
 import { BuyBox } from "@/components/site/BuyBox";
+import { SpecTables } from "@/components/site/SpecTables";
 import { SITE } from "@/lib/site";
-
-const TABLE_HEAD_STYLE = {
-  fontSize: 20,
-  textTransform: "uppercase" as const,
-  marginBottom: 12,
-};
 
 export function generateStaticParams() {
   return PRODUCTS.map((p) => ({ sku: p.sku.toLowerCase() }));
@@ -147,60 +142,36 @@ export default async function ProductPage({
         <div className="wrap">
           {p.tds ? (
             <>
-              <div className="tds-sec">
-                <span className="eyebrow">Technical Data Sheet</span>
-                <h2>Product Overview</h2>
-                <p>{p.tds.overview}</p>
-              </div>
-              <div className="tds-sec">
-                <h2>Uses &amp; Benefits</h2>
-                <p>{p.tds.uses}</p>
-              </div>
-              <div className="tds-sec">
-                <h2>Limitations</h2>
-                <p>{p.tds.limitations}</p>
-              </div>
-              <div className="tds-sec">
-                <h2>Surface Preparation</h2>
-                <p>{p.tds.prep}</p>
-              </div>
-              <div className="tds-sec">
-                <h2>Mixing</h2>
-                <p>{p.tds.mixing}</p>
-              </div>
-              <div className="tds-sec">
-                <h2>Application</h2>
-                <p>{p.tds.application}</p>
-              </div>
-              <div className="tds-tables">
-                <div>
-                  <h2 style={TABLE_HEAD_STYLE}>Technical Data</h2>
-                  <table className="spec-table">
-                    <tbody>
-                      {p.tds.technical.map(([k, v]) => (
-                        <tr key={k}>
-                          <td>{k}</td>
-                          <td>{v}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <div>
-                  <h2 style={TABLE_HEAD_STYLE}>Physical Properties</h2>
-                  <table className="spec-table">
-                    <tbody>
-                      {p.tds.physical.map(([k, std, v]) => (
-                        <tr key={k}>
-                          <td>{k}</td>
-                          <td className="std">{std}</td>
-                          <td>{v}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+              <div className="sec-head">
+                <div className="l">
+                  <span className="eyebrow">Technical Data Sheet</span>
+                  <h2>Specs &amp; application.</h2>
                 </div>
               </div>
+              <div className="tds-acc">
+                {(
+                  [
+                    ["Product Overview", p.tds.overview],
+                    ["Uses & Benefits", p.tds.uses],
+                    ["Limitations", p.tds.limitations],
+                    ["Surface Preparation", p.tds.prep],
+                    ["Mixing", p.tds.mixing],
+                    ["Application", p.tds.application],
+                  ] as const
+                ).map(([title, body], i) => (
+                  <details key={title} className="tds-acc-item" open={i === 0}>
+                    <summary>{title}</summary>
+                    <div className="tds-acc-body">
+                      <p>{body}</p>
+                    </div>
+                  </details>
+                ))}
+              </div>
+              <SpecTables
+                technical={p.tds.technical}
+                physical={p.tds.physical}
+                tdsHref={`/tds/${p.sku.toLowerCase()}`}
+              />
             </>
           ) : (
             <div className="tds-sec">
@@ -222,7 +193,7 @@ export default async function ProductPage({
       </section>
 
       {/* Documents */}
-      <section style={{ borderTop: "1px solid var(--line)" }}>
+      <section style={{ background: "var(--bg-2)", borderTop: "1px solid var(--line)" }}>
         <div className="wrap">
           <div className="sec-head reveal">
             <div className="l">

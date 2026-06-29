@@ -90,7 +90,7 @@ export function BuyBox({ sku, name, price, pkgPrices, pkg, finish, img, status, 
 
       {finish.length > 0 && (
         <div className="opt-row">
-          <div className="lbl">Finish / Color</div>
+          <div className="lbl">Finish</div>
           <div className="opt-pills">
             {finish.map((f, i) => (
               <button
@@ -109,7 +109,7 @@ export function BuyBox({ sku, name, price, pkgPrices, pkg, finish, img, status, 
 
       {colors.length > 0 && (
         <div className="opt-row">
-          <div className="lbl">Color / finish</div>
+          <div className="lbl">Color</div>
           <ColorPicker
             colors={colors}
             value={colorName}
