@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { COLORS, SUPPORTING_SKUS, type Color, type SupportingSku } from "@/lib/catalog";
 import { SwatchGrid } from "@/components/site/SwatchGrid";
+import { SurveyButton } from "@/components/site/SurveyButton";
 
 export const metadata: Metadata = {
   title: "Colors",
@@ -10,12 +11,30 @@ export const metadata: Metadata = {
   alternates: { canonical: "/colors" },
 };
 
+// Short factual descriptor per decorative series — what the medium IS, so the
+// page reads as scannable sections instead of an unlabelled wall of chips.
+const SERIES_LEDES: Record<string, string> = {
+  "1375 Flake":
+    "Vinyl color flake broadcast into the build coat — a seamless, hide-everything finish with built-in texture and slip resistance.",
+  "1321 Quartz":
+    "Colored quartz aggregate for a heavier, more aggressive texture and high-traffic durability.",
+  "1338 Metallic":
+    "Metallic pigment suspended in clear resin for a marbled, reflective, one-of-a-kind floor.",
+  "1339 Solid Color":
+    "Universal color packs that tint clear epoxy and polyaspartic base coats to a clean, uniform solid color.",
+};
+
 // Group the catalog colors by series, in first-appearance order.
-const GROUPS: { series: string; name: string; colors: Color[] }[] = [];
+const GROUPS: { series: string; name: string; colors: Color[]; lede?: string }[] = [];
 for (const c of COLORS) {
   let g = GROUPS.find((x) => x.series === c.s);
   if (!g) {
-    g = { series: c.s, name: c.s.replace(/^\d+\s+/, ""), colors: [] };
+    g = {
+      series: c.s,
+      name: c.s.replace(/^\d+\s+/, ""),
+      colors: [],
+      lede: SERIES_LEDES[c.s],
+    };
     GROUPS.push(g);
   }
   g.colors.push(c);
@@ -86,34 +105,63 @@ export default function ColorsPage() {
               >
                 {g.category}
               </h3>
-              <div style={{ display: "grid", gap: 10 }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill,minmax(220px,1fr))",
+                  gap: 14,
+                }}
+              >
                 {g.items.map((x) => (
-                  <div
-                    key={x.sku}
-                    className="featurecard"
-                    style={{ display: "flex", gap: 14, alignItems: "baseline" }}
-                  >
+                  <div key={x.sku} className="featurecard" style={{ padding: "20px 18px", gap: 4 }}>
                     <span
                       style={{
                         fontFamily: "var(--mono)",
-                        fontSize: 12,
+                        fontSize: 11.5,
+                        letterSpacing: ".06em",
                         color: "var(--navy)",
-                        minWidth: 96,
                       }}
                     >
                       {x.sku}
                     </span>
-                    <div>
-                      <strong style={{ fontSize: 15 }}>{x.name}</strong>
-                      <p style={{ fontSize: 13.5, color: "var(--txt-2)", margin: "2px 0 0" }}>
-                        {x.note}
-                      </p>
-                    </div>
+                    <strong style={{ fontSize: 15.5, color: "var(--ink)" }}>{x.name}</strong>
+                    <p
+                      style={{
+                        fontSize: 13.5,
+                        color: "var(--txt-2)",
+                        margin: "2px 0 0",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {x.note}
+                    </p>
                   </div>
                 ))}
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="cta">
+        <div className="wrap">
+          <div className="cta-panel reveal">
+            <div className="bg" />
+            <div className="grid-tex" />
+            <div className="inner">
+              <span className="eyebrow">For installers</span>
+              <h2>Put these finishes to work.</h2>
+              <p>Get approved to buy Liberty Pro direct, with freight-inclusive pricing.</p>
+              <div className="cta-row">
+                <SurveyButton className="btn btn-primary">
+                  Become a Contractor <span className="ar" aria-hidden>→</span>
+                </SurveyButton>
+                <Link className="btn btn-out" href="/products">
+                  Shop Products
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </>

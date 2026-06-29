@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import type { Color } from "@/lib/catalog";
 
-export type SwatchGroup = { series: string; name: string; colors: Color[] };
+export type SwatchGroup = { series: string; name: string; colors: Color[]; lede?: string };
 
 // Grouped swatch grid with a click-to-zoom lightbox. Used on /colors (and any
 // page that wants the browse-and-enlarge swatch experience). Clicking a swatch
@@ -53,6 +53,11 @@ export function SwatchGrid({ groups }: { groups: SwatchGroup[] }) {
             <div className="l">
               <span className="eyebrow">{g.series}</span>
               <h2 style={{ fontSize: "clamp(24px,3vw,38px)" }}>{g.name}</h2>
+              {g.lede && (
+                <p className="lede" style={{ maxWidth: "62ch" }}>
+                  {g.lede}
+                </p>
+              )}
             </div>
           </div>
           <div className="swgrid">
