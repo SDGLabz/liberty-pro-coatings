@@ -18,14 +18,14 @@ const INDUSTRIES = [
     title: "Residential garage.",
     blurb:
       "The problems are specific: hot-tire pickup that lifts cheap coatings, abrasion from daily use, slab moisture, and the homeowner who wants it to look great. Our flake broadcast, 1-day flake and polyaspartic systems are built for exactly this — durable, decorative, and installable in a day.",
-    img: "/images/cat-1day.jpg",
+    img: "/images/featured-fin.jpg",
     systems: ["flake-broadcast", "pigmented-epoxy-floor"],
   },
   {
     eyebrow: "Vertical",
     title: "Commercial & Retail",
     blurb: "Showrooms, storefronts and offices wanting a durable decorative floor.",
-    img: "/images/featured-fin.jpg",
+    img: "/images/prod-metal.jpg",
     systems: ["metallic-epoxy", "epoxyscapes-flooring", "flake-broadcast"],
   },
   {
@@ -120,30 +120,41 @@ export default function IndustriesPage() {
               </p>
               <SystemPills slugs={flagship.systems} />
               <div style={{ marginTop: 18 }}>
-                <Link className="btn btn-primary" href="/industries/residential-garage">
+                <Link className="btn btn-out" href="/industries/residential-garage">
                   Explore residential garage <span className="ar" aria-hidden>→</span>
                 </Link>
               </div>
             </div>
             <div className="visual" style={{ backgroundImage: `url('${flagship.img}')` }} />
           </div>
+        </div>
+      </section>
 
-          {/* Verticals — visual left, text right */}
-          {verticals.map((v) => (
-            <div className="twocol reveal" style={{ marginTop: 46 }} key={v.title}>
-              <div className="visual" style={{ backgroundImage: `url('${v.img}')` }} />
-              <div>
-                <span className="eyebrow">{v.eyebrow}</span>
-                <h2 style={{ fontSize: "clamp(24px,3.2vw,38px)", margin: "12px 0 12px" }}>
-                  {v.title}
-                </h2>
-                <p className="lede" style={{ marginBottom: 16 }}>
-                  {v.blurb}
-                </p>
-                <SystemPills slugs={v.systems} />
-              </div>
+      {/* Verticals — demoted into one compact bento band below the flagship */}
+      <section style={{ background: "var(--bg-2)", borderTop: "1px solid var(--line)" }}>
+        <div className="wrap">
+          <div className="sec-head reveal">
+            <div className="l">
+              <span className="eyebrow">More verticals</span>
+              <h2 style={{ fontSize: "clamp(24px,3vw,38px)" }}>Same systems, every floor.</h2>
+              <p className="lede">
+                Residential garage is the flagship — but the same Liberty Pro systems carry into
+                these markets too.
+              </p>
             </div>
-          ))}
+          </div>
+          <div className="indgrid">
+            {verticals.map((v) => (
+              <div className="indcard reveal" key={v.title}>
+                <div className="media" style={{ backgroundImage: `url('${v.img}')` }} />
+                <div className="body">
+                  <h3>{v.title}</h3>
+                  <p>{v.blurb}</p>
+                  <SystemPills slugs={v.systems} />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

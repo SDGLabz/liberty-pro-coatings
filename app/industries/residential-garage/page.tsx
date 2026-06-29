@@ -82,7 +82,7 @@ export default function ResidentialGaragePage() {
       />
 
       <section className="ihero">
-        <div className="photo" style={{ backgroundImage: "url('/images/cat-1day.jpg')" }} />
+        <div className="photo" style={{ backgroundImage: "url('/images/prod-1day.jpg')" }} />
         <div className="wrap">
           <span className="eyebrow">Flagship use case</span>
           <h1>Residential garage floors.</h1>
@@ -154,7 +154,7 @@ export default function ResidentialGaragePage() {
               All systems <span className="ar" aria-hidden>→</span>
             </Link>
           </div>
-          <div className="cats cols-3">
+          <div className="cats cols-4">
             {systems.map((s) => (
               <SystemCard key={s.slug} s={s} />
             ))}
