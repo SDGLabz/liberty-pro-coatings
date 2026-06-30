@@ -86,6 +86,9 @@ export interface Product {
   purchasable?: boolean;
   /** LTL freight data — required once `purchasable` is true (see guardrail). */
   freight?: FreightAttrs;
+  /** Portal-generated TDS PDF URL (public Supabase Storage), overlaid live from
+   *  cms_products when the product has been published from the SDG portal. */
+  tdsUrl?: string | null;
 }
 
 /** [layer, products, note] */
@@ -934,4 +937,70 @@ export function productsInSystem(system: System): Product[] {
     }
   }
   return out;
+}
+
+// ---- live overlay from the SDG portal CMS -------------------------------
+//
+// Products above are STATIC and commerce-rich (price, pkgPrices, freight). When
+// a product is edited + published in the SDG portal, the portal writes a SPARSE
+// row to the shared portal Supabase `cms_products` (company='lpc'): the edited
+// TDS prose (in `values`) + a portal-generated TDS PDF (`tds_url`). We overlay
+// ONLY those fields onto the static product at request time (the product page is
+// force-dynamic), so portal edits appear live without touching pricing, freight,
+// status, the descriptor, or the technical/physical spec tables. If the portal
+// env or read is unavailable, the static product is returned unchanged.
+const PORTAL_SB_URL = process.env.PORTAL_SUPABASE_URL;
+const PORTAL_SB_ANON = process.env.PORTAL_SUPABASE_ANON_KEY;
+
+type CmsOverlayRow = { slug?: string; values?: Record<string, unknown>; tds_url?: unknown };
+
+async function loadCmsOverlay(): Promise<Record<string, CmsOverlayRow>> {
+  if (!PORTAL_SB_URL || !PORTAL_SB_ANON) return {};
+  try {
+    const res = await fetch(
+      `${PORTAL_SB_URL}/rest/v1/cms_products?company=eq.lpc&select=slug,values,tds_url`,
+      {
+        headers: { apikey: PORTAL_SB_ANON, Authorization: `Bearer ${PORTAL_SB_ANON}` },
+        // Always read the current overlay so portal edits appear immediately.
+        cache: "no-store",
+      },
+    );
+    if (!res.ok) return {};
+    const rows = (await res.json()) as CmsOverlayRow[];
+    const map: Record<string, CmsOverlayRow> = {};
+    for (const r of rows) if (typeof r.slug === "string") map[r.slug.toLowerCase()] = r;
+    return map;
+  } catch {
+    return {};
+  }
+}
+
+function overlayProduct(p: Product, row: CmsOverlayRow | undefined): Product {
+  if (!row) return p;
+  const v = (row.values ?? {}) as Record<string, unknown>;
+  const s = (x: unknown): string | undefined =>
+    typeof x === "string" && x.trim() ? x.trim() : undefined;
+  // Overlay the editable TDS prose + the portal TDS url. Everything else (name,
+  // descriptor, glance, technical/physical tables, pricing, freight, status)
+  // stays from the curated static base.
+  const tds: Tds | undefined = p.tds
+    ? {
+        ...p.tds,
+        overview: s(v.description) ?? p.tds.overview,
+        uses: s(v.uses) ?? p.tds.uses,
+        limitations: s(v.limitations) ?? p.tds.limitations,
+        prep: s(v.surface_prep) ?? p.tds.prep,
+        mixing: s(v.mixing) ?? p.tds.mixing,
+        application: s(v.application_method) ?? p.tds.application,
+      }
+    : p.tds;
+  return { ...p, tds, tdsUrl: s(row.tds_url) ?? null };
+}
+
+/** A single product with the live portal overlay applied (force-dynamic page). */
+export async function getLiveProduct(sku: string): Promise<Product | undefined> {
+  const base = getProduct(sku);
+  if (!base) return undefined;
+  const overlay = await loadCmsOverlay();
+  return overlayProduct(base, overlay[base.sku.toLowerCase()]);
 }

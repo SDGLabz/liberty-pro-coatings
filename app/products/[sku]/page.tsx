@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  PRODUCTS,
   getProduct,
+  getLiveProduct,
   systemsUsing,
   relatedProducts,
   colorsForProduct,
@@ -14,9 +14,11 @@ import { BuyBox } from "@/components/site/BuyBox";
 import { SpecTables } from "@/components/site/SpecTables";
 import { SITE } from "@/lib/site";
 
-export function generateStaticParams() {
-  return PRODUCTS.map((p) => ({ sku: p.sku.toLowerCase() }));
-}
+// Force-dynamic: each product page overlays the live SDG-portal CMS edits (TDS
+// prose + the portal-generated TDS url) onto the static catalog at request time,
+// so a portal publish appears here within seconds. (No generateStaticParams —
+// invalid SKUs fall through to notFound().)
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -42,7 +44,7 @@ export default async function ProductPage({
   params: Promise<{ sku: string }>;
 }) {
   const { sku } = await params;
-  const p = getProduct(sku);
+  const p = await getLiveProduct(sku);
   if (!p) notFound();
 
   const usedIn = systemsUsing(p.sku);
@@ -206,7 +208,7 @@ export default async function ProductPage({
               <SpecTables
                 technical={p.tds.technical}
                 physical={p.tds.physical}
-                tdsHref={`/tds/${p.sku.toLowerCase()}`}
+                tdsHref={p.tdsUrl ?? `/tds/${p.sku.toLowerCase()}`}
               />
             </>
           ) : (
@@ -240,7 +242,7 @@ export default async function ProductPage({
           <div style={{ maxWidth: 560 }}>
             <a
               className="docrow"
-              href={`/tds/${p.sku.toLowerCase()}`}
+              href={p.tdsUrl ?? `/tds/${p.sku.toLowerCase()}`}
               target="_blank"
               rel="noopener"
             >
