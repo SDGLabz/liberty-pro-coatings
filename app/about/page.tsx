@@ -47,7 +47,7 @@ export default function AboutPage() {
         }}
       />
       <section className="ihero">
-        <div className="photo" style={{ backgroundImage: "url('/images/cat-slurry.jpg')" }} />
+        <div className="photo" style={{ backgroundImage: "url('/images/crew-squeegee-coating.webp')" }} />
         <div className="wrap">
           <span className="eyebrow">The brand</span>
           <h1>Liberty Pro Coatings.</h1>

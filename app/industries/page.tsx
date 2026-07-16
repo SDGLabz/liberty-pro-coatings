@@ -30,14 +30,14 @@ const INDUSTRIES = [
     eyebrow: "Vertical",
     title: "Commercial & Retail",
     blurb: "Showrooms, storefronts and offices wanting a durable decorative floor.",
-    img: "/images/prod-metal.jpg",
+    img: "/images/showroom-cars.webp",
     systems: ["metallic-epoxy", "epoxyscapes-flooring", "flake-broadcast"],
   },
   {
     eyebrow: "Vertical",
     title: "Warehouse & Industrial",
     blurb: "High-traffic, high-load floors needing impact and chemical resistance.",
-    img: "/images/cat-pig.jpg",
+    img: "/images/warehouse-pigmented-gray.webp",
     systems: ["solid-slurry", "pigmented-epoxy-floor", "microquartz-floor"],
   },
   {
@@ -51,14 +51,14 @@ const INDUSTRIES = [
     eyebrow: "Vertical",
     title: "Automotive",
     blurb: "Dealerships, service bays and detail shops.",
-    img: "/images/cat-flake.jpg",
+    img: "/images/automotive-detail-shop.webp",
     systems: ["flake-broadcast", "metallic-epoxy"],
   },
   {
     eyebrow: "Vertical",
     title: "Institutional",
     blurb: "Schools, healthcare and public buildings.",
-    img: "/images/cat-metal.jpg",
+    img: "/images/institutional-corridor.webp",
     systems: ["microquartz-floor", "pigmented-epoxy-floor"],
   },
 ];

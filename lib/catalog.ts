@@ -422,7 +422,7 @@ export const PRODUCTS: Product[] = [
     pkg: ["3 Gal"],
     price: 193.96,
     status: "active-off",
-    img: "/images/cat-pig.jpg",
+    img: "/images/warehouse-pigmented-gray.webp",
     finish: ["Pigmented"],
   },
   {
@@ -540,7 +540,7 @@ export const SYSTEMS: System[] = [
     slug: "pigmented-epoxy-floor",
     name: "Pigmented Epoxy Floor System",
     tag: "PG · Solid Color",
-    img: "/images/cat-pig.jpg",
+    img: "/images/warehouse-pigmented-gray.webp",
     blurb:
       "A solid-color, high-build epoxy floor — the clean, durable baseline for garages, shops and light industrial space.",
     uses: "Residential garages, workshops, light commercial and industrial floors where a clean solid color and chemical/abrasion resistance matter.",
