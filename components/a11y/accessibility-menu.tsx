@@ -558,9 +558,14 @@ function Panel({
           </div>
           <p className="mt-2.5 text-center text-[11px] text-muted2">
             Accessibility tools by{" "}
-            <span className="font-semibold text-slate2">
-              Liberty Pro Coatings
-            </span>
+            <a
+              href="https://www.spiderdigitalgroup.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-brand underline-offset-2 hover:underline"
+            >
+              Spider Digital Group
+            </a>
           </p>
         </div>
       </aside>
