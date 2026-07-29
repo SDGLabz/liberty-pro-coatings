@@ -163,7 +163,6 @@ export default function ColorsPage() {
         <div className="wrap">
           <div className="cta-panel reveal">
             <div className="bg" />
-            <div className="grid-tex" />
             <div className="inner">
               <span className="eyebrow">For installers</span>
               <h2>Put these finishes to work.</h2>

@@ -215,7 +215,6 @@ export default function Home() {
         <div className="wrap">
           <div className="cta-panel reveal">
             <div className="bg" />
-            <div className="grid-tex" />
             <div className="inner">
               <span className="eyebrow">For professional installers</span>
               <h2>Become an approved contractor.</h2>

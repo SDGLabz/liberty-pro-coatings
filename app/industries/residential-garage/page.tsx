@@ -183,7 +183,6 @@ export default function ResidentialGaragePage() {
         <div className="wrap">
           <div className="cta-panel reveal">
             <div className="bg" />
-            <div className="grid-tex" />
             <div className="inner">
               <span className="eyebrow">For garage-floor installers</span>
               <h2>Buy the garage systems direct.</h2>

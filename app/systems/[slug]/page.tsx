@@ -195,7 +195,6 @@ export default async function SystemPage({
         <div className="wrap">
           <div className="cta-panel reveal">
             <div className="bg" />
-            <div className="grid-tex" />
             <div className="inner">
               <span className="eyebrow">Estimate &amp; order</span>
               <h2>Spec this system for your job.</h2>

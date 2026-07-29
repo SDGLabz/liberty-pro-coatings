@@ -123,7 +123,6 @@ export default function AboutPage() {
         <div className="wrap">
           <div className="cta-panel reveal">
             <div className="bg" />
-            <div className="grid-tex" />
             <div className="inner">
               <span className="eyebrow">Join the network</span>
               <h2>Buy direct from the manufacturer.</h2>
