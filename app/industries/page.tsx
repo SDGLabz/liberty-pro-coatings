@@ -23,42 +23,42 @@ const INDUSTRIES = [
     title: "Residential garage.",
     blurb:
       "The problems are specific: hot-tire pickup that lifts cheap coatings, abrasion from daily use, slab moisture, and the homeowner who wants it to look great. Our flake broadcast, 1-day flake and polyaspartic systems are built for exactly this — durable, decorative, and installable in a day.",
-    img: "/images/featured-fin.jpg",
+    img: "/images/lpc/flake-garage-residential-fig.webp",
     systems: ["flake-broadcast", "pigmented-epoxy-floor"],
   },
   {
     eyebrow: "Vertical",
     title: "Commercial & Retail",
     blurb: "Showrooms, storefronts and offices wanting a durable decorative floor.",
-    img: "/images/showroom-cars.webp",
+    img: "/images/lpc/retail-red-floor-media.webp",
     systems: ["metallic-epoxy", "epoxyscapes-flooring", "flake-broadcast"],
   },
   {
     eyebrow: "Vertical",
     title: "Warehouse & Industrial",
     blurb: "High-traffic, high-load floors needing impact and chemical resistance.",
-    img: "/images/warehouse-pigmented-gray.webp",
+    img: "/images/lpc/pigmented-crane-bay-media.webp",
     systems: ["solid-slurry", "pigmented-epoxy-floor", "microquartz-floor"],
   },
   {
     eyebrow: "Vertical",
     title: "Food & Beverage",
     blurb: "Hygienic, slip-resistant, washdown-ready surfaces.",
-    img: "/images/cat-quartz.jpg",
+    img: "/images/lpc/quartz-kitchen-commercial-media.webp",
     systems: ["microquartz-floor", "solid-slurry"],
   },
   {
     eyebrow: "Vertical",
     title: "Automotive",
     blurb: "Dealerships, service bays and detail shops.",
-    img: "/images/automotive-detail-shop.webp",
+    img: "/images/lpc/metallic-garage-cobalt-media.webp",
     systems: ["flake-broadcast", "metallic-epoxy"],
   },
   {
     eyebrow: "Vertical",
     title: "Institutional",
     blurb: "Schools, healthcare and public buildings.",
-    img: "/images/institutional-corridor.webp",
+    img: "/images/lpc/epoxyscapes-reception-media.webp",
     systems: ["microquartz-floor", "pigmented-epoxy-floor"],
   },
 ];
@@ -96,7 +96,7 @@ export default function IndustriesPage() {
         }}
       />
       <section className="ihero">
-        <div className="photo" style={{ backgroundImage: "url('/images/cat-1day.jpg')" }} />
+        <div className="photo" style={{ backgroundImage: "url('/images/lpc/flake-garage-residential-wide.webp')" }} />
         <div className="wrap">
           <span className="eyebrow">Garage-led · every vertical</span>
           <h1>Where Liberty Pro works.</h1>

@@ -5,10 +5,10 @@ import { SystemCard } from "@/components/site/SystemCard";
 import { SurveyButton } from "@/components/site/SurveyButton";
 
 const CHEMISTRY = [
-  { chem: "epoxy", ct: "Epo-Guard", label: "Epoxy", img: "/images/prod-flake.jpg" },
-  { chem: "polyaspartic", ct: "Poly-Guard", label: "Polyaspartic", img: "/images/prod-1day.jpg" },
-  { chem: "polyurea", ct: "Poly-Bond", label: "Polyurea", img: "/images/promo-b.jpg" },
-  { chem: "urethane", ct: "Ure-Guard", label: "Urethane", img: "/images/prod-metal.jpg" },
+  { chem: "epoxy", ct: "Epo-Guard", label: "Epoxy", img: "/images/lpc/detail-squeegee-ribbon-card-pt.webp" },
+  { chem: "polyaspartic", ct: "Poly-Guard", label: "Polyaspartic", img: "/images/lpc/flake-truck-wheel-card-pt.webp" },
+  { chem: "polyurea", ct: "Poly-Bond", label: "Polyurea", img: "/images/lpc/crew-squeegee-wetedge-card-pt.webp" },
+  { chem: "urethane", ct: "Ure-Guard", label: "Urethane", img: "/images/lpc/industrial-pump-room-blue-card-pt.webp" },
 ] as const;
 
 export default function Home() {
@@ -51,8 +51,8 @@ export default function Home() {
             <div
               className="photo"
               role="img"
-              aria-label="Installer in spiked shoes spreading a freshly applied gray resin floor coating across a concrete floor"
-              style={{ backgroundImage: "url('/images/hero.jpg')" }}
+              aria-label="Finished residential garage floor in a gray and white vinyl flake broadcast under a clear gloss topcoat, with wall cabinets at the back of the bay"
+              style={{ backgroundImage: "url('/images/lpc/hero-flake-garage.webp')" }}
             />
             <div className="floatcard">
               <div className="fk">Flagship system</div>
@@ -190,8 +190,8 @@ export default function Home() {
             <div
               className="visual"
               role="img"
-              aria-label="Automotive garage with a smooth gray coated concrete floor, a car raised on a lift and a wheeled tool cabinet"
-              style={{ backgroundImage: "url('/images/cat-1day.jpg')" }}
+              aria-label="Finished residential two-car garage floor in a gray and white vinyl flake broadcast with a clear gloss topcoat"
+              style={{ backgroundImage: "url('/images/lpc/flake-garage-residential-fig.webp')" }}
             />
             <div>
               <span className="eyebrow">Flagship use · Residential garage</span>

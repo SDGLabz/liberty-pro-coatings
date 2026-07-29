@@ -31,7 +31,7 @@ export default function SystemsPage() {
         }}
       />
       <section className="ihero">
-        <div className="photo" style={{ backgroundImage: "url('/images/warehouse-gloss-reflective.webp')" }} />
+        <div className="photo" style={{ backgroundImage: "url('/images/lpc/gloss-white-hall-wide.webp')" }} />
         <div className="wrap">
           <span className="eyebrow">Nine engineered build-ups</span>
           <h1>Floor systems.</h1>

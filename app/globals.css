@@ -114,7 +114,7 @@
   .hero .micro span{display:flex;align-items:center;gap:7px}
   .hero .micro span::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold-bright)}
   .hero .right{position:relative;overflow:hidden}
-  .hero .right .photo{position:absolute;inset:0;background:url('/images/hero.jpg') center/cover no-repeat;animation:kenburns 34s ease-in-out infinite alternate}
+  .hero .right .photo{position:absolute;inset:0;background:url('/images/lpc/hero-flake-garage.webp') center/cover no-repeat;animation:kenburns 34s ease-in-out infinite alternate}
   .hero .right::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--ink) 0%,transparent 30%)}
   .hero .right .floatcard{position:absolute;bottom:30px;right:30px;z-index:3;background:rgba(12,17,24,.78);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:18px 22px;animation:rise .6s var(--ease) .5s both}
   .floatcard .fk{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9fb0c5}

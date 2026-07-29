@@ -23,6 +23,7 @@ const ITEMS: CatalogItem[] = PRODUCTS.map((p) => ({
   price: p.price,
   status: p.status,
   img: p.img,
+  imgCard: p.imgCard,
   featured: p.featured,
   role: p.role,
   family: p.family,

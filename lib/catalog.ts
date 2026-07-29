@@ -77,7 +77,15 @@ export interface Product {
    *  amount for the selected size. */
   pkgPrices?: Record<string, number>;
   status: ProductStatus;
+  /** Primary photo — the 4:3 product-detail figure, and the fallback for every
+   *  other shape. Must accurately depict what this product produces. */
   img: string;
+  /** Square/portrait crop for catalog cards (`.card .media` is 1/1, `.cat` is
+   *  3/4). Optional — falls back to `img`. */
+  imgCard?: string;
+  /** Wide crop for full-bleed bands and page-hero backdrops (`.ihero .photo`
+   *  renders at 50% opacity under a navy scrim). Optional — falls back to `img`. */
+  imgHero?: string;
   finish: string[];
   featured?: boolean;
   glance?: Glance;
@@ -98,7 +106,13 @@ export interface System {
   slug: string;
   name: string;
   tag: string;
+  /** Primary photo — the 4:3 `.twocol .visual` figure and the fallback for
+   *  every other shape. Must depict the finish this system actually builds. */
   img: string;
+  /** Square/portrait crop for system cards (`.cat` is 3/4). Falls back to `img`. */
+  imgCard?: string;
+  /** Wide crop for the `.ihero` hero backdrop. Falls back to `img`. */
+  imgHero?: string;
   featured?: boolean;
   blurb: string;
   uses: string;
@@ -130,6 +144,23 @@ export const STATUS_LABELS: Record<ProductStatus, [string, string]> = {
   mto: ["Made to Order", "status-mto"],
 };
 
+/** Image shapes the site renders. `card` = 1/1 and 3/4 tiles, `hero` = wide
+ *  full-bleed bands and `.ihero` backdrops, `figure` = the 4:3 editorial/detail
+ *  figures. */
+export type ImgShape = "card" | "hero" | "figure";
+
+/** Pick the best available photo for a render shape, falling back to `img`.
+ *  Anything carrying only a single `img` keeps working unchanged, so real job
+ *  photos can be dropped in one shape at a time. */
+export function imgFor(
+  item: { img: string; imgCard?: string; imgHero?: string },
+  shape: ImgShape = "figure",
+): string {
+  if (shape === "card") return item.imgCard ?? item.img;
+  if (shape === "hero") return item.imgHero ?? item.img;
+  return item.img;
+}
+
 export const PRODUCTS: Product[] = [
   // ---- Epoxy "Epo-Guard" ----
   {
@@ -142,7 +173,8 @@ export const PRODUCTS: Product[] = [
     pkg: ["2.5 Gal"],
     price: 112.31,
     status: "active-off",
-    img: "/images/hero.jpg",
+    img: "/images/lpc/crew-squeegee-wetedge-fig.webp",
+    imgCard: "/images/lpc/crew-squeegee-wetedge-card-sq.webp",
     finish: ["Clear"],
   },
   {
@@ -155,7 +187,8 @@ export const PRODUCTS: Product[] = [
     pkg: ["3 Gal"],
     price: 135,
     status: "active-off",
-    img: "/images/featured-fin.jpg",
+    img: "/images/lpc/crew-roller-squeegee-fig.webp",
+    imgCard: "/images/lpc/detail-squeegee-ribbon-card-sq.webp",
     finish: ["Clear", "Color Packs (1339)"],
     featured: true,
     glance: { coverage: "80–200 sq.ft./gal.", recoat: "Within 24 hours", cure: "7 days" },
@@ -218,7 +251,8 @@ export const PRODUCTS: Product[] = [
     pkg: ["3 Gal"],
     price: 135,
     status: "active-off",
-    img: "/images/prod-flake.jpg",
+    img: "/images/lpc/crew-squeegee-wetedge-fig.webp",
+    imgCard: "/images/lpc/crew-squeegee-wetedge-card-sq.webp",
     finish: ["Clear", "Color Packs (1339)"],
   },
   {
@@ -231,7 +265,8 @@ export const PRODUCTS: Product[] = [
     pkg: ["3 Gal"],
     price: 175,
     status: "active-off",
-    img: "/images/prod-metal.jpg",
+    img: "/images/lpc/flake-patio-exterior-fig.webp",
+    imgCard: "/images/lpc/flake-patio-exterior-card-sq.webp",
     finish: ["Clear"],
   },
   {
@@ -244,7 +279,8 @@ export const PRODUCTS: Product[] = [
     pkg: ["3 Gal"],
     price: 235,
     status: "active-off",
-    img: "/images/prod-quartz.jpg",
+    img: "/images/lpc/prep-grinding-fig.webp",
+    imgCard: "/images/lpc/prep-grinding-card-sq.webp",
     finish: ["Clear"],
   },
   {
@@ -257,7 +293,8 @@ export const PRODUCTS: Product[] = [
     pkg: ["1 mix kit"],
     price: 80.93,
     status: "active-off",
-    img: "/images/prod-flake.jpg",
+    img: "/images/lpc/detail-mortar-pour-fig.webp",
+    imgCard: "/images/lpc/detail-mortar-pour-card-sq.webp",
     finish: ["Natural"],
     glance: { coverage: '23 sq.ft. @ 1/4" / kit', recoat: "Within 24 hours", cure: "7 days" },
     tds: {
@@ -306,7 +343,8 @@ export const PRODUCTS: Product[] = [
     pkg: ["0.75 Gal + Ag"],
     price: 53.54,
     status: "active-off",
-    img: "/images/prod-quartz.jpg",
+    img: "/images/lpc/quartz-restroom-cove-fig.webp",
+    imgCard: "/images/lpc/quartz-restroom-cove-card-sq.webp",
     finish: ["Natural"],
   },
 
@@ -322,7 +360,8 @@ export const PRODUCTS: Product[] = [
     price: 211.54,
     pkgPrices: { "2.5 Gal": 211.54, "5 Gal": 423.08 },
     status: "active-off",
-    img: "/images/prod-metal.jpg",
+    img: "/images/lpc/crew-applicator-gloss-fig.webp",
+    imgCard: "/images/lpc/crew-applicator-gloss-card-sq.webp",
     finish: ["Clear", "Color Packs"],
   },
   {
@@ -336,7 +375,8 @@ export const PRODUCTS: Product[] = [
     price: 211.54,
     pkgPrices: { "2.5 Gal": 211.54, "5 Gal": 423.08 },
     status: "active-off",
-    img: "/images/prod-metal.jpg",
+    img: "/images/lpc/crew-applicator-gloss-fig.webp",
+    imgCard: "/images/lpc/crew-applicator-gloss-card-sq.webp",
     finish: ["Clear", "Color Packs"],
   },
   {
@@ -350,7 +390,8 @@ export const PRODUCTS: Product[] = [
     price: 211.54,
     pkgPrices: { "2.5 Gal": 211.54, "5 Gal": 423.08 },
     status: "active-off",
-    img: "/images/prod-1day.jpg",
+    img: "/images/lpc/flake-garage-residential-fig.webp",
+    imgCard: "/images/lpc/flake-truck-wheel-card-sq.webp",
     finish: ["Clear", "Color Packs"],
     featured: true,
     glance: { coverage: "110–300 sq.ft./gal.", recoat: "Within 2–24 hours", cure: "7 days" },
@@ -409,7 +450,8 @@ export const PRODUCTS: Product[] = [
     pkg: ["3 Gal"],
     price: 465.99,
     status: "active-off",
-    img: "/images/cat-quartz.jpg",
+    img: "/images/lpc/metallic-copper-bronze-fig.webp",
+    imgCard: "/images/lpc/metallic-copper-bronze-card-sq.webp",
     finish: ["Clear"],
   },
   {
@@ -422,7 +464,8 @@ export const PRODUCTS: Product[] = [
     pkg: ["3 Gal"],
     price: 193.96,
     status: "active-off",
-    img: "/images/warehouse-pigmented-gray.webp",
+    img: "/images/lpc/crew-squeegee-wetedge-fig.webp",
+    imgCard: "/images/lpc/crew-squeegee-wetedge-card-sq.webp",
     finish: ["Pigmented"],
   },
   {
@@ -435,7 +478,8 @@ export const PRODUCTS: Product[] = [
     pkg: ["3 Gal"],
     price: 178.96,
     status: "active-off",
-    img: "/images/prod-flake.jpg",
+    img: "/images/lpc/flake-broadcast-inprogress-fig.webp",
+    imgCard: "/images/lpc/flake-broadcast-inprogress-card-sq.webp",
     finish: ["Clear"],
   },
 
@@ -450,7 +494,8 @@ export const PRODUCTS: Product[] = [
     pkg: ["2 Gal"],
     price: 112,
     status: "rnd-hold",
-    img: "/images/prod-metal.jpg",
+    img: "/images/lpc/gloss-white-hall-fig.webp",
+    imgCard: "/images/lpc/gloss-white-hall-card-sq.webp",
     finish: ["Gloss"],
   },
   {
@@ -463,7 +508,8 @@ export const PRODUCTS: Product[] = [
     pkg: ["2 Gal"],
     price: 112,
     status: "rnd-hold",
-    img: "/images/prod-metal.jpg",
+    img: "/images/lpc/quartz-kitchen-commercial-fig.webp",
+    imgCard: "/images/lpc/quartz-kitchen-commercial-card-sq.webp",
     finish: ["Satin"],
   },
   {
@@ -476,7 +522,8 @@ export const PRODUCTS: Product[] = [
     pkg: ["1 Gal"],
     price: 183.91,
     status: "active-off",
-    img: "/images/prod-quartz.jpg",
+    img: "/images/lpc/industrial-tank-room-fig.webp",
+    imgCard: "/images/lpc/industrial-tank-room-card-sq.webp",
     finish: ["Gloss"],
   },
   {
@@ -489,7 +536,8 @@ export const PRODUCTS: Product[] = [
     pkg: ["1 Gal"],
     price: 215.57,
     status: "rnd-hold",
-    img: "/images/cat-quartz.jpg",
+    img: "/images/lpc/pigmented-steelbldg-after-fig.webp",
+    imgCard: "/images/lpc/pigmented-steelbldg-after-card-sq.webp",
     finish: ["Matte"],
   },
   {
@@ -502,7 +550,8 @@ export const PRODUCTS: Product[] = [
     pkg: ["3 Gal"],
     price: 465.99,
     status: "active-off",
-    img: "/images/cat-metal.jpg",
+    img: "/images/lpc/terrazzo-mica-macro-fig.webp",
+    imgCard: "/images/lpc/terrazzo-mica-macro-card-sq.webp",
     finish: ["Clear"],
   },
 
@@ -517,7 +566,8 @@ export const PRODUCTS: Product[] = [
     pkg: ["0.5 Gal kit"],
     price: 47.48,
     status: "active-off",
-    img: "/images/prod-flake.jpg",
+    img: "/images/lpc/detail-notched-aggregate-fig.webp",
+    imgCard: "/images/lpc/detail-notched-aggregate-card-sq.webp",
     finish: ["Natural"],
   },
   {
@@ -530,7 +580,8 @@ export const PRODUCTS: Product[] = [
     pkg: ["2 Gal kit"],
     price: 141.53,
     status: "active-off",
-    img: "/images/prod-1day.jpg",
+    img: "/images/lpc/detail-notched-slurry-fig.webp",
+    imgCard: "/images/lpc/detail-notched-slurry-card-sq.webp",
     finish: ["Natural"],
   },
 ];
@@ -540,7 +591,9 @@ export const SYSTEMS: System[] = [
     slug: "pigmented-epoxy-floor",
     name: "Pigmented Epoxy Floor System",
     tag: "PG · Solid Color",
-    img: "/images/warehouse-pigmented-gray.webp",
+    img: "/images/lpc/pigmented-crane-bay-fig.webp",
+    imgCard: "/images/lpc/pigmented-crane-bay-card-pt.webp",
+    imgHero: "/images/lpc/pigmented-crane-bay-wide.webp",
     blurb:
       "A solid-color, high-build epoxy floor — the clean, durable baseline for garages, shops and light industrial space.",
     uses: "Residential garages, workshops, light commercial and industrial floors where a clean solid color and chemical/abrasion resistance matter.",
@@ -554,7 +607,9 @@ export const SYSTEMS: System[] = [
     slug: "solid-slurry",
     name: "Solid Slurry System",
     tag: "Slurry",
-    img: "/images/cat-slurry.jpg",
+    img: "/images/lpc/crew-selfleveler-bead-fig.webp",
+    imgCard: "/images/lpc/detail-notched-slurry-card-pt.webp",
+    imgHero: "/images/lpc/crew-selfleveler-bead-wide.webp",
     blurb:
       "A trowel-applied epoxy slurry mortar for impact, abrasion and a seamless, sealed monolithic surface.",
     uses: "Heavy-traffic industrial floors, kitchens and processing areas needing impact and chemical resistance.",
@@ -568,7 +623,9 @@ export const SYSTEMS: System[] = [
     slug: "flake-broadcast",
     name: "Flake Broadcast System",
     tag: "EG · Flagship",
-    img: "/images/cat-flake.jpg",
+    img: "/images/lpc/flake-garage-residential-fig.webp",
+    imgCard: "/images/lpc/flake-truck-wheel-card-pt.webp",
+    imgHero: "/images/lpc/flake-garage-residential-wide.webp",
     featured: true,
     blurb:
       "Full decorative flake broadcast over a high-build epoxy base — the everyday workhorse garage and showroom floor.",
@@ -583,7 +640,9 @@ export const SYSTEMS: System[] = [
     slug: "1-day-flake-broadcast",
     name: "1-Day Flake Broadcast System",
     tag: "EG · 1-Day",
-    img: "/images/cat-1day.jpg",
+    img: "/images/lpc/flake-patio-exterior-fig.webp",
+    imgCard: "/images/lpc/flake-garage-residential-card-pt.webp",
+    imgHero: "/images/lpc/flake-patio-exterior-wide.webp",
     blurb:
       "The flake broadcast look, installed and back in service the next morning, powered by fast polyaspartic.",
     uses: "Residential garages and commercial floors that can't afford multi-day downtime — return to service in ~24 hours.",
@@ -597,7 +656,9 @@ export const SYSTEMS: System[] = [
     slug: "microquartz-floor",
     name: "MicroQuartz Floor System",
     tag: "Quartz",
-    img: "/images/cat-quartz.jpg",
+    img: "/images/lpc/quartz-restroom-cove-fig.webp",
+    imgCard: "/images/lpc/quartz-texture-card-pt.webp",
+    imgHero: "/images/lpc/quartz-kitchen-commercial-wide.webp",
     blurb:
       "A double-broadcast colored quartz floor for slip resistance and durability in heavy-traffic, wet environments.",
     uses: "Commercial kitchens, restrooms, locker rooms, food & beverage and institutional floors needing slip resistance.",
@@ -611,7 +672,9 @@ export const SYSTEMS: System[] = [
     slug: "metallic-epoxy",
     name: "Metallic Epoxy System",
     tag: "Metallic",
-    img: "/images/cat-metal.jpg",
+    img: "/images/lpc/metallic-garage-cobalt-fig.webp",
+    imgCard: "/images/lpc/metallic-cell-pattern-card-pt.webp",
+    imgHero: "/images/lpc/metallic-garage-cobalt-wide.webp",
     featured: true,
     blurb:
       "Pigmented metallic media in a clear epoxy for a seamless, marbled, high-gloss showpiece floor.",
@@ -626,7 +689,9 @@ export const SYSTEMS: System[] = [
     slug: "epoxyscapes-flooring",
     name: "EpoxyScapes Flooring System",
     tag: "EP · Designer",
-    img: "/images/prod-metal.jpg",
+    img: "/images/lpc/epoxyscapes-reception-fig.webp",
+    imgCard: "/images/lpc/terrazzo-mica-macro-card-pt.webp",
+    imgHero: "/images/lpc/epoxyscapes-reception-wide.webp",
     blurb: "A designer decorative epoxy broadcast system for retail and hospitality interiors.",
     uses: "Retail, hospitality and commercial interiors wanting a refined decorative aggregate finish.",
     layers: [
@@ -639,7 +704,9 @@ export const SYSTEMS: System[] = [
     slug: "polyscapes-flooring",
     name: "PolyScapes Flooring System",
     tag: "PS · Fast-Cure",
-    img: "/images/promo-b.jpg",
+    img: "/images/lpc/metallic-copper-bronze-fig.webp",
+    imgCard: "/images/lpc/metallic-bronze-room-card-pt.webp",
+    imgHero: "/images/lpc/metallic-copper-bronze-wide.webp",
     blurb: "The Scapes decorative look with a fast-cure polyaspartic binder for quicker installs.",
     uses: "Retail, hospitality and commercial floors needing a decorative finish with faster return to service.",
     layers: [
@@ -652,7 +719,9 @@ export const SYSTEMS: System[] = [
     slug: "urescapes-flooring",
     name: "Urescapes Flooring System",
     tag: "UG · Urethane",
-    img: "/images/prod-flake.jpg",
+    img: "/images/lpc/brewery-floor-fig.webp",
+    imgCard: "/images/lpc/industrial-pump-room-blue-card-pt.webp",
+    imgHero: "/images/lpc/brewery-floor-wide.webp",
     blurb:
       "A flexible aliphatic urethane decorative system with elevated UV stability and crack tolerance.",
     uses: "Exterior-exposed and UV-critical decorative floors, and substrates where flexibility matters.",

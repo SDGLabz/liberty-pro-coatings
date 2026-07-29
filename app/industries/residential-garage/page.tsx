@@ -78,7 +78,7 @@ export default function ResidentialGaragePage() {
       />
 
       <section className="ihero">
-        <div className="photo" style={{ backgroundImage: "url('/images/prod-1day.jpg')" }} />
+        <div className="photo" style={{ backgroundImage: "url('/images/lpc/flake-garage-residential-wide.webp')" }} />
         <div className="wrap">
           <span className="eyebrow">Flagship use case</span>
           <h1>Residential garage floors.</h1>

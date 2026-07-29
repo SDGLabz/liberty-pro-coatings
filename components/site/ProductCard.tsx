@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CHEM_LABELS, STATUS_LABELS, type Chem, type ProductStatus } from "@/lib/catalog";
+import { CHEM_LABELS, STATUS_LABELS, imgFor, type Chem, type ProductStatus } from "@/lib/catalog";
 
 // Minimal shape the card needs — both the full `Product` (home, detail)
 // and a lightweight client-filtered list (ProductCatalog) satisfy it.
@@ -12,6 +12,8 @@ export interface ProductCardData {
   price: number;
   status: ProductStatus;
   img: string;
+  /** Square/portrait crop for the 1/1 card media. Falls back to `img`. */
+  imgCard?: string;
   featured?: boolean;
 }
 
@@ -38,7 +40,10 @@ export function ProductCard({
       href={`/products/${p.sku.toLowerCase()}`}
     >
       <div className="media">
-        <div className="bg" style={{ background: `url('${p.img}') center/cover no-repeat` }} />
+        <div
+          className="bg"
+          style={{ background: `url('${imgFor(p, "card")}') center/cover no-repeat` }}
+        />
         <div className="badges">
           {p.featured && <span className="badge badge-pop">Featured</span>}
           <span className={`status ${statusClass}`}>{statusLabel}</span>

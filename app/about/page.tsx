@@ -47,7 +47,7 @@ export default function AboutPage() {
         }}
       />
       <section className="ihero">
-        <div className="photo" style={{ backgroundImage: "url('/images/crew-squeegee-coating.webp')" }} />
+        <div className="photo" style={{ backgroundImage: "url('/images/lpc/crew-roller-squeegee-wide.webp')" }} />
         <div className="wrap">
           <span className="eyebrow">The brand</span>
           <h1>Liberty Pro Coatings.</h1>
@@ -85,7 +85,7 @@ export default function AboutPage() {
                 installers.
               </p>
             </div>
-            <div className="visual" style={{ backgroundImage: "url('/images/cat-flake.jpg')" }} />
+            <div className="visual" style={{ backgroundImage: "url('/images/lpc/crew-selfleveler-bead-fig.webp')" }} />
           </div>
         </div>
       </section>

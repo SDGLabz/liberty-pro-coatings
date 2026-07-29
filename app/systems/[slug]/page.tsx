@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { SYSTEMS, getSystem, productsInSystem } from "@/lib/catalog";
+import { SYSTEMS, getSystem, imgFor, productsInSystem } from "@/lib/catalog";
 import { ProductCard } from "@/components/site/ProductCard";
 import { SystemCard } from "@/components/site/SystemCard";
 import { SurveyButton } from "@/components/site/SurveyButton";
@@ -65,7 +65,7 @@ export default async function SystemPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
       />
       <section className="ihero">
-        <div className="photo" style={{ backgroundImage: `url('${s.img}')` }} />
+        <div className="photo" style={{ backgroundImage: `url('${imgFor(s, "hero")}')` }} />
         <div className="wrap">
           <span className="eyebrow">{s.tag} · System</span>
           <h1>{s.name}</h1>
