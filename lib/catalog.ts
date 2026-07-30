@@ -481,7 +481,20 @@ export const PRODUCTS: Product[] = [
     pkgPrices: { "2.5 Gal": 211.54, "5 Gal": 423.08 },
     status: "active-off",
     img: "/images/lpc/flake-garage-residential-fig.webp",
-    imgCard: "/images/lpc/flake-truck-wheel-card-sq.webp",
+    imgCard: "/images/lpc/products/pg-81-part-a.webp",
+    // ⚠️ ARTWORK DEFECT (Ian to fix in the PSD, not here): the PG-81 Part A
+    // label reads "FOR 3 GAL UNIT" and "Mix Ratio: 2:1 by Volume", which
+    // disagrees with the 1:1 ratio and 2.5/5 Gal packaging in the data below.
+    // The render IS PG-81's (headline reads PG-81 Part A, product line reads
+    // "Fast Speed Polyaspartic Resin"), so the mapping is right; the printed
+    // pack size and ratio need correcting before launch.
+    packShots: [
+      {
+        component: "Part A",
+        src: "/images/lpc/products/pg-81-part-a.webp",
+        alt: "PG-81 Part A jerrycan",
+      },
+    ],
     finish: ["Clear", "Color Packs"],
     featured: true,
     glance: { coverage: "110–300 sq.ft./gal.", recoat: "Within 2–24 hours", cure: "7 days" },
@@ -542,12 +555,18 @@ export const PRODUCTS: Product[] = [
     status: "active-off",
     img: "/images/lpc/metallic-copper-bronze-fig.webp",
     imgCard: "/images/lpc/products/ps-91-part-a.webp",
-    // Part B and the aggregate component were not rendered — no photo for them.
+    // A and B are rendered; the 1440 Scapes aggregate component was not — it has
+    // no photo and must not borrow one.
     packShots: [
       {
         component: "Part A",
         src: "/images/lpc/products/ps-91-part-a.webp",
         alt: "PS-91 Part A pail",
+      },
+      {
+        component: "Part B",
+        src: "/images/lpc/products/ps-91-part-b.webp",
+        alt: "PS-91 Part B jug",
       },
     ],
     finish: ["Clear"],
@@ -689,7 +708,15 @@ export const PRODUCTS: Product[] = [
     price: 465.99,
     status: "active-off",
     img: "/images/lpc/terrazzo-mica-macro-fig.webp",
-    imgCard: "/images/lpc/terrazzo-mica-macro-card-sq.webp",
+    imgCard: "/images/lpc/products/u-91-part-a.webp",
+    // Part A only — the Part B hardener has no render and must not borrow one.
+    packShots: [
+      {
+        component: "Part A",
+        src: "/images/lpc/products/u-91-part-a.webp",
+        alt: "U-91 Part A jug",
+      },
+    ],
     finish: ["Clear"],
   },
 
