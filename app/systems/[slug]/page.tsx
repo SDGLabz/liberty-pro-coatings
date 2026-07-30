@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { SYSTEMS, getSystem, imgFor, productsInSystem } from "@/lib/catalog";
+import { SYSTEMS, getSystem, imgFor, primaryPackShot, productsInSystem } from "@/lib/catalog";
 import { ProductCard } from "@/components/site/ProductCard";
 import { SystemCard } from "@/components/site/SystemCard";
 import { SurveyButton } from "@/components/site/SurveyButton";
@@ -41,11 +41,13 @@ export default async function SystemPage({
 
   const components = productsInSystem(s);
   const others = SYSTEMS.filter((x) => x.slug !== s.slug).slice(0, 4);
+  // These become cart line items — show the pail being bought where one has
+  // been rendered, matching the single-product buy box.
   const componentItems = components.map((p) => ({
     sku: p.sku,
     name: p.name,
     price: p.price,
-    img: p.img,
+    img: primaryPackShot(p)?.src ?? p.img,
     pkg: p.pkg[0] ?? "",
   }));
   const breadcrumb = {

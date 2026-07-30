@@ -62,6 +62,25 @@ export interface FreightAttrs {
   palletDims?: string;
 }
 
+/**
+ * One LPC-labelled packaging render, tied to the specific mixed component it
+ * actually depicts. Source: Ian's Photoshop label-swap renders (2000×2000 @
+ * 600dpi), re-encoded to 1200px webp.
+ *
+ * ⚠️ `component` is authoritative and is read straight off the printed label —
+ * NEVER infer it from array position. Several products are rendered for only
+ * one side of the kit (EG-WB03 has a Part B render and no Part A), so a
+ * positional "first = Part A" assumption would label a hardener as the resin on
+ * a technical data sheet. A component with no render simply has no entry here.
+ */
+export interface PackShot {
+  /** Exactly as printed on the pail: "Part A", "Part B", "Single Component". */
+  component: string;
+  src: string;
+  /** Literal description of the photo — no marketing claims. */
+  alt: string;
+}
+
 export interface Product {
   sku: string;
   name: string;
@@ -86,6 +105,11 @@ export interface Product {
   /** Wide crop for full-bleed bands and page-hero backdrops (`.ihero .photo`
    *  renders at 50% opacity under a navy scrim). Optional — falls back to `img`. */
   imgHero?: string;
+  /** LPC-labelled packaging renders, one entry per component that HAS a render.
+   *  Drives the product-detail gallery thumbs, the cart line-item thumbnail and
+   *  the schema.org/Product image. Absent for products with no render — those
+   *  keep their job photography and must never borrow another product's pail. */
+  packShots?: PackShot[];
   finish: string[];
   featured?: boolean;
   glance?: Glance;
@@ -161,6 +185,18 @@ export function imgFor(
   return item.img;
 }
 
+/** The pail that represents the product — the resin/single side where one was
+ *  rendered, otherwise whichever component we do have. Returns undefined for
+ *  products with no render at all (they keep job photography everywhere). */
+export function primaryPackShot(p: { packShots?: PackShot[] }): PackShot | undefined {
+  if (!p.packShots?.length) return undefined;
+  return (
+    p.packShots.find((s) => s.component === "Part A") ??
+    p.packShots.find((s) => s.component === "Single Component") ??
+    p.packShots[0]
+  );
+}
+
 export const PRODUCTS: Product[] = [
   // ---- Epoxy "Epo-Guard" ----
   {
@@ -174,7 +210,17 @@ export const PRODUCTS: Product[] = [
     price: 112.31,
     status: "active-off",
     img: "/images/lpc/crew-squeegee-wetedge-fig.webp",
-    imgCard: "/images/lpc/crew-squeegee-wetedge-card-sq.webp",
+    // NOTE: only the Part B hardener was rendered for EG-WB03 — there is no
+    // Part A pail. The card therefore shows the Part B pail; do NOT relabel it
+    // "Part A" or substitute another product's resin.
+    imgCard: "/images/lpc/products/eg-wb03-part-b.webp",
+    packShots: [
+      {
+        component: "Part B",
+        src: "/images/lpc/products/eg-wb03-part-b.webp",
+        alt: "EG-WB03 Part B pail",
+      },
+    ],
     finish: ["Clear"],
   },
   {
@@ -252,7 +298,19 @@ export const PRODUCTS: Product[] = [
     price: 135,
     status: "active-off",
     img: "/images/lpc/crew-squeegee-wetedge-fig.webp",
-    imgCard: "/images/lpc/crew-squeegee-wetedge-card-sq.webp",
+    imgCard: "/images/lpc/products/eg-mpe01-f-part-a.webp",
+    packShots: [
+      {
+        component: "Part A",
+        src: "/images/lpc/products/eg-mpe01-f-part-a.webp",
+        alt: "EG-MPE01-F Part A pail",
+      },
+      {
+        component: "Part B",
+        src: "/images/lpc/products/eg-mpe01-f-part-b.webp",
+        alt: "EG-MPE01-F Part B pail",
+      },
+    ],
     finish: ["Clear", "Color Packs (1339)"],
   },
   {
@@ -280,7 +338,19 @@ export const PRODUCTS: Product[] = [
     price: 235,
     status: "active-off",
     img: "/images/lpc/prep-grinding-fig.webp",
-    imgCard: "/images/lpc/prep-grinding-card-sq.webp",
+    imgCard: "/images/lpc/products/eg-mvs99-part-a.webp",
+    packShots: [
+      {
+        component: "Part A",
+        src: "/images/lpc/products/eg-mvs99-part-a.webp",
+        alt: "EG-MVS99 Part A pail",
+      },
+      {
+        component: "Part B",
+        src: "/images/lpc/products/eg-mvs99-part-b.webp",
+        alt: "EG-MVS99 Part B jug",
+      },
+    ],
     finish: ["Clear"],
   },
   {
@@ -361,7 +431,20 @@ export const PRODUCTS: Product[] = [
     pkgPrices: { "2.5 Gal": 211.54, "5 Gal": 423.08 },
     status: "active-off",
     img: "/images/lpc/crew-applicator-gloss-fig.webp",
-    imgCard: "/images/lpc/crew-applicator-gloss-card-sq.webp",
+    imgCard: "/images/lpc/products/pg-61-part-a.webp",
+    // ⚠️ ARTWORK DEFECT (Ian to fix in the PSD, not here): the PG-61 Part A
+    // label's product line reads "Epo-Guard Waterbased Epoxy" — that is the
+    // EG-WB03 epoxy descriptor, not this polyaspartic. Its stated 2:1 mix ratio
+    // and "3 GAL UNIT" also disagree with the 1:1 / 2.5–5 Gal data below. The
+    // render IS PG-61's (headline reads PG-61 Part A), so the mapping is right;
+    // the printed subtitle needs correcting before launch.
+    packShots: [
+      {
+        component: "Part A",
+        src: "/images/lpc/products/pg-61-part-a.webp",
+        alt: "PG-61 Part A jerrycan",
+      },
+    ],
     finish: ["Clear", "Color Packs"],
   },
   {
@@ -376,7 +459,14 @@ export const PRODUCTS: Product[] = [
     pkgPrices: { "2.5 Gal": 211.54, "5 Gal": 423.08 },
     status: "active-off",
     img: "/images/lpc/crew-applicator-gloss-fig.webp",
-    imgCard: "/images/lpc/crew-applicator-gloss-card-sq.webp",
+    imgCard: "/images/lpc/products/pg-71-part-a.webp",
+    packShots: [
+      {
+        component: "Part A",
+        src: "/images/lpc/products/pg-71-part-a.webp",
+        alt: "PG-71 Part A jerrycan",
+      },
+    ],
     finish: ["Clear", "Color Packs"],
   },
   {
@@ -451,7 +541,15 @@ export const PRODUCTS: Product[] = [
     price: 465.99,
     status: "active-off",
     img: "/images/lpc/metallic-copper-bronze-fig.webp",
-    imgCard: "/images/lpc/metallic-copper-bronze-card-sq.webp",
+    imgCard: "/images/lpc/products/ps-91-part-a.webp",
+    // Part B and the aggregate component were not rendered — no photo for them.
+    packShots: [
+      {
+        component: "Part A",
+        src: "/images/lpc/products/ps-91-part-a.webp",
+        alt: "PS-91 Part A pail",
+      },
+    ],
     finish: ["Clear"],
   },
   {
@@ -465,7 +563,14 @@ export const PRODUCTS: Product[] = [
     price: 193.96,
     status: "active-off",
     img: "/images/lpc/crew-squeegee-wetedge-fig.webp",
-    imgCard: "/images/lpc/crew-squeegee-wetedge-card-sq.webp",
+    imgCard: "/images/lpc/products/pu-20-part-a.webp",
+    packShots: [
+      {
+        component: "Part A",
+        src: "/images/lpc/products/pu-20-part-a.webp",
+        alt: "PU-20 Part A pail",
+      },
+    ],
     finish: ["Pigmented"],
   },
   {
@@ -479,7 +584,14 @@ export const PRODUCTS: Product[] = [
     price: 178.96,
     status: "active-off",
     img: "/images/lpc/flake-broadcast-inprogress-fig.webp",
-    imgCard: "/images/lpc/flake-broadcast-inprogress-card-sq.webp",
+    imgCard: "/images/lpc/products/pu-21-part-a.webp",
+    packShots: [
+      {
+        component: "Part A",
+        src: "/images/lpc/products/pu-21-part-a.webp",
+        alt: "PU-21 Part A pouch",
+      },
+    ],
     finish: ["Clear"],
   },
 
@@ -495,7 +607,17 @@ export const PRODUCTS: Product[] = [
     price: 112,
     status: "rnd-hold",
     img: "/images/lpc/gloss-white-hall-fig.webp",
-    imgCard: "/images/lpc/gloss-white-hall-card-sq.webp",
+    imgCard: "/images/lpc/products/ug-21-part-a.webp",
+    // The UG-21 and UG-31 renders are pixel-identical on purpose: LPC prints ONE
+    // shared Part A label reading "UG-21, 31 — Clear Resin Part A". This is the
+    // real packaging, not a duplicated file. Verified against both source PSDs.
+    packShots: [
+      {
+        component: "Part A",
+        src: "/images/lpc/products/ug-21-part-a.webp",
+        alt: "UG-21 Part A pail, printed with the shared UG-21 / UG-31 clear resin label",
+      },
+    ],
     finish: ["Gloss"],
   },
   {
@@ -509,7 +631,15 @@ export const PRODUCTS: Product[] = [
     price: 112,
     status: "rnd-hold",
     img: "/images/lpc/quartz-kitchen-commercial-fig.webp",
-    imgCard: "/images/lpc/quartz-kitchen-commercial-card-sq.webp",
+    imgCard: "/images/lpc/products/ug-31-part-a.webp",
+    // Same shared "UG-21, 31" Part A label as UG-21 above — see that note.
+    packShots: [
+      {
+        component: "Part A",
+        src: "/images/lpc/products/ug-31-part-a.webp",
+        alt: "UG-31 Part A pail, printed with the shared UG-21 / UG-31 clear resin label",
+      },
+    ],
     finish: ["Satin"],
   },
   {
@@ -523,7 +653,15 @@ export const PRODUCTS: Product[] = [
     price: 183.91,
     status: "active-off",
     img: "/images/lpc/industrial-tank-room-fig.webp",
-    imgCard: "/images/lpc/industrial-tank-room-card-sq.webp",
+    imgCard: "/images/lpc/products/ug-51-single.webp",
+    // 1K product — one container, no A/B split.
+    packShots: [
+      {
+        component: "Single Component",
+        src: "/images/lpc/products/ug-51-single.webp",
+        alt: "UG-51 single-component jug",
+      },
+    ],
     finish: ["Gloss"],
   },
   {
@@ -567,7 +705,25 @@ export const PRODUCTS: Product[] = [
     price: 47.48,
     status: "active-off",
     img: "/images/lpc/detail-notched-aggregate-fig.webp",
-    imgCard: "/images/lpc/detail-notched-aggregate-card-sq.webp",
+    imgCard: "/images/lpc/products/ep-15-part-a.webp",
+    // Three-component product (A + B + Part C aggregate). Only A and B were
+    // rendered — Part C has no photo and must not borrow one.
+    // ⚠️ ARTWORK DEFECT (Ian to fix in the PSD, not here): the Part B bottle is
+    // printed "EB-15", while Part A and this catalog say EP-15. Same product
+    // name ("Epoxy Patching Paste") on both, so this reads as a typo in the
+    // label art — but it is visible on the product page and the TDS.
+    packShots: [
+      {
+        component: "Part A",
+        src: "/images/lpc/products/ep-15-part-a.webp",
+        alt: "EP-15 Part A bottle",
+      },
+      {
+        component: "Part B",
+        src: "/images/lpc/products/ep-15-part-b.webp",
+        alt: "EP-15 Part B bottle, printed EB-15 on the label",
+      },
+    ],
     finish: ["Natural"],
   },
   {
@@ -581,7 +737,20 @@ export const PRODUCTS: Product[] = [
     price: 141.53,
     status: "active-off",
     img: "/images/lpc/detail-notched-slurry-fig.webp",
-    imgCard: "/images/lpc/detail-notched-slurry-card-sq.webp",
+    imgCard: "/images/lpc/products/pp-16-part-a.webp",
+    // A + B rendered; the aggregate component was not.
+    packShots: [
+      {
+        component: "Part A",
+        src: "/images/lpc/products/pp-16-part-a.webp",
+        alt: "PP-16 Part A jug",
+      },
+      {
+        component: "Part B",
+        src: "/images/lpc/products/pp-16-part-b.webp",
+        alt: "PP-16 Part B jug",
+      },
+    ],
     finish: ["Natural"],
   },
 ];

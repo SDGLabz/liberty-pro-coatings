@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PRODUCTS, SYSTEMS } from "@/lib/catalog";
+import { PRODUCTS, SYSTEMS, primaryPackShot } from "@/lib/catalog";
 import {
   CoverageCalculator,
   type CoverageProduct,
@@ -29,7 +29,8 @@ const COVERAGE: CoverageProduct[] = PRODUCTS.flatMap((p) => {
       name: p.name,
       rate: parseInt(m[0], 10),
       price: p.price,
-      img: p.img,
+      // Coverage calculator adds straight to the cart — same pail as the buy box.
+      img: primaryPackShot(p)?.src ?? p.img,
       pkg: p.pkg,
     },
   ];

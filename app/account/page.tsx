@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { formatUsd } from "@/lib/checkout-pricing";
-import { getProduct } from "@/lib/catalog";
+import { getProduct, primaryPackShot } from "@/lib/catalog";
 import { ApprovedNotice } from "@/components/site/ApprovedNotice";
 
 export const metadata: Metadata = { title: "My Account", robots: { index: false } };
@@ -146,7 +146,10 @@ export default async function AccountPage() {
                       finish?: string;
                     }>)
                   : [];
-                const firstImg = items[0]?.sku ? getProduct(items[0].sku)?.img : undefined;
+                const firstProduct = items[0]?.sku ? getProduct(items[0].sku) : undefined;
+                const firstImg = firstProduct
+                  ? (primaryPackShot(firstProduct)?.src ?? firstProduct.img)
+                  : undefined;
                 const s = ORDER_STATUS[o.status] ?? { label: o.status, color: "#5f6f86" };
                 return (
                   <div

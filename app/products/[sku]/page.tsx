@@ -7,9 +7,11 @@ import {
   systemsUsing,
   relatedProducts,
   colorsForProduct,
+  primaryPackShot,
   CHEM_LABELS,
 } from "@/lib/catalog";
 import { ProductCard } from "@/components/site/ProductCard";
+import { ProductGallery } from "@/components/site/ProductGallery";
 import { BuyBox } from "@/components/site/BuyBox";
 import { SpecTables } from "@/components/site/SpecTables";
 import { SITE } from "@/lib/site";
@@ -49,6 +51,11 @@ export default async function ProductPage({
 
   const usedIn = systemsUsing(p.sku);
   const related = relatedProducts(p.sku, p.chem);
+  // The LPC-labelled pail, where one has been rendered — used for the cart
+  // line-item thumbnail and the schema.org/Product image, both of which should
+  // show the thing being bought rather than a finished floor. Products without
+  // a render fall back to their job photography.
+  const pack = primaryPackShot(p);
 
   // Decorative finishes this product can be ordered in (data-driven) — rendered
   // as a swatch picker inside the buy box.
@@ -86,7 +93,10 @@ export default async function ProductPage({
     category: `${p.family} · ${CHEM_LABELS[p.chem]}`,
     brand: { "@type": "Brand", name: SITE.name },
     manufacturer: { "@type": "Organization", name: SITE.name },
-    image: `${SITE.url}${p.img}`,
+    image: [
+      ...(pack ? [`${SITE.url}${pack.src}`] : []),
+      `${SITE.url}${p.img}`,
+    ],
     ...(p.price && p.price > 0
       ? {
           offers: {
@@ -123,14 +133,11 @@ export default async function ProductPage({
         <div className="wrap">
           <div className="pd-top">
             <div>
-              <div className="pd-gallery">
-                <div
-                  className="main"
-                  role="img"
-                  aria-label={`${p.name} — ${CHEM_LABELS[p.chem]} floor coating`}
-                  style={{ backgroundImage: `url('${p.img}')` }}
-                />
-              </div>
+              <ProductGallery
+                img={p.img}
+                imgAlt={`${p.name} — ${CHEM_LABELS[p.chem]} floor coating`}
+                packShots={p.packShots}
+              />
             </div>
             <div>
               <div className="pd-id">
@@ -166,7 +173,7 @@ export default async function ProductPage({
                 pkgPrices={p.pkgPrices}
                 pkg={p.pkg}
                 finish={p.finish}
-                img={p.img}
+                img={pack?.src ?? p.img}
                 status={p.status}
                 colors={productColors}
               />

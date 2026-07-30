@@ -1,6 +1,6 @@
 import type Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/server";
-import { getProduct } from "@/lib/catalog";
+import { getProduct, primaryPackShot } from "@/lib/catalog";
 
 // Shared order-recording logic, used by BOTH the post-checkout confirm route
 // and the Stripe webhook. The upsert is keyed on the PaymentIntent id, so the
@@ -61,13 +61,16 @@ function parseItems(summary: string | undefined): OrderItem[] {
     }
     if (!sku || !Number.isFinite(qty) || qty < 1) continue;
     const product = getProduct(sku);
+    // Match the cart/line-item thumbnail: the LPC-labelled pail when one exists,
+    // otherwise the product's job photograph.
+    const lineImg = product ? (primaryPackShot(product)?.src ?? product.img) : undefined;
     out.push({
       sku,
       name: product?.name ?? sku,
       qty,
       ...(pkg ? { pkg } : {}),
       ...(finish ? { finish } : {}),
-      ...(product?.img ? { img: product.img } : {}),
+      ...(lineImg ? { img: lineImg } : {}),
     });
   }
   return out;
