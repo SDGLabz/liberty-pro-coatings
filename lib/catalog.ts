@@ -589,6 +589,11 @@ export const PRODUCTS: Product[] = [
         src: "/images/lpc/products/pu-20-part-a.webp",
         alt: "PU-20 Part A pail",
       },
+      {
+        component: "Part B",
+        src: "/images/lpc/products/pu-20-part-b.webp",
+        alt: "PU-20 Part B pouch",
+      },
     ],
     finish: ["Pigmented"],
   },
@@ -609,6 +614,11 @@ export const PRODUCTS: Product[] = [
         component: "Part A",
         src: "/images/lpc/products/pu-21-part-a.webp",
         alt: "PU-21 Part A pouch",
+      },
+      {
+        component: "Part B",
+        src: "/images/lpc/products/pu-21-part-b.webp",
+        alt: "PU-21 Part B pouch",
       },
     ],
     finish: ["Clear"],
