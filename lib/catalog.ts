@@ -68,13 +68,17 @@ export interface FreightAttrs {
  * 600dpi), re-encoded to 1200px webp.
  *
  * ⚠️ `component` is authoritative and is read straight off the printed label —
- * NEVER infer it from array position. Several products are rendered for only
- * one side of the kit (EG-WB03 has a Part B render and no Part A), so a
- * positional "first = Part A" assumption would label a hardener as the resin on
- * a technical data sheet. A component with no render simply has no entry here.
+ * NEVER infer it from array position. Several kits are rendered for only some of
+ * their components (PS-91, EP-15 and PP-16 all have an aggregate Part with no
+ * render), so a positional "first = Part A" assumption would label a hardener as
+ * the resin on a technical data sheet. A component with no render simply has no
+ * entry here — it never borrows another component's or another product's pail.
  */
 export interface PackShot {
-  /** Exactly as printed on the pail: "Part A", "Part B", "Single Component". */
+  /** Exactly as printed on the pail: "Part A", "Part B", "Single Component".
+   *  One exception: an image supplied live by the SDG portal for a SKU with no
+   *  local render carries the generic "Product image" — we have not read a
+   *  component off that label, so we must not claim one (see `overlayProduct`). */
   component: string;
   src: string;
   /** Literal description of the photo — no marketing claims. */
@@ -210,11 +214,17 @@ export const PRODUCTS: Product[] = [
     price: 112.31,
     status: "active-off",
     img: "/images/lpc/crew-squeegee-wetedge-fig.webp",
-    // NOTE: only the Part B hardener was rendered for EG-WB03 — there is no
-    // Part A pail. The card therefore shows the Part B pail; do NOT relabel it
-    // "Part A" or substitute another product's resin.
-    imgCard: "/images/lpc/products/eg-wb03-part-b.webp",
+    // Both components are now rendered — the Part A resin jug reads
+    // "EG-WB03 / Resin Part A / Waterbased Epoxy Primer", so the card leads with
+    // the resin (it previously had to show the Part B hardener, the only render
+    // that existed).
+    imgCard: "/images/lpc/products/eg-wb03-part-a.webp",
     packShots: [
+      {
+        component: "Part A",
+        src: "/images/lpc/products/eg-wb03-part-a.webp",
+        alt: "EG-WB03 Part A jug",
+      },
       {
         component: "Part B",
         src: "/images/lpc/products/eg-wb03-part-b.webp",
@@ -438,11 +448,20 @@ export const PRODUCTS: Product[] = [
     // and "3 GAL UNIT" also disagree with the 1:1 / 2.5–5 Gal data below. The
     // render IS PG-61's (headline reads PG-61 Part A), so the mapping is right;
     // the printed subtitle needs correcting before launch.
+    // PG-61 / PG-71 / PG-81 share ONE printed Part B label — its headline reads
+    // "PG-61, 71, 81 — Low Viscosity Part B / 83% Polyaspartic Hardener", so all
+    // three products correctly point at the same render. This is real shared
+    // packaging, not a reused photo.
     packShots: [
       {
         component: "Part A",
         src: "/images/lpc/products/pg-61-part-a.webp",
         alt: "PG-61 Part A jerrycan",
+      },
+      {
+        component: "Part B",
+        src: "/images/lpc/products/pg-61-part-b.webp",
+        alt: "PG-61 Part B jug, printed with the shared PG-61 / 71 / 81 low-viscosity hardener label",
       },
     ],
     finish: ["Clear", "Color Packs"],
@@ -460,11 +479,17 @@ export const PRODUCTS: Product[] = [
     status: "active-off",
     img: "/images/lpc/crew-applicator-gloss-fig.webp",
     imgCard: "/images/lpc/products/pg-71-part-a.webp",
+    // Same shared "PG-61, 71, 81" Part B hardener label as PG-61 above.
     packShots: [
       {
         component: "Part A",
         src: "/images/lpc/products/pg-71-part-a.webp",
         alt: "PG-71 Part A jerrycan",
+      },
+      {
+        component: "Part B",
+        src: "/images/lpc/products/pg-71-part-b.webp",
+        alt: "PG-71 Part B jug, printed with the shared PG-61 / 71 / 81 low-viscosity hardener label",
       },
     ],
     finish: ["Clear", "Color Packs"],
@@ -488,11 +513,17 @@ export const PRODUCTS: Product[] = [
     // The render IS PG-81's (headline reads PG-81 Part A, product line reads
     // "Fast Speed Polyaspartic Resin"), so the mapping is right; the printed
     // pack size and ratio need correcting before launch.
+    // Same shared "PG-61, 71, 81" Part B hardener label as PG-61 above.
     packShots: [
       {
         component: "Part A",
         src: "/images/lpc/products/pg-81-part-a.webp",
         alt: "PG-81 Part A jerrycan",
+      },
+      {
+        component: "Part B",
+        src: "/images/lpc/products/pg-81-part-b.webp",
+        alt: "PG-81 Part B jug, printed with the shared PG-61 / 71 / 81 low-viscosity hardener label",
       },
     ],
     finish: ["Clear", "Color Packs"],
@@ -640,11 +671,21 @@ export const PRODUCTS: Product[] = [
     // The UG-21 and UG-31 renders are pixel-identical on purpose: LPC prints ONE
     // shared Part A label reading "UG-21, 31 — Clear Resin Part A". This is the
     // real packaging, not a duplicated file. Verified against both source PSDs.
+    // ⚠️ ARTWORK NOTE (confirm with Ian; do NOT "fix" it here): the shared Part B
+    // label's headline co-prints "UG-21, 31" — correct — but its descriptor line
+    // reads "Satin Part B", which is UG-31's sheen. UG-21 is the gloss. The
+    // hardener is genuinely shared, so the mapping is right; the printed
+    // descriptor is what needs checking before launch.
     packShots: [
       {
         component: "Part A",
         src: "/images/lpc/products/ug-21-part-a.webp",
         alt: "UG-21 Part A pail, printed with the shared UG-21 / UG-31 clear resin label",
+      },
+      {
+        component: "Part B",
+        src: "/images/lpc/products/ug-21-part-b.webp",
+        alt: "UG-21 Part B jug, printed with the shared UG-21 / UG-31 waterbased urethane hardener label",
       },
     ],
     finish: ["Gloss"],
@@ -661,12 +702,19 @@ export const PRODUCTS: Product[] = [
     status: "rnd-hold",
     img: "/images/lpc/quartz-kitchen-commercial-fig.webp",
     imgCard: "/images/lpc/products/ug-31-part-a.webp",
-    // Same shared "UG-21, 31" Part A label as UG-21 above — see that note.
+    // Same shared "UG-21, 31" Part A and Part B labels as UG-21 above — see the
+    // notes there. (The Part B descriptor reads "Satin Part B", which matches
+    // this product.)
     packShots: [
       {
         component: "Part A",
         src: "/images/lpc/products/ug-31-part-a.webp",
         alt: "UG-31 Part A pail, printed with the shared UG-21 / UG-31 clear resin label",
+      },
+      {
+        component: "Part B",
+        src: "/images/lpc/products/ug-31-part-b.webp",
+        alt: "UG-31 Part B jug, printed with the shared UG-21 / UG-31 waterbased urethane hardener label",
       },
     ],
     finish: ["Satin"],
@@ -719,12 +767,18 @@ export const PRODUCTS: Product[] = [
     status: "active-off",
     img: "/images/lpc/terrazzo-mica-macro-fig.webp",
     imgCard: "/images/lpc/products/u-91-part-a.webp",
-    // Part A only — the Part B hardener has no render and must not borrow one.
+    // Both components rendered. The Part B pail reads "U-91 / Part B / Flexible
+    // Urethane Hardener".
     packShots: [
       {
         component: "Part A",
         src: "/images/lpc/products/u-91-part-a.webp",
         alt: "U-91 Part A jug",
+      },
+      {
+        component: "Part B",
+        src: "/images/lpc/products/u-91-part-b.webp",
+        alt: "U-91 Part B pail",
       },
     ],
     finish: ["Clear"],
@@ -745,10 +799,9 @@ export const PRODUCTS: Product[] = [
     imgCard: "/images/lpc/products/ep-15-part-a.webp",
     // Three-component product (A + B + Part C aggregate). Only A and B were
     // rendered — Part C has no photo and must not borrow one.
-    // ⚠️ ARTWORK DEFECT (Ian to fix in the PSD, not here): the Part B bottle is
-    // printed "EB-15", while Part A and this catalog say EP-15. Same product
-    // name ("Epoxy Patching Paste") on both, so this reads as a typo in the
-    // label art — but it is visible on the product page and the TDS.
+    // The earlier Part B render mis-printed the code as "EB-15"; Ian supplied
+    // corrected artwork and the render in place now reads "EP-15 / Part B /
+    // Epoxy Patching Paste". The old defect note no longer applies.
     packShots: [
       {
         component: "Part A",
@@ -758,7 +811,7 @@ export const PRODUCTS: Product[] = [
       {
         component: "Part B",
         src: "/images/lpc/products/ep-15-part-b.webp",
-        alt: "EP-15 Part B bottle, printed EB-15 on the label",
+        alt: "EP-15 Part B bottle",
       },
     ],
     finish: ["Natural"],
@@ -1219,21 +1272,57 @@ export function productsInSystem(system: System): Product[] {
 // Products above are STATIC and commerce-rich (price, pkgPrices, freight). When
 // a product is edited + published in the SDG portal, the portal writes a SPARSE
 // row to the shared portal Supabase `cms_products` (company='lpc'): the edited
-// TDS prose (in `values`) + a portal-generated TDS PDF (`tds_url`). We overlay
+// TDS prose (in `values`), a portal-generated TDS PDF (`tds_url`) and — for
+// products published with a photo — an image URL (`main_image`). We overlay
 // ONLY those fields onto the static product at request time (the product page is
 // force-dynamic), so portal edits appear live without touching pricing, freight,
 // status, the descriptor, or the technical/physical spec tables. If the portal
 // env or read is unavailable, the static product is returned unchanged.
+//
+// `main_image` is deliberately the WEAKEST of the three: it is accepted only as
+// an absolute https URL (see `portalImage`) and only for SKUs that have no local
+// LPC-labelled pack shot. A curated local render always wins — the portal image
+// is a fallback, never a replacement.
 const PORTAL_SB_URL = process.env.PORTAL_SUPABASE_URL;
 const PORTAL_SB_ANON = process.env.PORTAL_SUPABASE_ANON_KEY;
 
-type CmsOverlayRow = { slug?: string; values?: Record<string, unknown>; tds_url?: unknown };
+type CmsOverlayRow = {
+  slug?: string;
+  values?: Record<string, unknown>;
+  tds_url?: unknown;
+  main_image?: unknown;
+};
+
+/**
+ * Accept a portal image ONLY when it is an absolute https URL.
+ *
+ * The portal is migrating to writing an absolute Supabase Storage URL into
+ * `cms_products.main_image`, but legacy rows hold a ROOT-RELATIVE path (e.g.
+ * "/uploads/foo.jpg") that was only ever valid on the portal's own origin. Left
+ * unguarded, such a value resolves against THIS site's origin
+ * (libertyprocoatings.com/uploads/foo.jpg) and 404s — that is exactly the
+ * failure mode that broke Polymer Nation's product images. Anything that is not
+ * an absolute https URL is ignored and the local pack shot is kept.
+ */
+function portalImage(x: unknown): string | undefined {
+  if (typeof x !== "string") return undefined;
+  const v = x.trim();
+  if (!v) return undefined;
+  try {
+    // Second arg omitted on purpose: a root-relative value throws here instead
+    // of being silently resolved against some base.
+    const u = new URL(v);
+    return u.protocol === "https:" ? u.href : undefined;
+  } catch {
+    return undefined;
+  }
+}
 
 async function loadCmsOverlay(): Promise<Record<string, CmsOverlayRow>> {
   if (!PORTAL_SB_URL || !PORTAL_SB_ANON) return {};
   try {
     const res = await fetch(
-      `${PORTAL_SB_URL}/rest/v1/cms_products?company=eq.lpc&select=slug,values,tds_url`,
+      `${PORTAL_SB_URL}/rest/v1/cms_products?company=eq.lpc&select=slug,values,tds_url,main_image`,
       {
         headers: { apikey: PORTAL_SB_ANON, Authorization: `Bearer ${PORTAL_SB_ANON}` },
         // Always read the current overlay so portal edits appear immediately.
@@ -1269,7 +1358,22 @@ function overlayProduct(p: Product, row: CmsOverlayRow | undefined): Product {
         application: s(v.application_method) ?? p.tds.application,
       }
     : p.tds;
-  return { ...p, tds, tdsUrl: s(row.tds_url) ?? null };
+
+  // Portal photo — fallback ONLY. A product that already has a locally curated,
+  // LPC-labelled pack shot keeps it: we can see and verify those renders, we
+  // cannot verify what the portal uploaded. So the portal image is used solely
+  // to give a SKU with NO render something better than job photography, and it
+  // is labelled generically ("Product image") because — unlike every static
+  // entry — we have not read a component off its printed label and must not
+  // assert one. If the portal ever mislabels an image, the worst case here is a
+  // vague label, never a hardener announced as a resin.
+  const portalImg = portalImage(row.main_image);
+  const packShots: PackShot[] | undefined =
+    !p.packShots?.length && portalImg
+      ? [{ component: "Product image", src: portalImg, alt: `${p.sku} product image` }]
+      : p.packShots;
+
+  return { ...p, tds, packShots, tdsUrl: s(row.tds_url) ?? null };
 }
 
 /** A single product with the live portal overlay applied (force-dynamic page). */

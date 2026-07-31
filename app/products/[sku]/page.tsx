@@ -94,7 +94,12 @@ export default async function ProductPage({
     brand: { "@type": "Brand", name: SITE.name },
     manufacturer: { "@type": "Organization", name: SITE.name },
     image: [
-      ...(pack ? [`${SITE.url}${pack.src}`] : []),
+      // `pack.src` is normally a root-relative path under /public, but a SKU with
+      // no local render can have its pack shot supplied live by the SDG portal as
+      // an ABSOLUTE https URL. Prefixing that with SITE.url would emit a mangled
+      // "https://libertyprocoatings.comhttps://…" into the JSON-LD, so absolute
+      // srcs pass through untouched. `p.img` is always local.
+      ...(pack ? [pack.src.startsWith("http") ? pack.src : `${SITE.url}${pack.src}`] : []),
       `${SITE.url}${p.img}`,
     ],
     ...(p.price && p.price > 0
