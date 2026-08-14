@@ -209,7 +209,7 @@ export const PRODUCTS: Product[] = [
     chem: "epoxy",
     role: "primer",
     family: "Epo-Guard",
-    desc: "2K waterborne clear epoxy primer/sealer, low VOC, 48% solids.",
+    desc: "2K waterborne clear epoxy primer/sealer, low VOC, 65% solids.",
     pkg: ["2.5 Gal"],
     price: 112.31,
     status: "active-off",
@@ -335,7 +335,7 @@ export const PRODUCTS: Product[] = [
     status: "active-off",
     img: "/images/lpc/flake-patio-exterior-fig.webp",
     imgCard: "/images/lpc/flake-patio-exterior-card-sq.webp",
-    finish: ["Clear"],
+    finish: ["Clear", "Color Packs"],
   },
   {
     sku: "EG-MVS99",
@@ -361,7 +361,7 @@ export const PRODUCTS: Product[] = [
         alt: "EG-MVS99 Part B jug",
       },
     ],
-    finish: ["Clear"],
+    finish: ["Clear", "Color Packs"],
   },
   {
     sku: "EG-11TDK",
@@ -369,7 +369,7 @@ export const PRODUCTS: Product[] = [
     chem: "epoxy",
     role: "patch",
     family: "Epo-Guard",
-    desc: "2:1 clear epoxy + 1324 aggregate trowel kit — easy-troweling mortar, walkable in hours.",
+    desc: "Clear epoxy + 1324 aggregate trowel kit — easy-troweling mortar, walkable in hours.",
     pkg: ["1 mix kit"],
     price: 80.93,
     status: "active-off",
@@ -431,7 +431,7 @@ export const PRODUCTS: Product[] = [
   // ---- Polyurea / Polyaspartic "Poly-Guard" ----
   {
     sku: "PG-61",
-    name: "Poly-Guard 85% Polyaspartic — Slow",
+    name: "Poly-Guard 83% Polyaspartic — Slow",
     chem: "polyaspartic",
     role: "topcoat",
     family: "Poly-Guard",
@@ -468,7 +468,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     sku: "PG-71",
-    name: "Poly-Guard 85% Polyaspartic — Medium",
+    name: "Poly-Guard 83% Polyaspartic — Medium",
     chem: "polyaspartic",
     role: "topcoat",
     family: "Poly-Guard",
@@ -496,7 +496,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     sku: "PG-81",
-    name: "Poly-Guard 85% Polyaspartic — Fast",
+    name: "Poly-Guard 83% Polyaspartic — Fast",
     chem: "polyaspartic",
     role: "topcoat",
     family: "Poly-Guard",
@@ -725,7 +725,7 @@ export const PRODUCTS: Product[] = [
     chem: "urethane",
     role: "topcoat",
     family: "Ure-Guard",
-    desc: "1K 99% solids aliphatic MCU, gloss — maximum wear and chemical resistance.",
+    desc: "1K >98% solids aliphatic MCU, gloss — maximum wear and chemical resistance.",
     pkg: ["1 Gal"],
     price: 183.91,
     status: "active-off",
@@ -743,17 +743,17 @@ export const PRODUCTS: Product[] = [
   },
   {
     sku: "UG-55",
-    name: "Ure-Guard High Wear Urethane — Matte",
+    name: "Ure-Guard High Wear Urethane — Low Sheen",
     chem: "urethane",
     role: "topcoat",
     family: "Ure-Guard",
-    desc: "1K 99% solids aliphatic MCU, low sheen.",
+    desc: "1K >98% solids aliphatic MCU topcoat, low sheen.",
     pkg: ["1 Gal"],
     price: 215.57,
     status: "rnd-hold",
     img: "/images/lpc/pigmented-steelbldg-after-fig.webp",
     imgCard: "/images/lpc/pigmented-steelbldg-after-card-sq.webp",
-    finish: ["Matte"],
+    finish: ["Low Sheen"],
   },
   {
     sku: "U-91",
@@ -781,7 +781,7 @@ export const PRODUCTS: Product[] = [
         alt: "U-91 Part B pail",
       },
     ],
-    finish: ["Clear"],
+    finish: ["Clear", "Color Packs"],
   },
 
   // ---- Patching / Joint / Cove ----

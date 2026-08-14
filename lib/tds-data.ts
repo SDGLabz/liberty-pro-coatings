@@ -40,6 +40,8 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
         ["Solids Mixed", "65%"],
         ["Application in Mils", "4-8 (200-400 sq. ft./gal)"],
         ["Available Colors", "Clear and Color Packs (1342 WB Color Packs)"],
+        ["Recoat Window", "re-add [\"Recoat Window\", \"Within 24 hours\"]"],
+        ["Coverage Rate", "re-add [\"Coverage Rate\", \"200-400 sq. ft./gal\"]"],
       ],
       physical: [
         ["Tensile Strength", "ASTM C307", "2,500 psi"],
@@ -67,7 +69,7 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
       uses:
         "EG-MPE01 is most often used as a primer, broadcast resin and topcoat for resinous concrete flooring projects. It can also be used as a patching or trowel material when combined with Liberty Pro Coatings 1170 or Liberty Pro Coatings 1324 aggregate.",
       limitations:
-        "EG-MPE01 is designed to be applied at 8-12 mils as a primer, 12-20 mils as a body coat and 10-16 mils as a topcoat. Ideal application temperatures to be between 60 – 85°F. Cooler temperatures will increase cure times. Warmer temperatures will decrease working and cure times. Good coating practices are required when installing our coatings. Verify that substrate temperature is above 5 degrees of dewpoint during application and cure of material to avoid a potential amine blush.",
+        "EG-MPE01 is designed to be applied at 8-12 mils as a primer, 12-20 mils as a body coat and 10-16 mils as a topcoat. Ideal application temperatures to be between 60 – 85°F. Cooler temperatures will increase cure times. Warmer temperatures will decrease working and cure times. Liberty Pro Coatings has tested its materials with our 1338 metallic powders. While we have taken every precaution to formulate an exceptional epoxy coating, certain undesired results in so-called epoxy metallic systems in which these resins are used may occur due to a number of factors including mixing, placement techniques and thermal variations in the installation area. Good coating practices are required when installing our coatings. Verify that substrate temperature is above 5 degrees of dewpoint during application and cure of material to avoid a potential amine blush.",
       prep:
         "The preparation method for each project is determined by a full understanding of the substrate to be coated, the chemistry of the coating system being used, the coating system thickness, and numerous other factors. The coating installer should fully read and understand ICRI Guideline NO. 310.2R-2013 and OSHA 29 CFR 1926.1153 before starting preparatory work. The aim, of preparing a substrate for coating applications, is to roughen the surface, remove weak layers, contaminants, dirt, debris and present a solid, clean, dry substrate for the primer. If unsure as to the level of preparation needed contact Liberty Pro Coatings at info@libertyprocoatings.com.",
       mixing:
@@ -91,6 +93,7 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
         ["Solids by Volume Mixed", "100%"],
         ["Application in Mils", "8-20 (80 – 200 sq. ft./gal.)"],
         ["Available Colors", "Clear and Color Packs (1339)"],
+        ["Test Conditions", "The data below was gathered at temperatures of 72-75°F and 30-50% RH"],
       ],
       physical: [
         ["Tensile Strength", "ASTM C307", "2,870 psi"],
@@ -120,7 +123,7 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
       uses:
         "EG-MPE01-F is most often used as a primer, broadcast resin and topcoat for resinous concrete flooring projects. It can also be used as a patching or trowel material when combined with Liberty Pro Coatings 1170 or Liberty Pro Coatings 1324 aggregate.",
       limitations:
-        "EG-MPE01-F is designed to be applied at 8-12 mils as a primer, 12-20 mils as a body coat and 10-16 mils as a topcoat. Ideal application temperatures to be between 60 – 85°F. Cooler temperatures will increase cure times. Warmer temperatures will decrease working and cure times. Good coating practices are required when installing our coatings. Verify that substrate temperature is above 5 degrees of dewpoint during application and cure of material to avoid a potential amine blush.",
+        "EG-MPE01-F is designed to be applied at 8-12 mils as a primer, 12-20 mils as a body coat and 10-16 mils as a topcoat. Ideal application temperatures to be between 60 – 85°F. Cooler temperatures will increase cure times. Warmer temperatures will decrease working and cure times. Liberty Pro Coatings has tested its materials with our 1338 metallic powders. While we have taken every precaution to formulate an exceptional epoxy coating, certain undesired results in so-called epoxy metallic systems in which these resins are used may occur due to a number of factors including mixing, placement techniques and thermal variations in the installation area. Good coating practices are required when installing our coatings. Verify that substrate temperature is above 5 degrees of dewpoint during application and cure of material to avoid a potential amine blush.",
       prep:
         "The preparation method for each project is determined by a full understanding of the substrate to be coated, the chemistry of the coating system being used, the coating system thickness, and numerous other factors. The coating installer should fully read and understand ICRI Guideline NO. 310.2R-2013 and OSHA 29 CFR 1926.1153 before starting preparatory work. The aim, of preparing a substrate for coating applications, is to roughen the surface, remove weak layers, contaminants, dirt, debris and present a solid, clean, dry substrate for the primer. If unsure as to the level of preparation needed contact Liberty Pro Coatings at info@libertyprocoatings.com.",
       mixing:
@@ -144,6 +147,7 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
         ["Solids by Volume Mixed", "100%"],
         ["Application in Mils", "8-20 (80 – 200 sq. ft./gal.)"],
         ["Available Colors", "Clear and Color Packs (1339)"],
+        ["Test Conditions", "The data below was gathered at temperatures of 72-75°F and 30-50% RH"],
       ],
       physical: [
         ["Tensile Strength", "ASTM C307", "2,870 psi"],
@@ -230,7 +234,7 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
       prep:
         "For guaranteed performance follow all steps found in ASTM F3010. Patch all holes, cracks and non-moving joints using EP-15 prior to coating application. Understanding of osmotic, capillary and hydrostatic pressures with the potential of alkaline hydrolysis (which can erode the bond strength) is critical to successful evaluation, preparation and installation. Osmotic, capillary and hydrostatic pressures have been measured in excess of 3,000 p.s.i. which is well above the tensile strength of concrete. Liberty Pro Coatings encourages its customers to review its presentation called Understanding Moisture Vapor Suppression available where EG-MVS99 is sold. To receive a MVS warranty contact Liberty Pro Coatings info@libertyprocoatings.com prior to the start of project. Only written warrantees will be honored for labor and material coverage.",
       mixing:
-        "Do not split kits. Mix ratio is 2 parts EG-MVS99 Part A to 1 part EG-MVS99 Part B. Combine all of part A and B into a single container, large enough to accept the entire kit. Mix using a 350 RPM mixer using an appropriate mixing blade for 1.5 – 2.5 minutes making sure to not introduce excessive air into the material. If adding colorant, first mix with Part A before adding Part B.",
+        "Do not split kits. Mix ratio is 2 parts EG-MVS99 Part A to 1 part EG-MVS99 Part B. Combine all of part A and B into a single container, large enough to except the entire kit. Mix using a 350 RPM mixer using an appropriate mixing blade for 1.5 – 2.5 minutes making sure to not introduce excessive air into the material. If adding colorant, first mix with Part A before adding Part B.",
       application:
         "Pour the entire content from the container onto the floor and follow normal squeegee and back roll or cut and roller techniques. EG-MVS99 can be applied in one coat at 16 mils when concrete and environmental conditions allow. If concrete is porous and/or environmental conditions unfavorable a two-coat process is recommended with the first coat placed at 8 mils and the second coat placed at 8 mils for a total thickness of 16 mils. Successful material performance requires a monolithic, pinhole-free finish. Achieving this finish is dependent on the substrate condition and the installer’s skill level. Recoat within 24 hours. Clean tools with a solvent similar to Xylene or Acetone.",
       technical: [
@@ -251,7 +255,7 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
         ["Solids by Volume Mixed", "100%"],
         ["Application in Mils", "16 mils or 2 coats of 8 mils"],
         ["Coverage Rate", "80-100 sq.ft./gal."],
-        ["Perm Rating (ASTM E96)", "< 0.1 perms"],
+        ["Perm Rating (ASTM E96)", "Water Vapor Transmission (ASTM E96)"],
         ["Perm Rating — Independent Certificate from third party testing (ASTM F3010)", "Yes 0.074 perms"],
         ["Available Colors", "Clear or color packs"],
       ],
@@ -265,7 +269,7 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
         ["Impact Resistance", "ASTM D2794", ">160 inch pounds"],
         ["Perm Rating - Independent Certificate from third party testing", "ASTM F3010", "Yes 0.074 perms"],
         ["Adhesion", "ASTM D3359", "5A"],
-        ["Abrasion Resistance CS17 1000 g 1000 cycles in g Loss", "ASTM D4060", "0.049g Loss (when higher abrasion resistance is required the addition of PC 1336 to the coating should be included)"],
+        ["Abrasion Resistance CS17 1000 g 1000 cycles in g Loss", "ASTM D4060", "0.049g Loss (when higher abrasion resistance is required the addition of Liberty Pro Coatings 1336 to the coating should be included)"],
         ["Adhesion to Steel", "ASTM D4541", ">1,000 psi"],
         ["Hiding Power", "ASTM D5150", "2-5/200"],
         ["Flammability When Adhered to Concrete", "ASTM D635", "Self-Extinguishing"],
@@ -344,7 +348,7 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
       application:
         "Before applying EG-31CV to a vertical substrate, tape off the area of the wall base which will receive the EG-31CV cove gel and then prime the surface to be coated with a thin layer (6-10 mils) of any of the following Liberty Pro Coatings products: EG-MVS99, EG-MPE01 (standard), or EG-MPE01-F (fast set). This will aid the 'hang' of EG-31CV during initial placement and smoothing. While the prime coat is still wet and/or tacky, begin applying the mixed EG-31CV epoxy cove gel to the base of the wall with appropriate tooling (margin trowel etc.). Once EG-31CV has been placed, smooth and finish with a cove trowel. Pull tape within 30 minutes of placing EG-31CV. Use C-99 for trowel lubricant if desired. Recoat within 24 hours. Clean tools with a solvent similar to Xylene or Acetone. COVERAGE BY APPLICATION — Linear Feet (+/- 5%) per kit: 2\" cant: 62 feet; 4\" cove with 1\" radius: 36 feet; 6\" cove with 1\" radius: 32 feet. Kit: A – 0.5 gal, B – 0.25 gal, C – 45 lbs. 1324 Trowel Aggregate. Note: Vertical (non-rounded) portion of cove base was between 1/8\" – 1/4\" thickness.",
       technical: [
-        ["Packaging", "3 Quart kits (Liquids - 0.5 gal A, 0.25 gal B)"],
+        ["Packaging", "3 Quart kits (Liquids - 0.5 gal A, 0.25 gal B) + Part C – 45 lbs. 1324 Trowel Aggregate"],
         ["Mix Ratio by Volume", "2:1 (liquids)"],
         ["Mixed Viscosity", "4500 cP 25°C/77°F (liquids)"],
         ["Working Time", "25-35 minutes"],
@@ -361,6 +365,7 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
         ["Application Thickness", "1/8\" to 1/4\""],
         ["Recoat Window", "Within 24 hours"],
         ["Available Colors", "Clear & Color Packs"],
+        ["Test Conditions", "The data below was gathered at temperatures of 72-75°F and 30-50% RH"],
       ],
       physical: [
         ["Tensile Strength", "ASTM C307", "10,400 psi"],
@@ -410,8 +415,11 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
         ["Gloss @ 60 Degree Angle", ">90"],
         ["VOC's of Mixed Material", "165 g/L (calculated)"],
         ["Solids by Volume Mixed", "83%"],
-        ["Application in Mils", "5-15 (110 – 300 sq. ft./gal)"],
         ["Available Colors", "Clear and Color Packs"],
+        ["Pendulum Hardness (König) — the row whose value is \"18 @ 24 hours\"", "18 @ 24 hours / 50 @ 7 days"],
+        ["Application Thickness", "5-15 mils"],
+        ["Coverage Rate", "110 – 300 sq. ft./gal"],
+        ["Recoat Window", "Within 24 hours"],
       ],
       physical: [
         ["Tensile Strength", "ASTM C307", "3,270 psi"],
@@ -458,13 +466,15 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
         ["Dry to Walk", "7-8 hours"],
         ["Dry to Light Use", "14-16 hours"],
         ["Full Cure", "7 days"],
-        ["Pendulum Hardness (König)", "18 @ 24 hours"],
         ["Pendulum Hardness (König)", "50 @ 7 days"],
         ["Gloss @ 60 Degree Angle", ">90"],
         ["VOC's of Mixed Material", "165 g/L (calculated)"],
         ["Solids by Volume Mixed", "83%"],
-        ["Application in Mils", "5-15 (110 – 300 sq. ft./gal.)"],
         ["Available Colors", "Clear and Color Packs"],
+        ["Pendulum (König) Hardness", "18 @ 24 hours / 50 @ 7 days"],
+        ["Recoat Window", "Within 24 hours"],
+        ["Application Thickness", "5–15 mils"],
+        ["Coverage Rate", "110–300 sq.ft./gal."],
       ],
       physical: [
         ["Tensile Strength", "ASTM C307", "3,270 psi"],
@@ -518,6 +528,7 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
         ["Solids by Volume Mixed", "83%"],
         ["Application in Mils", "5-15 (110 – 300 sq. ft./gal.)"],
         ["Available Colors", "Clear and Color Packs"],
+        ["Recoat Window", "2-24 hours"],
       ],
       physical: [
         ["Tensile Strength", "ASTM C307", "3,270 psi"],
@@ -620,6 +631,7 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
         ["Solids by Volume Mixed", "100%"],
         ["Application in Mils", "8-10 (160 – 200 sq.ft./gal.)"],
         ["Available Colors", "Light Gray, Tan & Beige"],
+        ["Recoat Window", "2-24 hours"],
       ],
       physical: [
         ["Tensile Strength", "ASTM C307", "3,270 psi"],
@@ -765,19 +777,19 @@ export const TDS_DATA: Record<string, { glance: Glance; tds: Tds }> = {
         ["Packaging", "2, 4, and 20 Gallon kits"],
         ["Mix Ratio by Volume", "3:1 A:B"],
         ["Mixed Viscosity", "250-500 cP 25°C/77°F"],
-        ["Work Time", "10–15 minutes"],
-        ["Dry to Touch", "2–4 hours"],
-        ["Through Dry", "6–10 hours"],
-        ["Dry to Walk", "12–16 hours"],
+        ["Work Time", "10-15 minutes"],
+        ["Dry to Touch", "2-4 hours"],
+        ["Through Dry", "6-10 hours"],
+        ["Dry to Walk", "12-16 hours"],
         ["Dry to Light Use", "24 hours"],
         ["Recoat Window", "Within 24 hours"],
         ["Full Cure", "7 days"],
         ["Pendulum Hardness (König)", "12 @ 24 hours / 46 @ 7 days"],
-        ["Gloss @ 60 Degree Angle", "30–60"],
+        ["Gloss @ 60 Degree Angle", "30-60"],
         ["VOC's of Mixed Material", "0 g/l EPA Method 24"],
-        ["Color Scale", "0.5–1.0 per ASTM D1500"],
+        ["Color Scale", "0.5-1.0 per ASTM D1500"],
         ["Solids by Volume Mixed", "53 %"],
-        ["Application in Mils", "4–6 (275–400 sq.ft./gal.)"],
+        ["Application in Mils", "4-6 (275-400 sq.ft./gal.)"],
         ["Available Colors", "Clear and Color Packs (Liberty Pro Coatings 1342 WB color packs ONLY!)"],
       ],
       physical: [
