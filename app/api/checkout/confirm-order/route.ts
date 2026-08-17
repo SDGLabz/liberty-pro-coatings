@@ -52,7 +52,7 @@ export async function POST(request: Request) {
       .maybeSingle();
     const wasFinalized = existing?.status === "paid" || existing?.status === "processing";
 
-    const items = await upsertOrderFromPaymentIntent(pi);
+    const { items, shipping } = await upsertOrderFromPaymentIntent(pi);
     const status =
       pi.status === "succeeded" ? "paid" : pi.status === "processing" ? "processing" : "failed";
 
@@ -68,10 +68,11 @@ export async function POST(request: Request) {
         method: pi.metadata?.method === "ach" ? "ach" : "card",
         orderRef: pi.id.slice(-8).toUpperCase(),
         processing: pi.status === "processing",
+        shipping,
       });
     }
 
-    return Response.json({ ok: true, status, items });
+    return Response.json({ ok: true, status, items, shipping });
   } catch (err) {
     console.error("[confirm-order] failed:", err);
     return Response.json({ ok: false, error: "Could not confirm the order." }, { status: 500 });

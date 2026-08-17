@@ -2,9 +2,15 @@
 
 import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import {
+  AddressElement,
+  Elements,
+  PaymentElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
 import type { StripeElementsOptions } from "@stripe/stripe-js";
-import { getStripePromise } from "@/lib/stripe/client";
+import { getStripePromise, isStripeTestMode } from "@/lib/stripe/client";
 import { useSite } from "@/components/site/SiteProvider";
 import {
   ACH_DISCOUNT_PCT,
@@ -23,6 +29,7 @@ import { estimateFreight } from "@/lib/freight";
 // method's details. Test mode until launch — no real charge.
 
 const stripePromise = getStripePromise();
+const TEST_MODE = isStripeTestMode();
 
 export default function CheckoutClient() {
   const { items } = useSite();
@@ -188,7 +195,13 @@ export default function CheckoutClient() {
           </div>
         )}
         <p className="co-note">
-          Sales tax is calculated at fulfillment. <strong>Test mode</strong>: no real charge.
+          Sales tax is calculated at fulfillment.
+          {TEST_MODE && (
+            <>
+              {" "}
+              <strong>Test mode</strong>: no real charge.
+            </>
+          )}
         </p>
       </aside>
     </div>
@@ -239,6 +252,22 @@ function PaymentForm({ method, totals }: { method: PaymentChoice; totals: OrderT
 
   return (
     <form onSubmit={onSubmit} className="co-form">
+      {/* Shipping address. Created from the SAME Elements object as the
+          PaymentElement, so Stripe writes it straight onto the PaymentIntent's
+          `shipping` field at confirmation — no confirmParams plumbing needed —
+          and blocks confirmation until it's complete. Phone is required
+          because LTL carriers need a contact to book the delivery appointment,
+          and these are freight-shipped pails, not parcels. */}
+      <h3 className="co-sub">Ship to</h3>
+      <AddressElement
+        options={{
+          mode: "shipping",
+          allowedCountries: ["US"],
+          fields: { phone: "always" },
+          validation: { phone: { required: "always" } },
+        }}
+      />
+      <h3 className="co-sub">Payment details</h3>
       <PaymentElement />
       {err && (
         <div className="co-error" role="alert">
@@ -250,7 +279,7 @@ function PaymentForm({ method, totals }: { method: PaymentChoice; totals: OrderT
           ? "Processing…"
           : `Pay ${formatUsd(totals.totalCents)}${method === "ach" ? " by bank" : ""}`}
       </button>
-      <p className="co-secure">🔒 Payments secured by Stripe · test mode</p>
+      <p className="co-secure">🔒 Payments secured by Stripe{TEST_MODE ? " · test mode" : ""}</p>
     </form>
   );
 }

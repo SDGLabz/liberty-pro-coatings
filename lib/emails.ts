@@ -1,4 +1,23 @@
 import { Resend } from "resend";
+import type { OrderShipping } from "@/lib/orders";
+
+// ⛔ An UNSET sender does not disable email — it falls back to Resend's shared
+// `onboarding@resend.dev`, which Resend 403s for EVERY recipient except the
+// account owner's own address. That failure is invisible: the send throws, the
+// catch logs, and the customer still sees a success page. So resolve the sender
+// through here, where the misconfiguration is named out loud in the logs.
+const FROM_FALLBACK = "Liberty Pro Coatings <onboarding@resend.dev>";
+
+function resolveFrom(context: string): string {
+  const from = process.env.LEAD_FROM_EMAIL;
+  if (from) return from;
+  console.error(
+    `[emails] LEAD_FROM_EMAIL is not set — ${context} will send from ${FROM_FALLBACK}, ` +
+      `which Resend rejects (403) for every recipient except the account owner. ` +
+      `Set LEAD_FROM_EMAIL to an address on a Resend-verified domain.`,
+  );
+  return FROM_FALLBACK;
+}
 import { SITE } from "./site";
 import { formatUsd } from "./checkout-pricing";
 
@@ -59,7 +78,7 @@ export async function sendStatusEmail({ to, name, company, status }: StatusEmail
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey || !to) return;
 
-  const from = process.env.LEAD_FROM_EMAIL ?? "Liberty Pro Coatings <onboarding@resend.dev>";
+  const from = resolveFrom("the account-status email");
   const greeting = name?.trim() || company?.trim() || "there";
   const resend = new Resend(apiKey);
 
@@ -101,7 +120,32 @@ export type OrderEmail = {
   orderRef: string;
   /** ACH payment still settling */
   processing?: boolean;
+  /** Ship-to captured at checkout; null on orders placed before it existed */
+  shipping?: OrderShipping | null;
 };
+
+function shipToHtml(o: OrderEmail): string {
+  const s = o.shipping;
+  if (!s) return "";
+  const a = s.address;
+  const region = [a.city, [a.state, a.postal_code].filter(Boolean).join(" ")]
+    .filter(Boolean)
+    .join(", ");
+  const rows = [s.name, a.line1, a.line2, region, s.phone].filter(Boolean).join("<br>");
+  return `<table style="width:100%;margin-top:18px"><tr><td style="background:#f4f7fa;border-left:3px solid ${BRAND};padding:12px 14px;font-size:14px;line-height:1.5">
+    <strong style="font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#5a6b80">Ship to</strong><br>${rows}
+  </td></tr></table>`;
+}
+
+function shipToText(o: OrderEmail): string {
+  const s = o.shipping;
+  if (!s) return "";
+  const a = s.address;
+  const region = [a.city, [a.state, a.postal_code].filter(Boolean).join(" ")]
+    .filter(Boolean)
+    .join(", ");
+  return `\n\nShip to:\n${[s.name, a.line1, a.line2, region, s.phone].filter(Boolean).join("\n")}`;
+}
 
 function orderRowsHtml(items: OrderEmailItem[]): string {
   return items
@@ -136,7 +180,7 @@ function orderText(o: OrderEmail): string {
       return `- ${it.name}${sub ? ` (${sub})` : ""} x${it.qty}`;
     })
     .join("\n");
-  return `Order ${o.orderRef}\n\n${lines}\n\nSubtotal: ${formatUsd(o.subtotalCents)}${o.discountCents > 0 ? `\nACH discount: -${formatUsd(o.discountCents)}` : ""}\nTotal (${o.method === "ach" ? "Bank/ACH" : "Card"}): ${formatUsd(o.totalCents)}\n\nFreight is quoted before shipment. Questions? (224) 733-1919.`;
+  return `Order ${o.orderRef}\n\n${lines}\n\nSubtotal: ${formatUsd(o.subtotalCents)}${o.discountCents > 0 ? `\nACH discount: -${formatUsd(o.discountCents)}` : ""}\nTotal (${o.method === "ach" ? "Bank/ACH" : "Card"}): ${formatUsd(o.totalCents)}${shipToText(o)}\n\nFreight is quoted before shipment. Questions? (224) 733-1919.`;
 }
 
 function receiptHtml(o: OrderEmail): string {
@@ -152,6 +196,7 @@ function receiptHtml(o: OrderEmail): string {
     <p>Thanks for your order. ${note}</p>
     <table style="width:100%;border-collapse:collapse;margin-top:14px">${orderRowsHtml(o.items)}</table>
     ${totalsHtml(o)}
+    ${shipToHtml(o)}
     <p style="font-size:13px;color:#5a6b80;margin-top:22px">Freight is quoted and added before shipment. Questions? Call (224) 733-1919 or reply to this email.</p>
   </div>`;
 }
@@ -163,6 +208,12 @@ function alertHtml(o: OrderEmail): string {
     <p style="font-size:13px;color:#5a6b80;margin:0 0 14px">Customer: ${o.to || "(unknown)"} · ${o.method === "ach" ? "Bank / ACH" : "Card"}${o.processing ? " · PROCESSING" : ""}</p>
     <table style="width:100%;border-collapse:collapse">${orderRowsHtml(o.items)}</table>
     ${totalsHtml(o)}
+    ${
+      shipToHtml(o) ||
+      `<p style="margin-top:18px;padding:10px 12px;background:#fff4f4;border-left:3px solid #d6212e;font-size:13px">
+        <strong>No ship-to on this order.</strong> Contact the customer for a delivery address before releasing it to freight.
+      </p>`
+    }
   </div>`;
 }
 
@@ -174,7 +225,7 @@ function alertHtml(o: OrderEmail): string {
 export async function sendOrderConfirmation(o: OrderEmail): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return;
-  const from = process.env.LEAD_FROM_EMAIL ?? "Liberty Pro Coatings <onboarding@resend.dev>";
+  const from = resolveFrom("the order confirmation");
   const resend = new Resend(apiKey);
 
   if (o.to) {

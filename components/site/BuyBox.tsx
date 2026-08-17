@@ -159,7 +159,7 @@ export function BuyBox({ sku, name, price, pkgPrices, pkg, finish, img, status, 
 
       <div className="buy-meta">
         <span>Live LTL freight</span>
-        <span>Full TDS &amp; SDS</span>
+        <span>Full TDS · SDS on request</span>
         <span>US shipping</span>
       </div>
       <p className="gate-note">

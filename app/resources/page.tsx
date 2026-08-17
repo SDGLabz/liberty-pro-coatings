@@ -71,8 +71,8 @@ export default function ResourcesPage() {
           <span className="eyebrow">Calculator · TDS · SDS</span>
           <h1>Resources &amp; data.</h1>
           <p className="lede">
-            Estimate the material a job needs, then pull the full technical and safety data for every
-            Liberty Pro product. Every product page carries its complete TDS and SDS.
+            Estimate the material a job needs, then pull the full technical data for every Liberty
+            Pro product. Every product page carries its complete TDS, with the SDS on request.
           </p>
         </div>
       </section>
@@ -106,7 +106,8 @@ export default function ResourcesPage() {
               <span className="eyebrow">Documents</span>
               <h2>Technical &amp; safety data.</h2>
               <p className="lede">
-                TDS and SDS for every product. Open a product to download its sheets.
+                A complete TDS for every product, downloadable from its page. Safety data sheets are
+                sent on request.
               </p>
             </div>
           </div>

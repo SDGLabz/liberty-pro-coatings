@@ -53,7 +53,16 @@ async function sendEmail(payload: LeadPayload): Promise<void> {
   const to = process.env.LEAD_TO_EMAIL;
   if (!apiKey || !to) throw new UnconfiguredError("resend");
 
-  const from = process.env.LEAD_FROM_EMAIL ?? "Liberty Pro Coatings <onboarding@resend.dev>";
+  // See lib/emails.ts: an unset sender silently becomes Resend's shared
+  // sandbox address, which 403s for every recipient but the account owner.
+  const configuredFrom = process.env.LEAD_FROM_EMAIL;
+  if (!configuredFrom) {
+    console.error(
+      "[lead] LEAD_FROM_EMAIL is not set — falling back to onboarding@resend.dev, " +
+        "which Resend rejects (403) for every recipient except the account owner.",
+    );
+  }
+  const from = configuredFrom ?? "Liberty Pro Coatings <onboarding@resend.dev>";
   const resend = new Resend(apiKey);
   const { error } = await resend.emails.send({
     from,

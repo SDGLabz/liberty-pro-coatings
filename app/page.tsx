@@ -86,7 +86,7 @@ export default function Home() {
             <div className="vi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5" /><path d="M9 13h6M9 17h5" /></svg></div>
             <div>
               <h3>Full Data</h3>
-              <p>Complete TDS &amp; SDS on every product</p>
+              <p>Complete TDS on every product · SDS on request</p>
             </div>
           </div>
           <div className="val">
