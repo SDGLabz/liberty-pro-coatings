@@ -5,6 +5,7 @@ import { useSite } from "./SiteProvider";
 import { SurveyButton } from "./SurveyButton";
 import { ColorPicker } from "./ColorPicker";
 import type { ProductStatus, Color } from "@/lib/catalog";
+import { isStripeTestMode } from "@/lib/stripe/mode";
 
 // Disabled-CTA copy for products that aren't add-to-cart-able yet.
 // "active-off" ("Coming Soon") IS purchasable into a cart (open browsing,
@@ -13,6 +14,20 @@ const DISABLED_CTA: Record<Exclude<ProductStatus, "active-off">, string> = {
   "rnd-hold": "In Development — not yet available",
   mto: "Made to Order — contact us",
 };
+
+// Shown on the otherwise-purchasable products while the storefront is still
+// wired to test Stripe keys. Without it the cart is open and checkout runs
+// against a key that cannot move money, so a contractor can complete an order,
+// see a confirmation, and be charged nothing.
+//
+// Keyed to the publishable key rather than to a hand-set flag, so the cart comes
+// back by itself in the deploy that carries live keys. There is no second commit
+// to remember and no way to launch with this still switched on.
+const PRELAUNCH_CTA = "Online ordering opens soon";
+
+function disabledLabel(status: ProductStatus): string {
+  return status === "active-off" ? PRELAUNCH_CTA : DISABLED_CTA[status];
+}
 
 export interface BuyBoxProps {
   sku: string;
@@ -38,7 +53,7 @@ export function BuyBox({ sku, name, price, pkgPrices, pkg, finish, img, status, 
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
 
-  const purchasable = status === "active-off";
+  const purchasable = status === "active-off" && !isStripeTestMode();
   const selectedPkg = pkg[pkgIdx] ?? "";
   const selectedFinish = finish[finishIdx] ?? "";
   // Price for the selected package size (multi-size products price per size).
@@ -153,7 +168,7 @@ export function BuyBox({ sku, name, price, pkgPrices, pkg, finish, img, status, 
           disabled
           style={{ cursor: "not-allowed" }}
         >
-          {DISABLED_CTA[status]}
+          {disabledLabel(status)}
         </button>
       )}
 
@@ -162,10 +177,18 @@ export function BuyBox({ sku, name, price, pkgPrices, pkg, finish, img, status, 
         <span>Full TDS · SDS on request</span>
         <span>US shipping</span>
       </div>
-      <p className="gate-note">
-        <b>Open browsing, gated checkout.</b> Anyone can build a cart. Completing checkout requires
-        an approved contractor account — <SurveyButton className="gate-link">become a contractor</SurveyButton>.
-      </p>
+      {purchasable ? (
+        <p className="gate-note">
+          <b>Open browsing, gated checkout.</b> Anyone can build a cart. Completing checkout requires
+          an approved contractor account — <SurveyButton className="gate-link">become a contractor</SurveyButton>.
+        </p>
+      ) : (
+        <p className="gate-note">
+          <b>Online ordering opens soon.</b> Full pricing, packaging and technical data are available
+          now. To set up your account ahead of launch,{" "}
+          <SurveyButton className="gate-link">become a contractor</SurveyButton>.
+        </p>
+      )}
     </div>
   );
 }

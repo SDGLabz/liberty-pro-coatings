@@ -15,12 +15,9 @@ export function getStripePromise(): Promise<Stripe | null> {
 }
 
 /**
- * True while the store is on TEST keys. Derived from the publishable key rather
- * than a hand-maintained flag, so the "test mode — no real charge" notices
- * disappear by themselves the moment live keys are set. Leaving that to a
- * manual edit is how a live store ends up telling real customers their real
- * payment isn't real.
+ * True while the store is on TEST keys. Lives in `./mode` so callers that need
+ * only the answer — the product buy box, for one — can ask without importing
+ * this module and pulling Stripe.js into their bundle. Re-exported here so the
+ * existing checkout import keeps working.
  */
-export function isStripeTestMode(): boolean {
-  return (process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "").startsWith("pk_test_");
-}
+export { isStripeTestMode } from "./mode";
